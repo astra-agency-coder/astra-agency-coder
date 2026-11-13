@@ -48,3 +48,19 @@ credential handling must also consider a 0600 file outside the repo (prior attem
 **Mistake to avoid:** A push URL of the form `https://x-access-token:<token>@host`
 writes the token into `.git/config`. Always push via `ops/gitpush.sh`, which passes an
 ephemeral credential helper instead.
+
+### 2026-11-13 — Custom-hired specialists are NOT resolvable by the `task` tool
+**What happened:** In training runs, a manager hired a specialist
+(`python3 ops/astra.py hire astra-mktg-copywriter --dept Marketing …`), which correctly
+wrote `.agents/agents/astra-<name>.md`, but delegating via the **`task` tool** with
+`subagent_type=astra-mktg-copywriter` returned:
+`Unknown agent 'astra-mktg-copywriter'. Available types: astra-cbdo, astra-ccr, … .
+Use register_agent() to add custom agent types.`
+The Creative training run (astra-ccr) hit the identical error.
+**What we learned:** The `task` tool resolves only **pre-registered** agent types
+(the 9 managers + a few test agents). File-based agent definitions on disk are not
+auto-registered with the runtime, so hired specialists cannot be delegated to yet.
+**What we change:** Until a registration path exists, managers should (a) record the
+blocker plainly, (b) do the work directly, and (c) retire the specialist with a reason.
+Proposed fix: wire `ops/astra.py hire` to call the runtime's `register_agent()` so the
+hire→delegate flow actually works. Every manager should report this if they hit it.
