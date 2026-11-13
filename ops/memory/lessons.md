@@ -21,3 +21,17 @@ file-based sub-agent, which ran a real tool and returned output.
 **What we learned:** Managers can create and run specialists the same way the
 CEO does; the org design is technically real, not aspirational.
 **What we change:** Managers are instructed to hire and delegate, not solo-work.
+
+### 2026-11-13 — The runtime GitHub token is read-only
+**What happened:** Attempting to create department repositories returned
+`403 Resource not accessible by integration` on `POST /user/repos`, and
+`git push` to an existing repo returned `403`. Reading (`GET /user`,
+`GET /user/repos`) works and authenticates as `astra-agency-coder`.
+**What we learned:** The runtime uses a GitHub **App installation** token with
+read-only permissions, not a classic PAT with `repo` scope. The
+`X-OAuth-Scopes` header is empty, which is the signature of an installation token.
+**What we change:** Repository creation and push are classified
+**NEEDS OWNER ACTION**. `ops/provision_repos.py` is ready and idempotent; it will
+create all seven private department repositories in one command once the token
+gains `Administration: write` + `Contents: write`. Until then, department homes
+are kept locally under `company/departments/`.
