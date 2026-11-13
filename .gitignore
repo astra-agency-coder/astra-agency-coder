@@ -15,3 +15,6 @@ deliveries/*/research/raw/
 # heavy media artifacts (keep deliverables lean; store media externally)
 *.wav
 **/video/audio/
+
+# agent scratch space
+.agent_tmp/
