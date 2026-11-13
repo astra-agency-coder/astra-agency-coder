@@ -157,3 +157,19 @@ pixel-level responsive rendering cannot be tested here — state that as a
 limitation, never imply it was tested. **Rule adopted:** every deliverable
 ships with a re-runnable verify script, and untested dimensions are listed
 explicitly in `VERIFY.md`.
+
+## L-0012 — Serving a repo directory leaks internals; one port, one owner
+**Date:** 2026-11-13 · **Context:** Engineering hardened the company site
+(`deliveries/astra-site/`). **Findings:** (a) the stdlib `server.py` served the
+package directory itself, so `/server.py` and `/verify_site.py` returned HTTP
+**200 on the public URL** — a real leak; fixed by overriding `send_head()` to
+allowlist public asset suffixes and 404 dotfiles/source/dev files. Never point
+`SimpleHTTPRequestHandler` at a repo. (b) Two heal checks (`intro_site` and the
+new company site) both claimed `:12000`; leaving both lets the older launcher
+win the port and regress the public site — `ops/heal.py` now has a single
+`astra_site` check. (c) `pgrep -f 'server\.py'` matches any process whose args
+merely mention the string (e.g. an agent prompt); anchor the pattern
+(`^python3 server\.py$`). (d) `nohup python3 server.py` inherits the parent
+shell env — if `ASTRA_SITE_PORT` is unset it binds the wrong port; set it inline
+on the child. **Rule adopted:** a web-reachable path must be allowlisted, never
+"everything minus a denylist", and a port has exactly one owning launcher.

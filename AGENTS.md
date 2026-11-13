@@ -24,6 +24,11 @@ runtime is ephemeral (idle-recycled); this repo is not. Commit often.
   in `/proc/1/environ`. `ops/astra.py` handles this.
 - The SDK is **not** installed locally and cannot be pip-installed (permission
   denied). Use the REST API, not `import openhands`.
+- Company site: `deliveries/astra-site/` (canonical public site). Served by
+  `server.py` on `ASTRA_SITE_PORT` (default 12000); `serve.sh` restarts it
+  idempotently (log `/tmp/astra_site_new.log`), `healthcheck.sh` checks it,
+  `verify_site.py` verifies it, and `ops/heal.py` self-heals the `astra_site`
+  check. Public URL: `https://work-1-lkpxywjdeyhpzogp.prod-runtime.all-hands.dev/`.
 
 ## Commands you will use
 ```bash

@@ -27,6 +27,13 @@ PORT = int(os.environ.get("ASTRA_SITE_PORT", "8080"))
 MAX_BODY = 16 * 1024
 RATE_WINDOW = 60.0
 RATE_MAX = 5
+# Only these are ever web-reachable; everything else (server.py, verify_site.py,
+# dotfiles, directory listings) is a hard 404 so internals never leak.
+PUBLIC_SUFFIXES = {
+    ".html", ".css", ".js", ".mjs", ".svg", ".png", ".jpg", ".jpeg", ".webp",
+    ".gif", ".ico", ".mp4", ".webm", ".woff2", ".woff", ".ttf", ".txt",
+    ".webmanifest",
+}
 _hits: dict[str, list[float]] = {}
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -72,6 +79,19 @@ class Handler(SimpleHTTPRequestHandler):
 
     def log_message(self, fmt, *args):  # keep logs quiet & secret-free
         pass
+
+    def send_head(self):
+        target = Path(self.translate_path(self.path))
+        if target.is_dir():
+            target = target / "index.html"
+        rel = target.relative_to(ROOT).parts if ROOT in target.parents else ("..",)
+        blocked = (any(p.startswith(".") for p in rel)
+                   or target.suffix.lower() not in PUBLIC_SUFFIXES
+                   or not target.is_file())
+        if blocked:
+            self.send_error(404, "Not found")
+            return None
+        return super().send_head()
 
     def _json(self, code: int, payload: dict) -> None:
         body = json.dumps(payload).encode()

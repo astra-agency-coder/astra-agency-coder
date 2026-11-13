@@ -35,6 +35,16 @@ h1,h2,h3{font-family:var(--display);font-weight:900;letter-spacing:-.02em;line-h
 em{font-style:italic;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 ::selection{background:var(--violet);color:#0a0a0f}
 
+/* ── accessibility ──────────────────────────────────── */
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+.skip-link{
+  position:fixed;top:10px;left:10px;z-index:80;transform:translateY(-160%);
+  background:var(--on);color:#0a0a0f;font-weight:600;font-size:.9rem;
+  padding:10px 18px;border-radius:999px;transition:transform .25s var(--ease);
+}
+.skip-link:focus{transform:none}
+main:focus{outline:none}
+
 /* ── atmosphere ─────────────────────────────────────── */
 #field{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.55;pointer-events:none}
 .grain{
@@ -175,7 +185,7 @@ em{font-style:italic;background:var(--grad);-webkit-background-clip:text;backgro
 .work__item{margin:0}
 .work__frame{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surface)}
 .work__frame video{width:100%;aspect-ratio:9/16;object-fit:cover;background:#000}
-.work__frame--pad img{width:100%;border-radius:0}
+.work__frame--pad img{width:100%;height:auto;border-radius:0}
 .work__item figcaption{display:flex;flex-direction:column;gap:4px;margin-top:16px}
 .work__item b{font-family:var(--display);font-size:1.15rem}
 .work__item span{font-family:var(--mono);font-size:.74rem;color:var(--muted);letter-spacing:.04em}
@@ -232,6 +242,9 @@ em{font-style:italic;background:var(--grad);-webkit-background-clip:text;backgro
   }
   .nav__links.is-open{transform:none}
   .nav__cta{font-size:1rem}
+  /* keep the off-screen menu out of the tab order / AT until it is opened */
+  .nav__links:not(.is-open){visibility:hidden}
+  .nav__links.is-open{visibility:visible}
 }
 
 @media (prefers-reduced-motion:reduce){

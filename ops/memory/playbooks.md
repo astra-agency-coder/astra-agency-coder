@@ -37,3 +37,23 @@ Idempotent. Requires a token with repo-create + contents-write. Tested
    `curl -sI http://127.0.0.1:12000/`.
 7. Independent QA pass; list untested dimensions (e.g. pixel rendering) in
    `VERIFY.md`. Check for upstream `brand/tokens.json` before hardcoding colours.
+
+## PB-009 — Ship a site with a real backend (contact form → SMTP)
+1. Use `server.py` (stdlib `ThreadingHTTPServer`) to serve the site **and** host
+   `POST /api/contact`. Never serve the package directory raw: override
+   `send_head()` to allowlist public asset suffixes and 404 dotfiles/source/dev
+   files (see L-0012).
+2. Validate input server-side (required fields, email regex), rate-limit per IP,
+   cap the body; return `400` on bad input, `429` when throttled, `503` when
+   mail is unconfigured, `502` on send failure, `200 {"ok": true}` on success.
+3. Send via `smtplib.SMTP_SSL("smtp.gmail.com", 465)` with
+   `ASTRA_GMAIL_ADDRESS` / `ASTRA_GMAIL_APP_PASSWORD` from the secret store.
+   Never write credentials to disk or logs.
+4. `serve.sh` is idempotent: stop the prior listener by an **anchored** pattern
+   (`^python3 server\.py$`), start detached with `ASTRA_SITE_PORT` set **inline
+   on the child**, wait for HTTP 200. Log to `/tmp/astra_site_new.log`.
+5. Wire a single `astra_site` check into `ops/heal.py` (bounded to 3 attempts) —
+   one port, one owning launcher.
+6. Verify with `verify_site.py`: HTML/a11y/performance statics + live
+   `/api/contact` (400 on bad, 200 on good) + the public URL returns 200.
+7. `python3 ops/astra.py scan-secrets` → `clean: true`; then `deptrepo save`.

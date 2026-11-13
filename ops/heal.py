@@ -27,9 +27,13 @@ import astra  # noqa: E402
 MAX_ATTEMPTS = 3
 HEAL_LOG = ROOT / "ops" / "logs" / "heal.jsonl"
 
-# Intro site deployment (D-W1). Expected up unless ASTRA_SITE_EXPECTED=0;
-# repaired by re-running the idempotent launcher, bounded by MAX_ATTEMPTS.
-SITE_DIR = ROOT / "deliveries" / "astra-launch" / "website"
+# Company site deployment (deliveries/astra-site) — the canonical public site,
+# bound to ASTRA_SITE_PORT (default 12000). This SUPERSEDES the earlier
+# astra-launch "intro_site" check, which shared the same port: leaving both in
+# place would let the older launcher win the port and regress the public site.
+# Expected up unless ASTRA_SITE_EXPECTED=0; repaired by re-running the
+# idempotent launcher, bounded by MAX_ATTEMPTS.
+SITE_DIR = ROOT / "deliveries" / "astra-site"
 SITE_SERVE = SITE_DIR / "serve.sh"
 SITE_PORT = os.environ.get("ASTRA_SITE_PORT", "12000")
 
@@ -104,7 +108,7 @@ def _repair_secrets() -> str:
 
 
 def _repair_site() -> str:
-    """Re-run the idempotent launcher to (re)start the intro site."""
+    """Re-run the idempotent launcher to (re)start the company site."""
     if not SITE_SERVE.exists():
         raise RuntimeError(f"launcher not found: {SITE_SERVE}")
     p = subprocess.run(["bash", str(SITE_SERVE)], capture_output=True, text=True,
@@ -193,8 +197,8 @@ CHECKS = [
     ("memory", _detect_memory, _repair_memory, "internal", "memory files missing"),
     ("secrets", _detect_secrets, _repair_secrets, "critical", "secret leak"),
     ("disk", _detect_disk, None, "external", "low disk space"),
-    ("intro_site", _detect_site, _repair_site, "internal",
-     "intro site down on :" + SITE_PORT + " — set ASTRA_SITE_EXPECTED=0 to opt out"),
+    ("astra_site", _detect_site, _repair_site, "internal",
+     "company site down on :" + SITE_PORT + " — set ASTRA_SITE_EXPECTED=0 to opt out"),
 ]
 
 

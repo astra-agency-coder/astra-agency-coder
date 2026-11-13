@@ -7,10 +7,14 @@
 <meta name="description" content="AI ASTRA AGENCY is an autonomous digital studio: web & apps, AI automation, short-form video and brand identity — built and verified by an AI-agent workforce.">
 <meta name="theme-color" content="#06060A">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/fraunces-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-2.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="styles.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}.reveal-mask{transform:none!important;opacity:1!important}</style></noscript>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
@@ -18,7 +22,7 @@
 <canvas id="field" aria-hidden="true"></canvas>
 
 <header class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="AI ASTRA AGENCY home">
+  <a class="brand" href="#main" aria-label="AI ASTRA AGENCY home">
     <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
       <path d="M32 3 L37.5 26.5 L61 32 L37.5 37.5 L32 61 L26.5 37.5 L3 32 L26.5 26.5 Z" fill="url(#g1)"/>
       <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
@@ -27,16 +31,16 @@
     </svg>
     <span class="brand__text">AI&nbsp;ASTRA<em>agency</em></span>
   </a>
-  <nav class="nav__links" aria-label="Primary">
+  <nav class="nav__links" id="navLinks" aria-label="Primary">
     <a href="#capabilities">Capabilities</a>
     <a href="#process">Process</a>
     <a href="#work">Work</a>
     <a href="#contact" class="nav__cta">Start a project</a>
   </nav>
-  <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-label="Menu"><span></span><span></span></button>
+  <button class="nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><span></span><span></span></button>
 </header>
 
-<main id="top">
+<main id="main" tabindex="-1">
 
   <!-- ── HERO ─────────────────────────────────────────── -->
   <section class="hero" aria-labelledby="heroTitle">
@@ -145,7 +149,7 @@
       </figure>
       <figure class="work__item reveal" data-delay="1">
         <div class="work__frame work__frame--pad">
-          <img src="assets/astra-brand-sheet.png" alt="AI ASTRA AGENCY brand sheet" loading="lazy">
+          <img src="assets/astra-brand-sheet.png" alt="AI ASTRA AGENCY brand sheet" width="2400" height="4184" loading="lazy" decoding="async">
         </div>
         <figcaption><b>Brand identity system</b><span>Logo lockups · colour &amp; type tokens · 89 elements contrast-checked</span></figcaption>
       </figure>

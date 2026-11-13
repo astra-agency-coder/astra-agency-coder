@@ -14,6 +14,11 @@
   }, { once: true });
 
   /* ── scroll reveal ─────────────────────────────────── */
+  if (!("IntersectionObserver" in window)) {
+    document.body.classList.add("is-ready");
+    $$(".reveal").forEach(el => el.classList.add("is-in"));
+    return;
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
@@ -25,18 +30,24 @@
   $$(".reveal").forEach(el => io.observe(el));
 
   /* ── nav: stuck state + mobile toggle ──────────────── */
-  const nav = $("#nav"), toggle = $("#navToggle"), links = $(".nav__links");
+  const nav = $("#nav"), toggle = $("#navToggle"), links = $("#navLinks");
   const onScroll = () => nav.classList.toggle("is-stuck", scrollY > 24);
   onScroll();
   addEventListener("scroll", onScroll, { passive: true });
-  toggle?.addEventListener("click", () => {
-    const open = links.classList.toggle("is-open");
+
+  const setMenu = (open) => {
+    links.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+  toggle?.addEventListener("click", () => setMenu(!links.classList.contains("is-open")));
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && links.classList.contains("is-open")) {
+      setMenu(false);
+      toggle.focus();
+    }
   });
-  $$(".nav__links a").forEach(a => a.addEventListener("click", () => {
-    links.classList.remove("is-open");
-    toggle?.setAttribute("aria-expanded", "false");
-  }));
+  $$(".nav__links a").forEach(a => a.addEventListener("click", () => setMenu(false)));
 
   /* ── progress bar ──────────────────────────────────── */
   const bar = $("#progressBar");
