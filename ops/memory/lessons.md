@@ -81,3 +81,48 @@ verification tasks successfully (7/7 demand claims, 7/7 pricing pages).
 "<brief>"` — real delegation still happens, just through the other supported path. Report
 which path was used. Proposed fixes for Engineering: (a) call `register_agent()` on hire,
 and (b) stop attaching `web_search` to agents whose definitions do not declare it.
+
+## L-0007 — Spawned runs can report status=error yet still have done the work
+**Date:** 2026-11-13 · **Context:** intensive training runs via `ops/train.py`.
+Several runs returned `execution_status=error` with an empty final response, but
+the department had **already pushed real commits** to its scoped repo (verified via
+the GitHub tree). The empty result is the runtime dropping the final message
+(session/context limit), not the work failing.
+**Action:** always verify a run by its **artifacts** (repo commits / files), not by
+the status string alone. Retry once with a higher `--max-iter` when no commits
+appear; the second attempt succeeded for design and research.
+**Takeaway:** judge training by evidence, never by the status label.
+
+## L-0008 — Custom-hired sub-agents are not resolvable by the `task` tool
+**Date:** 2026-11-13 · **Context:** managers tried to delegate to specialists they
+created with `astra.py hire`; the `task` tool returned `Unknown agent`.
+Only the preset manager types are registered with the runtime. So a manager can
+currently delegate only to the other department managers, not to its own fresh
+specialists. Managers worked around it by doing the work themselves.
+**Open item for CEO:** register file-based specialist agents with the runtime (or
+expose a working spawn path) so departments can truly delegate. Tracked as a RISK.
+
+## L-0009 — `astra.py spawn` IS a working delegation path for fresh specialists
+**Date:** 2026-11-13 · **Context:** Quality round-2 training run.
+L-0008 noted the `task` tool cannot resolve `astra.py hire`-created specialists
+(only preset manager types are registered). **Verified workaround:** `python3
+ops/astra.py spawn <agent> "<brief>"` DOES run a hired specialist in its own child
+conversation and returns its result. Round 2 used it to run `qa-edge-breaker`
+(status `finished`, elapsed 157.6 s) which produced a real 22-row findings file.
+**Action:** managers should delegate to their own specialists via `astra.py spawn`
+(background it and poll the log for long tasks). The `task` tool remains usable
+only for the preset agent types.
+
+## L-0010 — Re-verification must attack what round 1 did NOT
+**Date:** 2026-11-13 · **Context:** Quality round-2 verification of `citriage` v0.1.0.
+Round 1 returned CONDITIONAL PASS and found only 3 profile-error crashes. Round 2,
+attacking different surfaces, found a **signature-normalization bug** (UUIDs not
+collapsed — a broad hex rule pre-empted the specific UUID rule), a **ReDoS** via
+`--profile`, an **inline-error-drop** that silently merged different root causes,
+and a `chmod 000` **PermissionError** crash family. None were covered by the
+subject's 13 passing tests.
+**Takeaway:** a verifier that only replays the producer's own examples passes a
+defective tool. Always add (a) correctness probes with unusual-but-valid input,
+(b) worst-case performance, (c) the OS/permission error surface. See the Quality
+department playbook `knowledge/verification/PLAYBOOK.md` and the new
+`signature_probe.py` harness.
