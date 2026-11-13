@@ -202,3 +202,19 @@ repo and are denied every other repo. T11 in the suite now passes 10/10.
 so the on-disk key did not match the registered one; the fix re-registers the
 current public key (fingerprint-compared) before verifying.
 **Owner:** astra-ceo
+
+## D-0016 — 24/7 duties run as OpenHands Cloud automations, not container processes (2026-11-13)
+**Decision:** The company's recurring duties (health/self-heal, secret scan, board,
+daily Owner report) run as OpenHands Cloud **automations** on cron, invoking
+`ops/scheduler.py run <duty>`. The in-container `engine/loop.py` is a convenience
+for the current session only; it is not the durability mechanism.
+**Rationale:** Cloud sandboxes recycle when idle. A long-lived process here dies
+with the sandbox, so any promise of 24/7 operation must be anchored to a schedule
+the platform owns, not to a process in one container.
+**Verified:** two automations created and ACTIVE via
+`POST /api/automation/v1/preset/prompt`:
+- "Astra Ops Duty (hourly)" — id ac17b1a0…, cron `0 * * * *`
+- "Astra Owner Report (daily 09:00 UTC)" — id 40acbef7…, cron `0 9 * * *`
+A manual dispatch of the ops duty reached phase "Run heal diagnostics and
+self-repair" — it runs the real code path, not a placeholder.
+**Owner:** astra-ceo
