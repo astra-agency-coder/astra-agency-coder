@@ -182,6 +182,11 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 def main() -> None:
+    # A distinct argv marker so this process is never confused with the company
+    # site's own `python3 server.py` (identical argv otherwise) when a launcher
+    # or operator needs to stop exactly one of them.
+    if "--command-deck" not in sys.argv:
+        print("[astra-trading] note: launched without --command-deck", file=sys.stderr)
     srv = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     print(f"[astra-trading] command deck on http://0.0.0.0:{PORT}  (root: {ROOT})")
     try:

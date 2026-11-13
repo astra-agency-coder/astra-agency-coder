@@ -41,6 +41,10 @@ DEPARTMENTS = {
                  "Market, technical and competitive intelligence for the company."),
     "Creative": ("astra-ccr", "dept-creative",
                  "Video production, graphic design, brand assets, thumbnails."),
+    "Security": ("astra-ciso", "dept-security",
+                 "Offensive and defensive security testing of our own products and infrastructure."),
+    "Analysis": ("astra-cao", "dept-analysis",
+                 "Gold market analysis engine, its accuracy, and AI-proposed setups."),
 }
 
 
