@@ -215,3 +215,33 @@ feed, which the raw numbers would render as "100% win rate".
 edge cannot be established from it. Publishing the ratio would be dishonest.
 **What we change:** `sample_adequate` is false below 30 closed trades and the
 result carries a note explaining why; a real sample needs a longer-history feed.
+
+### 2026-11-13 — A visual addition can silently desync a chart's axes
+**What happened:** A volume strip was added beneath the candles and the chart
+kept looking correct, but the price gridlines were still spaced over the full
+box while the candles were remapped over a shorter `innerH`. Three of the five
+price labels no longer pointed at the price they claimed. The Creative manager
+found it by measuring geometry, not by looking at a screenshot.
+**What we learned:** Any change to a chart's inner drawing area must be applied
+to every scale that uses it. A plausible-looking render is not evidence.
+**What we change:** Gridlines and candles share one `innerH`. When a plot area
+changes, re-derive every mapping from it and re-measure.
+
+### 2026-11-13 — A CSS comment claiming a property is not a test
+**What happened:** `globals.css` said "reveal on scroll (visible without JS)",
+but every `.reveal` started at `opacity: 0`, so with JavaScript disabled the
+whole page was blank (23 of 23 blocks hidden).
+**What we learned:** Comments describe intent; only a run with JS off shows
+whether content is actually reachable.
+**What we change:** Content is visible by default; `RevealObserver` adds `.js`
+to `<html>` and only then does `.reveal` start hidden. Verified with JS off.
+
+### 2026-11-13 — Fallback fonts quietly replace the brand face
+**What happened:** IBM Plex Sans Arabic was loaded and applied to `body`, but
+`.display` and `.eyebrow` named only the Latin faces. On `/ar` the headline
+rendered in DejaVu Sans — a font from nowhere in the design system — while
+`/en` and `/tr` rendered Fraunces. It looked like a different product.
+**What we learned:** A loaded font is not an applied font. Every display class
+needs an explicit stack for each script.
+**What we change:** `[dir="rtl"] .display` and `[dir="rtl"] .eyebrow` name
+`var(--font-ar)` first, and drop the Latin negative tracking.

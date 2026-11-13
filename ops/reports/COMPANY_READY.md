@@ -62,10 +62,18 @@ Verified by four completed child conversations in `ops/memory/tasks.jsonl`:
 Synchronous nested delegation via `task` works. Parallel work via child
 conversations works. Continuity across follow-ups works.
 
+A second, larger delegation succeeded: `astra-ccr` (Creative) spent 1205 s
+reviewing the company site against the running build and delivered a 322-line
+`DESIGN_REVIEW.md` with 5 strengths, 10 weaknesses each pinned to file+line, and
+12 ranked fixes. It measured with Playwright + CDP (`CSS.getPlatformFontsForNode`,
+computed styles, WCAG contrast) and froze the revision with MD5s. Eight of its
+fixes were applied and re-measured; see section 9.
+
 **FAIL:** a fresh `astra-cqo` adversarial-QA run ended `status: "error"` after
 710 s with an empty result. It produced no report. This is recorded as a
 failure, not hidden; its partial work (browser console, RTL and focus-order
-probes) is in the conversation event log.
+probes) is in the conversation event log. The Creative review covered part of
+the same ground and did produce results, but the QA failure stands.
 
 ## 6. Memory & continuity — PASS
 
@@ -106,6 +114,7 @@ creates the repos. `company/departments/repos.json` now records `0/10`,
 | API contract | **9 / 22** | `api/test_api.py` — needs live Supabase creds |
 | Security red-team | 27 checks, 25 pass, 2 findings | `security/rls_results.json` (recorded run) |
 | Site audit | 9 / 9 | 3 locales x 3 viewports |
+| Design review | 322 lines, 10 defects, 12 fixes | `deliveries/astra-site-v2/DESIGN_REVIEW.md` |
 
 The API figure is 9/22, not the 23/23 in the previous draft. Supabase
 credentials were cleared when the runtime recycled, so the key store is
@@ -123,6 +132,11 @@ unavailable and 13 checks fail closed with `503`. The public site now shows
 - Analysis engine: 27/27.
 - Backtester: 14/14, with an honest sample-size guard.
 - Site audit: 9/9 clean; 3 locales; live engine data.
+- Department-agent review: `astra-ccr` produced a measured design critique that
+  found a real chart-axis correctness bug and 9 other defects.
+- Design fixes verified by re-measurement: Arabic headline now renders IBM Plex
+  Sans Arabic (was DejaVu Sans), page renders with JavaScript off (was blank),
+  chart axes share one scale, labels pass WCAG AA, RTL alignment logical.
 - Wallet: receive-only policy recorded.
 
 ## 11. FAIL
