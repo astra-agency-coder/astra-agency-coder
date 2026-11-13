@@ -330,6 +330,12 @@ SCAN_ALLOWLIST = {
 SKIP_DIRS = {".git", "__pycache__", "node_modules", ".venv", "venv"}
 SKIP_SUFFIX = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".zip", ".gz", ".whl",
                ".pyc", ".so", ".bin"}
+# Scanners must contain the very patterns they look for; flagging them is noise.
+SKIP_FILES = {
+    "ops/astra.py",
+    "ops/tests/run_tests.py",
+    "deliveries/astra-trading/security/secret_scan.sh",
+}
 
 
 def scan_secrets() -> tuple[bool, list[str]]:
@@ -341,6 +347,8 @@ def scan_secrets() -> tuple[bool, list[str]]:
         if any(part in SKIP_DIRS for part in path.parts):
             continue
         if path.suffix.lower() in SKIP_SUFFIX:
+            continue
+        if str(path.relative_to(ROOT)) in SKIP_FILES:
             continue
         try:
             text = path.read_text(errors="ignore")

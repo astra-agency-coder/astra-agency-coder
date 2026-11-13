@@ -173,3 +173,19 @@ merely mention the string (e.g. an agent prompt); anchor the pattern
 shell env — if `ASTRA_SITE_PORT` is unset it binds the wrong port; set it inline
 on the child. **Rule adopted:** a web-reachable path must be allowlisted, never
 "everything minus a denylist", and a port has exactly one owning launcher.
+
+## 2026-11-13 — RLS cannot restrict columns; a trigger can
+A `profiles_self_update` policy let users set their own `role = 'admin'`.
+Postgres RLS decides *rows*, not *columns*, so the fix is a `BEFORE UPDATE`
+trigger that rejects changes to `role`/`disabled`/`id` for non-staff, plus a
+`WITH CHECK` that pins `role` to its current value. Always test privilege
+escalation explicitly: it is the finding that turns a leak into a breach.
+
+## 2026-11-13 — Fuzz the engine, not just the happy path
+16 crashes came from empty lists, NaN, ±Inf and non-dict payloads. One bad bar
+from the feed took down the whole analysis path. Normalise at the boundary
+(`_clean`, `_parse`) and make every public function tolerate empty input.
+
+## 2026-11-13 — Keep the site on 12000, the product on 12001
+`ops/heal.py` and `astra-site/healthcheck.sh` both assume `ASTRA_SITE_PORT=12000`.
+Moving the company site silently breaks self-healing. Product services get 12001.

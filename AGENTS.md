@@ -29,6 +29,18 @@ runtime is ephemeral (idle-recycled); this repo is not. Commit often.
   idempotently (log `/tmp/astra_site_new.log`), `healthcheck.sh` checks it,
   `verify_site.py` verifies it, and `ops/heal.py` self-heals the `astra_site`
   check. Public URL: `https://work-1-lkpxywjdeyhpzogp.prod-runtime.all-hands.dev/`.
+- Astra Trading deck: `deliveries/astra-trading/` (gold analysis SaaS, ar/en/tr).
+  The API (`api/app.py`, FastAPI) also serves the deck's static files, so the
+  whole product is **one origin on one port** — no CORS, no second deployment.
+  Run it on **12001** (`uvicorn app:app --port 12001`); 12000 stays the company
+  site because `ops/heal.py` and `deliveries/astra-site/healthcheck.sh` both
+  assume `ASTRA_SITE_PORT=12000`. Public URL:
+  `https://work-2-lkpxywjdeyhpzogp.prod-runtime.all-hands.dev/`.
+- Department repos: one **private** GitHub repo per department
+  (`dept-engineering`, `dept-security`, …), each reachable only by its own
+  manager's deploy key. Map: `company/departments/{repos,access}.json`.
+  Tools: `ops/provision_repos.py`, `ops/provision_access.py`, `ops/deptrepo.py`.
+  Isolation is verified: cross-department `git ls-remote` is rejected.
 
 ## Commands you will use
 ```bash
