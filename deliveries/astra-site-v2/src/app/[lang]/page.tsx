@@ -68,7 +68,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <p className="eyebrow reveal">{t.hero.badge}</p>
             <h1 className="display reveal mt-6 text-[clamp(2.6rem,8vw,6.2rem)]" style={{ ["--d" as string]: "60ms" }}>
               <span className="block text-snow">{t.hero.titleA}</span>
-              <span className="gold-text block italic">{t.hero.titleB}</span>
+              <span className="gold-text block">{t.hero.titleB}</span>
             </h1>
             <p
               className="reveal mt-8 max-w-2xl text-[1.02rem] leading-relaxed text-fog sm:text-[1.12rem]"
@@ -195,7 +195,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <div className="hidden grid-cols-[1.1fr_1fr_0.6fr] gap-4 border-b border-line px-6 py-3 md:grid">
                 <span className="mono text-[0.62rem] tracking-[0.18em] text-fog-dim uppercase">{t.team.managerLabel}</span>
                 <span className="mono text-[0.62rem] tracking-[0.18em] text-fog-dim uppercase">{t.team.repoLabel}</span>
-                <span className="mono text-right text-[0.62rem] tracking-[0.18em] text-fog-dim uppercase">{t.team.peopleLabel}</span>
+                <span className="mono text-end text-[0.62rem] tracking-[0.18em] text-fog-dim uppercase">{t.team.peopleLabel}</span>
               </div>
               <ul>
                 {departments.map((d) => (
@@ -208,7 +208,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                       <span className="mono text-[0.82rem] text-snow">{d.manager}</span>
                     </span>
                     <span className="mono text-[0.78rem] text-fog-dim">{d.repo}</span>
-                    <span className="mono text-[0.78rem] text-fog md:text-right">{d.headcount}</span>
+                    <span className="mono text-[0.78rem] text-fog md:text-end">{d.headcount}</span>
                   </li>
                 ))}
               </ul>

@@ -5,6 +5,8 @@ import { useEffect } from "react";
 /** Adds `.in` to every `.reveal` once it scrolls into view. */
 export default function RevealObserver() {
   useEffect(() => {
+    // Only hide content once we know scripts run, so the page renders without JS.
+    document.documentElement.classList.add("js");
     const nodes = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
     if (!("IntersectionObserver" in window)) {
       nodes.forEach((n) => n.classList.add("in"));

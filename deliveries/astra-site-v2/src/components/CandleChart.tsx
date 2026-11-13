@@ -73,18 +73,18 @@ export default function CandleChart({
 
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="h-[300px] w-full sm:h-[380px]"
+        className="h-auto w-full"
         role="img"
         aria-label={`XAUUSD ${tf} candles, ${candles.length} bars`}
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
       >
         {Array.from({ length: gridLines + 1 }).map((_, i) => {
-          const yy = PAD.t + (i / gridLines) * (H - PAD.t - PAD.b);
+          const yy = PAD.t + (i / gridLines) * innerH;
           const price = hi - (i / gridLines) * (hi - lo);
           return (
             <g key={i}>
               <line x1={PAD.l} x2={W - PAD.r} y1={yy} y2={yy} stroke="#23232f" strokeWidth="1" />
-              <text x={W - PAD.r} y={yy - 4} textAnchor="end" fill="#5a5f72" fontSize="10" fontFamily="monospace">
+              <text x={W - PAD.r} y={yy - 4} textAnchor="end" fill="#8a90a6" fontSize="11" fontFamily="var(--font-mono)">
                 {price.toFixed(1)}
               </text>
             </g>
