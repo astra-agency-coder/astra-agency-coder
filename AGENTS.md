@@ -44,6 +44,7 @@ runtime is ephemeral (idle-recycled); this repo is not. Commit often.
 
 ## Commands you will use
 ```bash
+./up.sh                                # bring up site (12000) + trading (12001)
 python3 ops/astra.py status            # company + roster + tasks
 python3 ops/astra.py roster            # agent list
 python3 ops/astra.py hire <name> --dept <D> --reports-to <mgr> --tools a,b
