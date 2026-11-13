@@ -127,3 +127,17 @@ Gmail SMTP. No secrets are written to disk or served.
 **Verification:** public URL 200; the contact endpoint returns `{"ok": true}` and
 the message really arrives in the mailbox. Engineering delegated to add a verify
 script, `serve.sh`/`healthcheck.sh`, a bounded `ops/heal.py` check and an a11y pass.
+
+---
+
+## D-0018 — Company repo default branch corrected to `main`
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+The company GitHub repo (`astra-agency-coder/ai-astra-agency`) had `master` as its
+default branch, and that `master` is a **divergent history** left by an earlier
+session (`master` HEAD `1fe2b7c`; `foundation-v2` branch). All of the current
+work lives on `main` (`6a02129`). A fresh visitor to the repo therefore saw the
+wrong, stale tree. Fixed by setting the default branch to `main`.
+**Nothing was deleted** — `master`, `foundation-v2` and `foundation-2026-11-13`
+are left untouched for audit. PR #1 (foundation-v2 → master) is left open but
+superseded; it should be closed or re-targeted deliberately, not silently.
+**Verification:** `GET /repos/.../ai-astra-agency` → `default_branch = main`.
