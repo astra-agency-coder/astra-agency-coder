@@ -34,11 +34,16 @@
       27.11
     ]
   ],
-  "loudnorm_measured": {
+  "mix_pre_encode_loudnorm_measured": {
     "input_i": "-14.71",
     "input_tp": "-0.45",
     "input_lra": "4.40",
     "input_thresh": "-25.88",
     "target_offset": "1.03"
+  },
+  "final_mp4_loudnorm_measured": {
+    "input_i": "-14.94",
+    "input_tp": "-1.32",
+    "input_lra": "3.80"
   }
 }

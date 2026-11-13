@@ -1,62 +1,10 @@
-nohup: ignoring input
-[aist#0:0/pcm_s16le @ 0x63602b90a440] Guessed Channel Layout: stereo
-Input #0, wav, from '/workspace/project/deliveries/astra-launch/video/audio/mix_raw.wav':
-  Duration: 00:00:28.40, bitrate: 1411 kb/s
-  Stream #0:0: Audio: pcm_s16le ([1][0][0][0] / 0x0001), 44100 Hz, stereo, s16, 1411 kb/s
-Stream mapping:
-  Stream #0:0 -> #0:0 (pcm_s16le (native) -> pcm_s16le (native))
-Press [q] to stop, [?] for help
-Output #0, wav, to '/workspace/project/deliveries/astra-launch/video/audio/audio_final.wav':
-  Metadata:
-    ISFT            : Lavf61.7.103
-  Stream #0:0: Audio: pcm_s16le ([1][0][0][0] / 0x0001), 44100 Hz, stereo, s16, 1411 kb/s
-      Metadata:
-        encoder         : Lavc61.19.101 pcm_s16le
-size=    2816KiB time=00:00:16.49 bitrate=1398.1kbits/s speed=  33x    [out#0/wav @ 0x63602b90a6c0] video:0KiB audio:4892KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.001557%
-size=    4892KiB time=00:00:28.40 bitrate=1411.2kbits/s speed=  34x    
-audio: {
-  "vo_lines": 8,
-  "vo_windows": [
-    [
-      0.6,
-      2.98
-    ],
-    [
-      3.6,
-      7.86
-    ],
-    [
-      8.7,
-      10.26
-    ],
-    [
-      11.4,
-      12.82
-    ],
-    [
-      14.0,
-      15.54
-    ],
-    [
-      16.7,
-      18.18
-    ],
-    [
-      20.0,
-      23.25
-    ],
-    [
-      24.4,
-      27.11
-    ]
-  ],
-  "loudnorm_measured": {
-    "input_i": "-14.71",
-    "input_tp": "-0.45",
-    "input_lra": "4.40",
-    "input_thresh": "-25.88",
-    "target_offset": "0.42"
-  }
-}
-wrote captions.srt captions.vtt
-wrote astra-reel-thumbnail.png
+# AI ASTRA AGENCY — intro reel render
+# 2026-11-13T15:04:02Z · 1080x1920 @ 30fps · 852 frames · 28.4s
+# ffmpeg encode log (loglevel=error):
+
+# ---- FINAL measured values (from the shipped MP4) ----
+# integrated loudness : -14.94 LUFS (target -14)
+# true peak           : -1.32 dBTP (target <= -1.0)
+# loudness range      : 3.80 LU
+# strict decode       : exit 0, stderr 0 bytes
+# note: no pre-encode value is retained here; the figures above are the shipped file's own measurements.

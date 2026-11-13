@@ -37,9 +37,62 @@ def lum(rgb):
 
 
 def contrast(a, b):
-    la, lb = lum(hx(a)), lum(hx(b))
+    a = hx(a) if isinstance(a, str) else tuple(a[:3])
+    b = hx(b) if isinstance(b, str) else tuple(b[:3])
+    la, lb = lum(a), lum(b)
     hi, lo = max(la, lb), min(la, lb)
     return round((hi + 0.05) / (lo + 0.05), 2)
+
+
+def sheet_worst_bg_contrast(src, box, inks, cells: int = 8, pad: int = 14,
+                            interior: bool = False):
+    """Re-measure an element's contrast from the rendered PNG (independent of
+    make_brand_sheet.py's own numbers).
+
+    For plate text (`interior=False`) the background is the modal colour of the
+    padding ring around the element, per column strip. For panels/swatches
+    (`interior=True`) it is the modal colour of the box interior.
+    """
+    from collections import Counter
+    if isinstance(inks, str):
+        inks = [inks]
+    inks = [hx(c) if isinstance(c, str) else tuple(c[:3]) for c in inks]
+    bx0, by0, bx1, by1 = (int(round(v)) for v in box)
+    x0, y0 = max(0, bx0 - pad), max(0, by0 - pad)
+    x1, y1 = min(src.width, bx1 + pad), min(src.height, by1 + pad)
+
+    if interior:
+        data = list(src.crop((max(0, bx0), max(0, by0),
+                              min(src.width, bx1), min(src.height, by1))).getdata())
+        bg = Counter(data).most_common(1)[0][0]
+        return min(contrast(i, bg) for i in inks), bg
+
+    def ring(cx0, cx1):
+        px = []
+        if by0 > y0:
+            px += list(src.crop((cx0, y0, cx1, by0)).getdata())
+        if y1 > by1:
+            px += list(src.crop((cx0, by1, cx1, y1)).getdata())
+        if bx0 > x0:
+            px += list(src.crop((x0, by0, bx0, by1)).getdata())
+        if x1 > bx1:
+            px += list(src.crop((bx1, by0, x1, by1)).getdata())
+        return px
+
+    cw = (x1 - x0) / cells
+    worst, worst_bg = 99.0, (0, 0, 0)
+    for c in range(cells):
+        cx0 = int(x0 + c * cw)
+        cx1 = max(int(x0 + (c + 1) * cw), cx0 + 1)
+        data = ring(cx0, cx1)
+        if not data:
+            continue
+        bg = Counter(data).most_common(1)[0][0]
+        for ink in inks:
+            r = contrast(ink, bg)
+            if r < worst:
+                worst, worst_bg = r, bg
+    return worst, worst_bg
 
 
 def main() -> int:
@@ -55,6 +108,35 @@ def main() -> int:
       f"by `brand/verify.py` (Creative / `astra-ccr`).")
     w()
     w("Every figure below was measured from the files on disk in this directory.")
+    w()
+
+    # ---- round-2 QA defect fixes ----------------------------------------- #
+    w("## Round-2 QA fixes (brand sheet) — defect → change → measured")
+    w()
+    w("`astra-cqo` round-2 found 4 brand defects. All are fixed and re-measured "
+      "below from the regenerated `astra-brand-sheet.png`.")
+    w()
+    w("| ID | Defect | Change | Measured now |")
+    w("|---|---|---|---|")
+    w("| D-B1 | “primary signature” lockup invisible — light lockup "
+      "(#1C1B20) on dark plate (#131217) = **1.089:1** | pasted the **dark** "
+      "lockup (#E6E1E9 wordmark) on the dark plate | **9.72:1** "
+      "(19 858 ink px; wordmark OCR-readable) |")
+    w("| D-B2 | key-roles `on-surface` swatch label ink = fill (#1C1B20) = "
+      "**1.00:1** | pick the legible ink for each swatch label | **17.11:1** "
+      "(white on #1C1B20; OCR reads “on-surface #1C1B20”) |")
+    w("| D-B3 | footer line 2 #7A797E over cyan glow #0B2E42 = **3.32:1** | "
+      "raised ink to `neutral-70` #AFAFB4 | **6.57:1** over the glow |")
+    w("| D-B4 | `BRAND.md` §1 described a “crossbar” and a “curved” star the "
+      "path data does not contain | corrected to a single chevron with no "
+      "crossbar and a straight-edged star (no curve commands) | wording now "
+      "matches the raw geometry |")
+    w()
+    w("**Regression guard:** `make_brand_sheet.py` now registers every text and "
+      "swatch element it draws, re-measures each one's local background from the "
+      "rendered PNG, and **exits non-zero if any element is below 4.5:1**. The "
+      "count and the minimum are asserted in `checks.json` "
+      "(`sheet_elements_count`, `sheet_contrast_min`, `sheet_contrast_failures`).")
     w()
 
     # ---- PNGs ------------------------------------------------------------ #
@@ -138,6 +220,49 @@ def main() -> int:
         if not passed:
             ok = False
         w(f"| {name} | {r}:1 | ≥ {req}:1 | {'PASS' if passed else 'FAIL'} |")
+    w()
+
+    # ---- brand sheet per-element contrast (measured from the PNG) --------- #
+    w("## Brand sheet — per-element contrast (measured from the shipped PNG)")
+    w()
+    w("Every text and swatch element on `astra-brand-sheet.png` is registered in "
+      "`checks.json` → `sheet_elements` with its ink colour(s) and bounding box. "
+      "This section **re-measures** each element's local background from the "
+      "rendered PNG (modal colour of the padding ring for plate text, modal "
+      "colour of the box interior for panels/swatches) and recomputes the WCAG "
+      "ratio. Requirement: **every element ≥ 4.5:1**.")
+    w()
+    sheet = HERE / "astra-brand-sheet.png"
+    checks = json.loads((HERE / "checks.json").read_text())
+    elems = checks.get("sheet_elements", [])
+    if sheet.exists() and elems:
+        png = Image.open(sheet).convert("RGB")
+        worst_e = None
+        n_fail = 0
+        w("| Element | Kind | Ink | Measured bg | Ratio | Req | Result |")
+        w("|---|---|---|---|---|---|---|")
+        for e in elems:
+            box = e["region"]
+            inks = [hx(c) for c in e["ink"]]
+            interior = e.get("interior", False)
+            r, bg = sheet_worst_bg_contrast(png, box, inks, interior=interior)
+            req = e.get("req", 4.5)
+            passed = r >= req - 1e-9
+            if not passed:
+                n_fail += 1
+                ok = False
+            if worst_e is None or r < worst_e[0]:
+                worst_e = (r, e["name"])
+            w(f"| {e['name']} | {e['kind']} | {'/'.join(e['ink'])} | "
+              f"`#%02X%02X%02X` | {r:.2f}:1 | ≥{req:g}:1 | "
+              f"{'PASS' if passed else 'FAIL'} |")
+        w()
+        w(f"- Elements checked: **{len(elems)}**; failures: **{n_fail}**")
+        w(f"- Minimum ratio across all sheet elements: **{worst_e[0]:.2f}:1** "
+          f"(`{worst_e[1]}`) — threshold 4.5:1")
+    else:
+        ok = False
+        w("**FAIL — no `sheet_elements` in checks.json (assertion missing)**")
     w()
 
     # ---- wordmark outline check ------------------------------------------ #

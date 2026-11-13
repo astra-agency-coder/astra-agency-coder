@@ -1,6 +1,6 @@
 # AI ASTRA AGENCY — Brand Guide
 
-**Version** 2.0.0 · **Owner** `astra-ccr` (Creative) · **Date** 2026-11-13
+**Version** 2.0.1 · **Owner** `astra-ccr` (Creative) · **Date** 2026-11-13
 **Companion files** `tokens.json` (machine tokens) · `astra-brand-sheet.png`
 (rendered one-page sheet) · `checks.json` (objective checks) · `VERIFY.md`
 (verification evidence).
@@ -15,8 +15,11 @@
 The mark is a single geometric **chevron that reads as the letter “A”**, with a
 four-point **star** (a cosmic accent) set in the A's counter.
 
-- Construction: two nested chevron strokes with a crossbar; the star is the only
-  curved element, deliberately contrasting the straight letterform.
+- Construction: a **single chevron polygon** (one path, six vertices) whose two
+  diagonals meet in a solid apex wedge — there is **no crossbar**. The star is a
+  **straight-edged** four-point star (drawn with `M`/`L`/`Z` moves only); the
+  whole mark contains **no curve commands**, so the accent reads as a crisp
+  geometric spark rather than a soft rounded one.
 - Maximum **two colours** in the primary mark: `primary` (the A) and `secondary`
   (the star). Mono variants use a single colour.
 

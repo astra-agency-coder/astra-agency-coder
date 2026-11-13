@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +26,12 @@ import astra  # noqa: E402
 
 MAX_ATTEMPTS = 3
 HEAL_LOG = ROOT / "ops" / "logs" / "heal.jsonl"
+
+# Intro site deployment (D-W1). Expected up unless ASTRA_SITE_EXPECTED=0;
+# repaired by re-running the idempotent launcher, bounded by MAX_ATTEMPTS.
+SITE_DIR = ROOT / "deliveries" / "astra-launch" / "website"
+SITE_SERVE = SITE_DIR / "serve.sh"
+SITE_PORT = os.environ.get("ASTRA_SITE_PORT", "12000")
 
 
 def now() -> str:
@@ -95,6 +103,19 @@ def _repair_secrets() -> str:
     raise RuntimeError(f"secret patterns present, manual action required: {offenders}")
 
 
+def _repair_site() -> str:
+    """Re-run the idempotent launcher to (re)start the intro site."""
+    if not SITE_SERVE.exists():
+        raise RuntimeError(f"launcher not found: {SITE_SERVE}")
+    p = subprocess.run(["bash", str(SITE_SERVE)], capture_output=True, text=True,
+                       env={**os.environ, "ASTRA_SITE_PORT": SITE_PORT}, timeout=60)
+    tail = (p.stdout + p.stderr).strip().splitlines()
+    detail = tail[-1] if tail else "no output"
+    if p.returncode != 0:
+        raise RuntimeError(f"serve.sh exited {p.returncode}: {detail}")
+    return f"serve.sh ok: {detail}"
+
+
 # ── check registry ───────────────────────────────────────────────────
 # Each entry: (name, detect()->bool_ok, repair()->str)
 
@@ -148,6 +169,22 @@ def _detect_disk() -> bool:
     return free > 200 * 1024 * 1024
 
 
+def _site_expected() -> bool:
+    return os.environ.get("ASTRA_SITE_EXPECTED", "1") not in ("0", "false", "no")
+
+
+def _detect_site() -> bool:
+    if not _site_expected():
+        return True  # opt-out: site intentionally down, nothing to repair
+    import urllib.request
+    url = f"http://127.0.0.1:{SITE_PORT}/"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as r:
+            return r.status == 200
+    except Exception:
+        return False
+
+
 CHECKS = [
     ("agent_server", _detect_server, None, "external", "agent server unreachable — escalate"),
     ("api_auth", _detect_auth, None, "external", "API auth failing — escalate"),
@@ -156,6 +193,8 @@ CHECKS = [
     ("memory", _detect_memory, _repair_memory, "internal", "memory files missing"),
     ("secrets", _detect_secrets, _repair_secrets, "critical", "secret leak"),
     ("disk", _detect_disk, None, "external", "low disk space"),
+    ("intro_site", _detect_site, _repair_site, "internal",
+     "intro site down on :" + SITE_PORT + " — set ASTRA_SITE_EXPECTED=0 to opt out"),
 ]
 
 

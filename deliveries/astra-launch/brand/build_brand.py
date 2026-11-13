@@ -38,7 +38,7 @@ _font_cache: dict[str, TTFont] = {}
 TOKENS = {
     "meta": {
         "name": "AI ASTRA AGENCY — Brand & Design Tokens",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "owner": "astra-ccr (Creative)",
         "date": "2026-11-13",
         "structure_studied_from": [

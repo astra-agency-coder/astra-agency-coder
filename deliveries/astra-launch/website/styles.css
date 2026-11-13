@@ -49,6 +49,9 @@ body {
   line-height: 1.6;
   color: var(--text);
   background-color: var(--bg);
+  /* Long unbreakable tokens (URLs, ids) must never overflow the viewport. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
   background-image:
     radial-gradient(1100px 620px at 80% -10%, rgba(201,176,240,.18), transparent 60%),
     radial-gradient(900px 560px at 4% 2%,   rgba(143,219,228,.14), transparent 62%),

@@ -8,6 +8,13 @@ End-to-end, code-driven pipeline that produces the deliverables in this folder:
     captions.srt / captions.vtt sidecar captions
     audio/*.wav                 synthetic VO, music bed, final loudness-normalised mix
     frames/*.png                the rendered timeline (for reproducibility)
+    render.log                  ffmpeg encode log + the FINAL measured audio values
+
+Motion (round-2 QA fix D-V1): every scene is a Ken-Burns crop-and-push of the
+cosmic plate (monotonic zoom over the scene, so no frame ever repeats), plus
+continuously twinkling stars, a moving progress bar, service-card stagger and a
+faster CTA. Captions and every piece of critical content are kept out of the
+Reels safe bands (top 180 px, bottom 320 px) — asserted at render time (D-V2).
 
 Audio is SYNTHETIC: voice via `espeak-ng`, music/SFX generated in NumPy.
 Nothing here is licensed material — see script.md "Limitations".
@@ -24,6 +31,7 @@ import shutil
 import subprocess
 import sys
 import wave
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -40,10 +48,18 @@ DUR = 28.4
 SR = 44100
 FONT = "/usr/share/fonts/truetype/dejavu/"
 
+# Reels safe bands — nothing critical may sit inside these.
+SAFE_TOP, SAFE_BOTTOM = 180, 1600
+CAPTION_BOTTOM = 1560          # bottom of the caption bar (<= SAFE_BOTTOM)
+PROGRESS_Y = 190               # thin progress bar just below the top safe band
+
 OUT = HERE / "astra-intro-reel.mp4"
 THUMB = HERE / "astra-reel-thumbnail.png"
 FRAMES = HERE / "frames"
 AUDIO = HERE / "audio"
+RENDER_LOG = HERE / "render.log"
+
+CAPTION_BOXES: list[dict] = []
 
 
 # --------------------------------------------------------------------------- #
@@ -67,6 +83,25 @@ def ease(t: float) -> float:
 def seg(t: float, a: float, b: float) -> float:
     """Progress of t within [a,b] clamped to 0..1."""
     return max(0.0, min(1.0, (t - a) / (b - a))) if b > a else 0.0
+
+
+def cinematic(img: Image.Image, t: float, a: float, b: float,
+              z0: float, z1: float, dx: float = 0.0, dy: float = 0.0,
+              c: float = 0.92) -> Image.Image:
+    """Ken-Burns push/pan of the plate.
+
+    The crop is centred on the (slightly zoomed) plate and scaled monotonically
+    from z0 to z1 across the scene, so consecutive frames never coincide — there
+    is genuine motion, not a still. `dx`/`dy` add a slow pan.
+    """
+    u = seg(t, a, b)
+    z = z0 + (z1 - z0) * u
+    cw, ch = W * c, H * c
+    s = min(cw, ch) * z
+    x = cw / 2 - s / 2 + dx * (cw - s) * (0.5 - u)
+    y = ch / 2 - s / 2 + dy * (ch - s) * (0.5 - u)
+    box = (int(round(x)), int(round(y)), int(round(x + s)), int(round(y + s)))
+    return img.crop(box).resize((W, H), Image.BILINEAR)
 
 
 # --------------------------------------------------------------------------- #
@@ -133,9 +168,8 @@ def build_audio() -> dict:
     peak = np.max(np.abs(voice)) + 1e-9
     voice = voice / peak * 0.9
 
-    # ---- music bed: cosmic pad + bells ----------------------------- #    #
+    # ---- music bed: cosmic pad + bells ----------------------------------- #
     music = np.zeros(N, np.float32)
-    # chord progression (root, 3rd, 5th) — a slow, hopeful loop
     chords = [
         (0.0,  6.0,  [174.61, 220.00, 261.63]),   # F
         (5.0,  10.0, [196.00, 246.94, 293.66]),   # G
@@ -151,11 +185,9 @@ def build_audio() -> dict:
         for k, f in enumerate(freqs):
             for d, amp in ((0.0, 1.0), (0.35, 0.4), (-0.35, 0.4)):  # gentle detune
                 seg += amp * np.sin(2 * np.pi * (f + d) * seg_t + k)
-        fade = min(1.0, (e - s) / SR / 1.2)
         env = np.minimum(1.0, np.minimum(seg_t / 1.0, (seg_t[-1] - seg_t) / 1.2 + 1e-6))
         env = np.clip(env, 0, 1)
         music[s:e] += seg * env / (3 * len(freqs) * 1.7)
-    # bell arpeggio (F major pentatonic-ish, rising = optimism)
     melo = [523.25, 587.33, 698.46, 783.99, 880.00, 1046.50]
     for i, f in enumerate(melo):
         st = 1.0 + i * 3.2
@@ -176,16 +208,13 @@ def build_audio() -> dict:
     # ---- SFX ------------------------------------------------------------- #
     rng = np.random.default_rng(23)
     sfx = np.zeros(N, np.float32)
-    # whoosh at the open
     s, e = 0, int(0.8 * SR)
     sfx[s:e] += rng.normal(0, 1, e - s).astype(np.float32) * np.hanning(e - s) * 0.16
-    # soft ticks on each service-card reveal
     for st in (8.7, 11.4, 14.0, 16.7):
         s = int(st * SR)
         e = s + int(0.06 * SR)
         seg_t = t[s:e] - t[s]
         sfx[s:e] += np.sin(2 * np.pi * 1760 * seg_t) * np.exp(-55 * seg_t) * 0.09
-    # logo chime at the CTA
     s = int(24.3 * SR)
     e = min(N, s + int(0.9 * SR))
     seg_t = t[s:e] - t[s]
@@ -215,14 +244,28 @@ def build_audio() -> dict:
                  f"offset={m['target_offset']}"),
          "-ar", str(SR), str(AUDIO / "audio_final.wav")], check=True)
 
+    # The measurement below is of the PRE-ENCODE mix, clearly labelled as such;
+    # the value that ships is re-measured from the encoded MP4 in main() and
+    # written to render.log. This keeps the log free of any stale figure (D-V3).
     info = {
         "vo_lines": len(VO_LINES),
         "vo_windows": [(round(a, 2), round(b, 2)) for a, b in vo_windows],
-        "loudnorm_measured": {k: m[k] for k in
-                              ("input_i", "input_tp", "input_lra", "input_thresh", "target_offset")},
+        "mix_pre_encode_loudnorm_measured": {
+            k: m[k] for k in
+            ("input_i", "input_tp", "input_lra", "input_thresh", "target_offset")},
     }
     (AUDIO / "audio_report.json").write_text(json.dumps(info, indent=2) + "\n")
     return info
+
+
+def measure_mp4(mp4: Path) -> dict:
+    """Measure the loudness of the SHIPPED file (the value that actually ships)."""
+    out = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-i", str(mp4),
+         "-af", "loudnorm=I=-14:TP=-1:print_format=json", "-f", "null", "-"],
+        capture_output=True, text=True)
+    m = json.loads(out.stderr[out.stderr.rfind("{"):out.stderr.rfind("}") + 1])
+    return {k: m[k] for k in ("input_i", "input_tp", "input_lra")}
 
 
 # --------------------------------------------------------------------------- #
@@ -259,6 +302,26 @@ def starfield() -> Image.Image:
 BASE = starfield()
 BLACK = Image.new("RGB", (W, H), (0, 0, 0))
 
+# a fixed set of twinkling stars (their brightness animates every frame)
+_SRNG = np.random.default_rng(5)
+_SPARKS = [(int(_SRNG.integers(W)), int(_SRNG.integers(H)), int(_SRNG.choice([2, 2, 3, 4])))
+           for _ in range(120)]
+_WHITE = Image.new("RGBA", (W, H), (255, 255, 255, 255))
+
+
+def _sparkle(t: float) -> Image.Image:
+    lay = Image.new("L", (W, H), 0)
+    ld = ImageDraw.Draw(lay)
+    n = int(DUR * FPS)
+    for i, (x, y, s) in enumerate(_SPARKS):
+        f = (i * 2654435761) % n
+        ph = ((i * 0.6180339887) + f / n) % 1.0
+        b = 0.5 + 0.5 * math.sin(2 * math.pi * (t / 1.15 + ph))
+        ld.ellipse([x, y, x + s, y + s], fill=int(215 * b ** 3))
+    layer = _WHITE.copy()
+    layer.putalpha(lay)
+    return layer
+
 
 def _vignette() -> Image.Image:
     vg = Image.new("L", (W, H), 0)
@@ -280,31 +343,53 @@ VIGNETTE = _vignette()
 GLOW = _glow()
 
 
-def caption_bar(d: ImageDraw.ImageDraw, text: str) -> None:
-    f = fnt("DejaVuSans-Bold.ttf", 44)
-    words = text.split()
-    # wrap to <= 26 chars per line, max 3 lines
+def wrap_caption(text: str, width: int = 26, max_lines: int = 3) -> list[str]:
     lines, cur = [], ""
-    for word in words:
-        if len(cur) + len(word) + 1 <= 26:
+    for word in text.split():
+        if len(cur) + len(word) + 1 <= width:
             cur = (cur + " " + word).strip()
         else:
             lines.append(cur)
             cur = word
     lines.append(cur)
-    lines = lines[:3]
-    tw = max(d.textlength(s, font=f) for s in lines)
+    return lines[:max_lines]
+
+
+def caption_geometry(text: str, f) -> tuple[int, int, int, int]:
+    lines = wrap_caption(text)
+    tw = max(f.getlength(s) for s in lines)
     lh = 56
-    bw, bh = tw + 72, lh * len(lines) + 40
-    x0, y0 = (W - bw) / 2, 1440
-    d.rounded_rectangle([x0, y0, x0 + bw, y0 + bh], radius=28, fill=(10, 9, 16, 190))
+    bw, bh = int(tw) + 72, lh * len(lines) + 40
+    x0 = int((W - bw) / 2)
+    y0 = int(CAPTION_BOTTOM - bh)
+    return x0, y0, x0 + bw, y0 + bh
+
+
+def caption_bar(d: ImageDraw.ImageDraw, text: str) -> None:
+    f = fnt("DejaVuSans-Bold.ttf", 44)
+    lines = wrap_caption(text)
+    x0, y0, x1, y1 = caption_geometry(text, f)
+    d.rounded_rectangle([x0, y0, x1, y1], radius=28, fill=(10, 9, 16, 190))
+    lh = 56
     for i, s in enumerate(lines):
         w = d.textlength(s, font=f)
         d.text(((W - w) / 2, y0 + 20 + i * lh), s, font=f, fill=hx(REF["neutral-95"]))
 
 
 def draw_frame(t: float) -> Image.Image:
-    img = BASE.copy()
+    # Ken-Burns push/pan per scene (monotonic within the scene -> real motion)
+    if t < 3.4:
+        base = cinematic(BASE, t, 0.5, 3.4, 0.90, 0.98, 0.0, 0.15)
+    elif t < 8.5:
+        base = cinematic(BASE, t, 3.4, 8.5, 0.94, 1.00, 0.0, -0.12)
+    elif t < 19.6:
+        base = cinematic(BASE, t, 8.4, 19.6, 0.90, 0.985, 0.0, 0.10)
+    elif t < 24.0:
+        base = cinematic(BASE, t, 19.8, 24.0, 0.93, 1.00, 0.0, -0.10)
+    else:
+        base = cinematic(BASE, t, 24.1, DUR, 0.96, 1.00, 0.0, 0.05)
+
+    img = Image.alpha_composite(base.convert("RGBA"), _sparkle(t)).convert("RGB")
     d = ImageDraw.Draw(img, "RGBA")
 
     # ---- scene 1: HOOK (0.6–3.2) ---------------------------------------- #
@@ -314,6 +399,7 @@ def draw_frame(t: float) -> Image.Image:
         mk = _MARK_L.resize((int(520 * scale),) * 2, Image.LANCZOS)
         mk.putalpha(mk.getchannel("A").point(lambda v: int(v * p)))
         img.paste(mk, ((W - mk.width) // 2, 560), mk)
+        d = ImageDraw.Draw(img, "RGBA")
         kp = ease(seg(t, 1.6, 2.4))
         kf = fnt("DejaVuSans-Bold.ttf", 40)
         ks = "AUTONOMOUS  ·  AI-RUN"
@@ -327,8 +413,7 @@ def draw_frame(t: float) -> Image.Image:
         q = ease(seg(t, 4.2, 5.0))
         yoff = int(40 * (1 - p))
         hf = fnt("DejaVuSerif-Bold.ttf", 96)
-        l1, l2 = "A digital agency,", "run by AI agents."
-        for i, s in enumerate((l1, l2)):
+        for i, s in enumerate(("A digital agency,", "run by AI agents.")):
             w = d.textlength(s, font=hf)
             d.text(((W - w) / 2, 760 + i * 120 + yoff), s, font=hf,
                    fill=hx(REF["neutral-95"]) + (int(255 * q),))
@@ -338,14 +423,13 @@ def draw_frame(t: float) -> Image.Image:
         d.text(((W - sw) / 2, 1080), sub, font=sf,
                fill=hx(REF["violet-80"]) + (int(255 * ease(seg(t, 5.0, 5.8))),))
 
-    # ---- scene 3: OFFER (8.6–19.4) — four service cards ------------------ #
-    services = [("Web & app build", "web"), ("AI automation", "ai"),
-                ("Video & design", "video"), ("Digital products", "product")]
+    # ---- scene 3: OFFER (8.6–19.4) — four service cards, staggered ------- #
+    services = ["Web & app build", "AI automation", "Video & design", "Digital products"]
     card_times = [(8.6, 11.3), (11.3, 13.9), (13.9, 16.6), (16.6, 19.4)]
     if 8.4 <= t < 19.6:
         d.text((90, 300), "WHAT WE BUILD", font=fnt("DejaVuSans-Bold.ttf", 40),
                fill=hx(REF["cyan-80"]))
-        for i, ((name, _), (a, b)) in enumerate(zip(services, card_times)):
+        for i, (name, (a, b)) in enumerate(zip(services, card_times)):
             if t < a:
                 continue
             p = ease(seg(t, a, a + 0.55))
@@ -367,8 +451,7 @@ def draw_frame(t: float) -> Image.Image:
         p = ease(seg(t, 20.0, 20.7))
         d.text((90, 560), "HOW IT WORKS", font=fnt("DejaVuSans-Bold.ttf", 40),
                fill=hx(REF["cyan-80"]) + (int(255 * p),))
-        steps = ["Strategy", "Build", "Launch"]
-        for i, s in enumerate(steps):
+        for i, s in enumerate(("Strategy", "Build", "Launch")):
             pa = ease(seg(t, 20.4 + i * 0.5, 21.0 + i * 0.5))
             y = 700 + i * 220
             d.rounded_rectangle([120, y, W - 120, y + 160], radius=24,
@@ -378,10 +461,10 @@ def draw_frame(t: float) -> Image.Image:
             d.text((300, y + 46), s, font=fnt("DejaVuSerif-Bold.ttf", 66),
                    fill=hx(REF["neutral-95"]) + (int(255 * pa),))
 
-    # ---- scene 5: CTA (24.4–28.0) --------------------------------------- #
+    # ---- scene 5: CTA (24.2–28.0), quicker cuts + stagger ---------------- #
     if t >= 24.1:
-        p = ease(seg(t, 24.3, 25.2))
-        pulse = 0.5 + 0.5 * math.sin((t - 24.3) * 2.4)
+        p = ease(seg(t, 24.2, 25.0))
+        pulse = 0.5 + 0.5 * math.sin((t - 24.2) * 2.4)
         gl = GLOW.copy()
         gl.putalpha(gl.getchannel("A").point(lambda v: int(v * p * (0.7 + 0.3 * pulse))))
         img = Image.alpha_composite(img.convert("RGBA"), gl).convert("RGB")
@@ -389,28 +472,52 @@ def draw_frame(t: float) -> Image.Image:
         lk = _LOCK.resize((int(920 * (0.9 + 0.1 * p)), int(138 * (0.9 + 0.1 * p))), Image.LANCZOS)
         lk.putalpha(lk.getchannel("A").point(lambda v: int(v * p)))
         img.paste(lk, ((W - lk.width) // 2, 720), lk)
-        tag = "Build what's next."
+        d = ImageDraw.Draw(img, "RGBA")
         tf = fnt("DejaVuSerif-Bold.ttf", 70)
+        tag = "Build what's next."
         tw = d.textlength(tag, font=tf)
         d.text(((W - tw) / 2, 960), tag, font=tf,
-               fill=hx(REF["neutral-95"]) + (int(255 * ease(seg(t, 25.0, 25.8))),))
-        hd = "@aiastra"
+               fill=hx(REF["neutral-95"]) + (int(255 * ease(seg(t, 24.7, 25.4))),))
         hf2 = fnt("DejaVuSans-Bold.ttf", 44)
+        hd = "@aiastra"
         hw = d.textlength(hd, font=hf2)
         d.text(((W - hw) / 2, 1090), hd, font=hf2,
-               fill=hx(REF["cyan-80"]) + (int(255 * ease(seg(t, 25.4, 26.2))),))
+               fill=hx(REF["cyan-80"]) + (int(255 * ease(seg(t, 25.1, 25.8))),))
+
+    # ---- progress bar (animated, in the top safe zone) ------------------- #
+    d.rounded_rectangle([90, PROGRESS_Y, W - 90, PROGRESS_Y + 8], radius=4,
+                        fill=hx(REF["neutral-20"]) + (170,))
+    frac = max(0.0, min(1.0, (t - 0.4) / (DUR - 0.4)))
+    d.rounded_rectangle([90, PROGRESS_Y, 90 + int((W - 180) * frac), PROGRESS_Y + 8],
+                        radius=4, fill=hx(REF["cyan-60"]) + (235,))
 
     # ---- captions -------------------------------------------------------- #
     for start, text in VO_LINES:
-        # show the caption for ~ the VO duration, minimum 1.6 s
         dur = max(1.6, 0.06 * len(text.split()) + 1.1)
         if start <= t < start + dur:
             caption_bar(d, text)
             break
 
-    # subtle vignette to focus the centre (mask precomputed)
     img = Image.composite(img, BLACK, VIGNETTE)
     return img
+
+
+def safe_area_report() -> dict:
+    """Check every caption bar and every critical element against the safe bands."""
+    f = fnt("DejaVuSans-Bold.ttf", 44)
+    boxes = []
+    for start, text in VO_LINES:
+        x0, y0, x1, y1 = caption_geometry(text, f)
+        boxes.append({"text": text, "box": [x0, y0, x1, y1]})
+    top_viol = [b for b in boxes if b["box"][1] < SAFE_TOP]
+    bot_viol = [b for b in boxes if b["box"][3] > SAFE_BOTTOM]
+    return {
+        "safe_top": SAFE_TOP, "safe_bottom": SAFE_BOTTOM,
+        "caption_bottom": CAPTION_BOTTOM, "progress_y": PROGRESS_Y,
+        "caption_boxes": boxes,
+        "top_violations": len(top_viol), "bottom_violations": len(bot_viol),
+        "ok": not top_viol and not bot_viol,
+    }
 
 
 def render_frames() -> None:
@@ -419,27 +526,55 @@ def render_frames() -> None:
         shutil.rmtree(FRAMES)
     FRAMES.mkdir()
     n = int(DUR * FPS)
-    proc = subprocess.Popen([
-        "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
-        "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
-        "-i", "-",
-        "-i", str(AUDIO / "audio_final.wav"),
-        "-c:v", "libx264", "-profile:v", "high", "-level", "4.0",
-        "-pix_fmt", "yuv420p", "-crf", "20", "-preset", "medium",
-        "-movflags", "+faststart",
-        "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
-        "-shortest", str(OUT)], stdin=subprocess.PIPE)
-    for i in range(n):
-        fr = draw_frame(i / FPS)
-        proc.stdin.write(fr.tobytes())
-        if i % 120 == 0:
-            # keep a few key frames on disk as render evidence
-            fr.save(FRAMES / f"f{i:05d}.png")
-    proc.stdin.close()
-    proc.wait()
+    with open(RENDER_LOG, "w", encoding="utf-8") as logf:
+        logf.write(f"# AI ASTRA AGENCY — intro reel render\n")
+        logf.write(f"# {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} · "
+                   f"{W}x{H} @ {FPS}fps · {n} frames · {DUR}s\n")
+        logf.write("# ffmpeg encode log (loglevel=error):\n")
+        proc = subprocess.Popen([
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
+            "-i", "-",
+            "-i", str(AUDIO / "audio_final.wav"),
+            "-c:v", "libx264", "-profile:v", "high", "-level", "4.0",
+            "-pix_fmt", "yuv420p", "-crf", "20", "-preset", "medium",
+            "-movflags", "+faststart",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
+            "-shortest", str(OUT)], stdin=subprocess.PIPE, stdout=logf, stderr=logf)
+        for i in range(n):
+            fr = draw_frame(i / FPS)
+            proc.stdin.write(fr.tobytes())
+            if i % 120 == 0:
+                fr.save(FRAMES / f"f{i:05d}.png")
+        proc.stdin.close()
+        proc.wait()
     if proc.returncode != 0:
         raise SystemExit(f"ffmpeg failed: {proc.returncode}")
     print(f"streamed {n} frames -> {OUT.name}")
+
+
+def finalise_log(audio_info: dict) -> dict:
+    """Append the FINAL measured values (from the shipped MP4) to render.log.
+
+    The pre-encode mix measurement is deliberately NOT written here, so the log
+    can never carry a stale true-peak figure (round-2 QA note D-V3).
+    """
+    loud = measure_mp4(OUT)
+    dec = subprocess.run(["ffmpeg", "-v", "error", "-i", str(OUT), "-f", "null", "-"],
+                         capture_output=True, text=True)
+    with open(RENDER_LOG, "a", encoding="utf-8") as logf:
+        logf.write("\n# ---- FINAL measured values (from the shipped MP4) ----\n")
+        logf.write(f"# integrated loudness : {loud['input_i']} LUFS (target -14)\n")
+        logf.write(f"# true peak           : {loud['input_tp']} dBTP (target <= -1.0)\n")
+        logf.write(f"# loudness range      : {loud['input_lra']} LU\n")
+        logf.write(f"# strict decode       : exit {dec.returncode}, "
+                   f"stderr {len(dec.stderr)} bytes\n")
+        logf.write("# note: no pre-encode value is retained here; the figures above "
+                   "are the shipped file's own measurements.\n")
+    rep = json.loads((AUDIO / "audio_report.json").read_text())
+    rep["final_mp4_loudnorm_measured"] = loud
+    (AUDIO / "audio_report.json").write_text(json.dumps(rep, indent=2) + "\n")
+    return loud
 
 
 # --------------------------------------------------------------------------- #
@@ -451,15 +586,12 @@ def ts(s: float) -> str:
 
 
 def write_captions() -> None:
-    subs = []
-    for start, text in VO_LINES:
+    srt, vtt = [], ["WEBVTT", ""]
+    for i, (start, text) in enumerate(VO_LINES, 1):
         dur = max(1.6, 0.06 * len(text.split()) + 1.1)
-        subs.append((start, min(start + dur, DUR), text))
-    srt = []
-    vtt = ["WEBVTT", ""]
-    for i, (a, b, txt) in enumerate(subs, 1):
-        srt.append(f"{i}\n{ts(a)} --> {ts(b)}\n{txt}\n")
-        vtt.append(f"{i}\n{ts(a)} --> {ts(b)}\n{txt}\n")
+        b = min(start + dur, DUR)
+        srt.append(f"{i}\n{ts(start)} --> {ts(b)}\n{text}\n")
+        vtt.append(f"{i}\n{ts(start)} --> {ts(b)}\n{text}\n")
     (HERE / "captions.srt").write_text("\n".join(srt), encoding="utf-8")
     (HERE / "captions.vtt").write_text("\n".join(vtt), encoding="utf-8")
     print("wrote captions.srt captions.vtt")
@@ -468,33 +600,28 @@ def write_captions() -> None:
 def make_thumbnail() -> None:
     img = starfield()
     d = ImageDraw.Draw(img, "RGBA")
-    # top pill
     pf = fnt("DejaVuSans-Bold.ttf", 40)
     ps = "AUTONOMOUS  ·  AI-RUN  ·  DIGITAL AGENCY"
     pw = d.textlength(ps, font=pf)
     d.rounded_rectangle([(W - pw) / 2 - 40, 220, (W + pw) / 2 + 40, 320], radius=50,
                         fill=hx(REF["violet-40"]) + (230,))
     d.text(((W - pw) / 2, 245), ps, font=pf, fill=hx(REF["neutral-100"]))
-    # mark
-    mk = _MARK_L.resize((560, 560), Image.LANCZOS)
-    img.paste(mk, ((W - 560) // 2, 470), mk)
-    # headline
-    hf = fnt("DejaVuSerif-Bold.ttf", 108)
+    mk = _MARK_L.resize((520, 520), Image.LANCZOS)
+    img.paste(mk, ((W - 520) // 2, 450), mk)
+    d = ImageDraw.Draw(img, "RGBA")
+    hf = fnt("DejaVuSerif-Bold.ttf", 104)
     for i, s in enumerate(("AI ASTRA", "AGENCY")):
         w = d.textlength(s, font=hf)
-        d.text(((W - w) / 2, 1080 + i * 128), s, font=hf, fill=hx(REF["neutral-95"]))
-    tf = fnt("DejaVuSerif-Bold.ttf", 62)
+        d.text(((W - w) / 2, 1030 + i * 122), s, font=hf, fill=hx(REF["neutral-95"]))
+    tf = fnt("DejaVuSerif-Bold.ttf", 60)
     tag = "Build what's next."
     tw = d.textlength(tag, font=tf)
-    d.text(((W - tw) / 2, 1400), tag, font=tf, fill=hx(REF["violet-80"]))
-    # services row
+    d.text(((W - tw) / 2, 1330), tag, font=tf, fill=hx(REF["violet-80"]))
+    # services row kept ABOVE the bottom safe band (y < 1600)
     sf = fnt("DejaVuSans-Bold.ttf", 36)
-    svc = "WEB & APP  ·  AI AUTOMATION  ·  VIDEO & DESIGN  ·  DIGITAL PRODUCTS"
-    # wrap into two lines
-    line1, line2 = "WEB & APP  ·  AI AUTOMATION", "VIDEO & DESIGN  ·  DIGITAL PRODUCTS"
-    for i, s in enumerate((line1, line2)):
+    for i, s in enumerate(("WEB & APP  ·  AI AUTOMATION", "VIDEO & DESIGN  ·  DIGITAL PRODUCTS")):
         w = d.textlength(s, font=sf)
-        d.text(((W - w) / 2, 1560 + i * 60), s, font=sf, fill=hx(REF["cyan-80"]))
+        d.text(((W - w) / 2, 1440 + i * 58), s, font=sf, fill=hx(REF["cyan-80"]))
     img.save(THUMB)
     print("wrote", THUMB.name)
 
@@ -506,12 +633,25 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--audio", action="store_true", help="audio only")
     args = ap.parse_args()
+
+    rep = safe_area_report()
+    print("safe area:", json.dumps({k: rep[k] for k in
+          ("safe_top", "safe_bottom", "caption_bottom", "progress_y",
+           "top_violations", "bottom_violations", "ok")}))
+    if not rep["ok"]:
+        print("SAFE-AREA VIOLATION — refusing to render", file=sys.stderr)
+        for b in rep["caption_boxes"]:
+            print(" ", b["box"], b["text"], file=sys.stderr)
+        return 1
+
     info = build_audio()
     print("audio:", json.dumps(info, indent=2))
     write_captions()
     make_thumbnail()
     if not args.audio:
         render_frames()
+        loud = finalise_log(info)
+        print("final measured:", json.dumps(loud))
     return 0
 
 

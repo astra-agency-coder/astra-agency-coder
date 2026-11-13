@@ -61,6 +61,37 @@ check(root is not None and root.get("lang"),
       f"<html lang> present = {root.get('lang') if root is not None else None!r}",
       "<html lang> missing")
 
+print("\n== 1b. Image alt attributes (accessibility) ==")
+imgs = doc.findall(".//img")
+if imgs:
+    print(f"  INFO  {len(imgs)} <img> element(s) found")
+else:
+    notes.append("no <img> elements found -> alt check is vacuous")
+# (a) every <img> must carry an alt attribute (may legitimately be empty).
+missing_alt = [im for im in imgs if im.get("alt") is None]
+check(not missing_alt,
+      "every <img> has an alt attribute (present; may be empty for decorative)",
+      f"{len(missing_alt)} <img> element(s) MISSING the alt attribute")
+# (b) an empty alt="" is the WCAG-correct DECORATIVE pattern only when the image
+#     is also hidden from assistive tech (aria-hidden="true" / role="presentation").
+decorative = [im for im in imgs
+              if im.get("alt") is not None and im.get("alt").strip() == ""]
+meaningful = [im for im in imgs
+              if im.get("alt") is not None and im.get("alt").strip() != ""]
+bad_decorative = [im for im in decorative
+                  if im.get("aria-hidden") != "true"
+                  and im.get("role") != "presentation"]
+check(not bad_decorative,
+      f'{len(decorative)} decorative alt="" image(s) marked aria-hidden="true"/presentation',
+      f'{len(bad_decorative)} empty-alt <img> NOT marked aria-hidden="true" or '
+      f'role="presentation" (empty alt is the decorative pattern; hide it from AT)')
+check(len(decorative) + len(meaningful) == len(imgs),
+      f"alt coverage complete: {len(meaningful)} meaningful + {len(decorative)} decorative",
+      "some <img> could not be classified")
+for im in imgs:
+    print(f"  INFO  src={im.get('src')!r} alt={im.get('alt')!r} "
+          f"aria-hidden={im.get('aria-hidden')!r}")
+
 print("\n== 2. Local asset existence ==")
 html = raw.decode("utf-8")
 refs = set()

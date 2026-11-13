@@ -30,5 +30,1799 @@
     "mark violet on light surface": 8.59,
     "mark light-violet on dark surface": 10.27
   },
-  "contrast_min": 4.73
+  "contrast_min": 4.73,
+  "sheet_elements": [
+    {
+      "name": "header \u00b7 lockup",
+      "region": [
+        140,
+        150,
+        1180,
+        306
+      ],
+      "ink": [
+        "#E6E1E9",
+        "#C9B0F0",
+        "#8FDBE4"
+      ],
+      "kind": "logo",
+      "bg": "#281544",
+      "interior": false,
+      "contrast": 8.55,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 8.55,
+      "bg_png": "#281544"
+    },
+    {
+      "name": "header \u00b7 eyebrow",
+      "region": [
+        146,
+        355,
+        447,
+        380
+      ],
+      "ink": [
+        "#C9B0F0"
+      ],
+      "kind": "text",
+      "bg": "#211339",
+      "interior": false,
+      "contrast": 9.0,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.0,
+      "bg_png": "#211339"
+    },
+    {
+      "name": "header \u00b7 strapline",
+      "region": [
+        140,
+        410,
+        1417,
+        469
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#281544",
+      "interior": false,
+      "contrast": 12.73,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.73,
+      "bg_png": "#281544"
+    },
+    {
+      "name": "header \u00b7 subline",
+      "region": [
+        140,
+        488,
+        1021,
+        526
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#281544",
+      "interior": false,
+      "contrast": 7.51,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 7.51,
+      "bg_png": "#281544"
+    },
+    {
+      "name": "section \u00b7 01  LOGO SYSTEM",
+      "region": [
+        140,
+        667,
+        463,
+        690
+      ],
+      "ink": [
+        "#8FDBE4"
+      ],
+      "kind": "text",
+      "bg": "#24143F",
+      "interior": false,
+      "contrast": 10.76,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 10.76,
+      "bg_png": "#24143F"
+    },
+    {
+      "name": "logo tile 1 \u00b7 mark",
+      "region": [
+        140,
+        750,
+        610,
+        1220
+      ],
+      "ink": [
+        "#5A2EA6",
+        "#0D7D8F"
+      ],
+      "kind": "logo",
+      "bg": "#FDFBFE",
+      "interior": true,
+      "contrast": 4.69,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 4.69,
+      "bg_png": "#FDFBFE"
+    },
+    {
+      "name": "logo tile 1 \u00b7 caption",
+      "region": [
+        164,
+        1173,
+        366,
+        1200
+      ],
+      "ink": [
+        "#5F5E63"
+      ],
+      "kind": "text",
+      "bg": "#FDFBFE",
+      "interior": true,
+      "contrast": 6.24,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.24,
+      "bg_png": "#FDFBFE"
+    },
+    {
+      "name": "logo tile 2 \u00b7 mark",
+      "region": [
+        654,
+        750,
+        1124,
+        1220
+      ],
+      "ink": [
+        "#C9B0F0",
+        "#8FDBE4"
+      ],
+      "kind": "logo",
+      "bg": "#0B0A12",
+      "interior": true,
+      "contrast": 10.27,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 10.27,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "logo tile 2 \u00b7 caption",
+      "region": [
+        678,
+        1173,
+        881,
+        1200
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": true,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "logo tile 3 \u00b7 mark",
+      "region": [
+        1168,
+        750,
+        1638,
+        1220
+      ],
+      "ink": [
+        "#000000"
+      ],
+      "kind": "logo",
+      "bg": "#FFFFFF",
+      "interior": true,
+      "contrast": 21.0,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 21.0,
+      "bg_png": "#FFFFFF"
+    },
+    {
+      "name": "logo tile 3 \u00b7 caption",
+      "region": [
+        1192,
+        1173,
+        1352,
+        1194
+      ],
+      "ink": [
+        "#5F5E63"
+      ],
+      "kind": "text",
+      "bg": "#FFFFFF",
+      "interior": true,
+      "contrast": 6.43,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.43,
+      "bg_png": "#FFFFFF"
+    },
+    {
+      "name": "logo tile 4 \u00b7 mark",
+      "region": [
+        1682,
+        750,
+        2152,
+        1220
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "logo",
+      "bg": "#000000",
+      "interior": true,
+      "contrast": 21.0,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 21.0,
+      "bg_png": "#000000"
+    },
+    {
+      "name": "logo tile 4 \u00b7 caption",
+      "region": [
+        1706,
+        1173,
+        1868,
+        1194
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#000000",
+      "interior": true,
+      "contrast": 9.61,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.61,
+      "bg_png": "#000000"
+    },
+    {
+      "name": "01 \u00b7 primary-signature lockup",
+      "region": [
+        200,
+        1304,
+        1500,
+        1499
+      ],
+      "ink": [
+        "#E6E1E9",
+        "#C9B0F0",
+        "#8FDBE4"
+      ],
+      "kind": "logo",
+      "bg": "#131217",
+      "interior": false,
+      "contrast": 9.72,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 9.72,
+      "bg_png": "#131217"
+    },
+    {
+      "name": "01 \u00b7 lockup label",
+      "region": [
+        1760,
+        1368,
+        2100,
+        1437
+      ],
+      "ink": [
+        "#CBC9CF"
+      ],
+      "kind": "text",
+      "bg": "#131217",
+      "interior": false,
+      "contrast": 11.36,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.36,
+      "bg_png": "#131217"
+    },
+    {
+      "name": "section \u00b7 02  COLOUR SYSTEM",
+      "region": [
+        140,
+        1597,
+        511,
+        1620
+      ],
+      "ink": [
+        "#8FDBE4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 12.59,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.59,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 ramp Primary \u00b7 violet",
+      "region": [
+        140,
+        1685,
+        368,
+        1714
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-10 step label",
+      "region": [
+        146,
+        1869,
+        174,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-20 step label",
+      "region": [
+        340,
+        1869,
+        368,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-30 step label",
+      "region": [
+        534,
+        1869,
+        562,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-40 step label",
+      "region": [
+        727,
+        1869,
+        755,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-50 step label",
+      "region": [
+        921,
+        1869,
+        949,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-60 step label",
+      "region": [
+        1115,
+        1869,
+        1143,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-70 step label",
+      "region": [
+        1309,
+        1869,
+        1337,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-80 step label",
+      "region": [
+        1503,
+        1869,
+        1531,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-90 step label",
+      "region": [
+        1697,
+        1869,
+        1725,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-95 step label",
+      "region": [
+        1890,
+        1869,
+        1918,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 violet-99 step label",
+      "region": [
+        2084,
+        1869,
+        2112,
+        1885
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 ramp Secondary \u00b7 cyan",
+      "region": [
+        140,
+        1917,
+        399,
+        1946
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-10 step label",
+      "region": [
+        146,
+        2101,
+        174,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-20 step label",
+      "region": [
+        501,
+        2101,
+        529,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-40 step label",
+      "region": [
+        857,
+        2101,
+        885,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-60 step label",
+      "region": [
+        1212,
+        2101,
+        1240,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-80 step label",
+      "region": [
+        1567,
+        2101,
+        1595,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 cyan-90 step label",
+      "region": [
+        1923,
+        2101,
+        1951,
+        2117
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 ramp Tertiary \u00b7 gold",
+      "region": [
+        139,
+        2149,
+        346,
+        2178
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-10 step label",
+      "region": [
+        146,
+        2333,
+        174,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-20 step label",
+      "region": [
+        501,
+        2333,
+        529,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-40 step label",
+      "region": [
+        857,
+        2333,
+        885,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-60 step label",
+      "region": [
+        1212,
+        2333,
+        1240,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-80 step label",
+      "region": [
+        1567,
+        2333,
+        1595,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 gold-90 step label",
+      "region": [
+        1923,
+        2333,
+        1951,
+        2349
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 ramp Neutral",
+      "region": [
+        140,
+        2381,
+        251,
+        2404
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-6 step label",
+      "region": [
+        146,
+        2565,
+        160,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-10 step label",
+      "region": [
+        383,
+        2565,
+        411,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-20 step label",
+      "region": [
+        620,
+        2565,
+        648,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-30 step label",
+      "region": [
+        857,
+        2565,
+        885,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-50 step label",
+      "region": [
+        1094,
+        2565,
+        1122,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-70 step label",
+      "region": [
+        1330,
+        2565,
+        1358,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-90 step label",
+      "region": [
+        1567,
+        2565,
+        1595,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-95 step label",
+      "region": [
+        1804,
+        2565,
+        1832,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 neutral-99 step label",
+      "region": [
+        2041,
+        2565,
+        2069,
+        2581
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 6.52,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.52,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 key-roles heading",
+      "region": [
+        140,
+        2613,
+        437,
+        2642
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 9.02,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.02,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "02 \u00b7 role primary label",
+      "region": [
+        156,
+        2757,
+        279,
+        2806
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "text",
+      "bg": "#5A2EA6",
+      "interior": false,
+      "contrast": 8.84,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 8.84,
+      "bg_png": "#5A2EA6"
+    },
+    {
+      "name": "02 \u00b7 role secondary label",
+      "region": [
+        513,
+        2757,
+        648,
+        2806
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "text",
+      "bg": "#0D7D8F",
+      "interior": false,
+      "contrast": 4.83,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.83,
+      "bg_png": "#0D7D8F"
+    },
+    {
+      "name": "02 \u00b7 role tertiary label",
+      "region": [
+        869,
+        2757,
+        993,
+        2806
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "text",
+      "bg": "#9A6A00",
+      "interior": false,
+      "contrast": 4.73,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.73,
+      "bg_png": "#9A6A00"
+    },
+    {
+      "name": "02 \u00b7 role surface label",
+      "region": [
+        1226,
+        2757,
+        1347,
+        2806
+      ],
+      "ink": [
+        "#0B0A12"
+      ],
+      "kind": "text",
+      "bg": "#FDFBFE",
+      "interior": false,
+      "contrast": 19.14,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 19.14,
+      "bg_png": "#FDFBFE"
+    },
+    {
+      "name": "02 \u00b7 role on-surface label",
+      "region": [
+        1583,
+        2757,
+        1721,
+        2806
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "text",
+      "bg": "#1C1B20",
+      "interior": false,
+      "contrast": 17.11,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 17.11,
+      "bg_png": "#1C1B20"
+    },
+    {
+      "name": "02 \u00b7 role inverse-surface label",
+      "region": [
+        1939,
+        2757,
+        2140,
+        2806
+      ],
+      "ink": [
+        "#FFFFFF"
+      ],
+      "kind": "text",
+      "bg": "#313036",
+      "interior": false,
+      "contrast": 13.07,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 13.07,
+      "bg_png": "#313036"
+    },
+    {
+      "name": "section \u00b7 03  TYPOGRAPHY",
+      "region": [
+        140,
+        2873,
+        452,
+        2896
+      ],
+      "ink": [
+        "#8FDBE4"
+      ],
+      "kind": "text",
+      "bg": "#0B0A12",
+      "interior": false,
+      "contrast": 12.59,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.59,
+      "bg_png": "#0B0A12"
+    },
+    {
+      "name": "03 \u00b7 brand-face note",
+      "region": [
+        140,
+        2961,
+        1074,
+        2988
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B1821",
+      "interior": false,
+      "contrast": 8.24,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 8.24,
+      "bg_png": "#0B1821"
+    },
+    {
+      "name": "03 \u00b7 display specimen",
+      "region": [
+        139,
+        3034,
+        1310,
+        3108
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B212A",
+      "interior": false,
+      "contrast": 14.45,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 14.45,
+      "bg_png": "#0B212A"
+    },
+    {
+      "name": "03 \u00b7 ui-face note",
+      "region": [
+        140,
+        3151,
+        902,
+        3178
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B2732",
+      "interior": false,
+      "contrast": 7.12,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 7.12,
+      "bg_png": "#0B2732"
+    },
+    {
+      "name": "03 \u00b7 body specimen",
+      "region": [
+        140,
+        3212,
+        1562,
+        3250
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2A35",
+      "interior": false,
+      "contrast": 13.09,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 13.09,
+      "bg_png": "#0B2A35"
+    },
+    {
+      "name": "03 \u00b7 scale display-large",
+      "region": [
+        140,
+        3290,
+        517,
+        3323
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2D37",
+      "interior": false,
+      "contrast": 12.66,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.66,
+      "bg_png": "#0B2D37"
+    },
+    {
+      "name": "03 \u00b7 scale display-large detail",
+      "region": [
+        900,
+        3295,
+        1211,
+        3320
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2A35",
+      "interior": false,
+      "contrast": 4.98,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.98,
+      "bg_png": "#0B2A35"
+    },
+    {
+      "name": "03 \u00b7 scale headline-large",
+      "region": [
+        140,
+        3342,
+        547,
+        3375
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 12.49,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.49,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "03 \u00b7 scale headline-large detail",
+      "region": [
+        900,
+        3347,
+        1201,
+        3372
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2B36",
+      "interior": false,
+      "contrast": 4.92,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.92,
+      "bg_png": "#0B2B36"
+    },
+    {
+      "name": "03 \u00b7 scale title-large",
+      "region": [
+        140,
+        3394,
+        462,
+        3427
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 12.49,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.49,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "03 \u00b7 scale title-large detail",
+      "region": [
+        900,
+        3399,
+        1201,
+        3424
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2C37",
+      "interior": false,
+      "contrast": 4.86,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.86,
+      "bg_png": "#0B2C37"
+    },
+    {
+      "name": "03 \u00b7 scale body-large",
+      "region": [
+        140,
+        3446,
+        478,
+        3479
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 12.49,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.49,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "03 \u00b7 scale body-large detail",
+      "region": [
+        900,
+        3451,
+        1201,
+        3476
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2D37",
+      "interior": false,
+      "contrast": 4.81,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.81,
+      "bg_png": "#0B2D37"
+    },
+    {
+      "name": "03 \u00b7 scale label-large",
+      "region": [
+        140,
+        3498,
+        477,
+        3531
+      ],
+      "ink": [
+        "#F1EEF5"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 12.49,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.49,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "03 \u00b7 scale label-large detail",
+      "region": [
+        900,
+        3503,
+        1201,
+        3528
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 4.75,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.75,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "section \u00b7 04  USAGE RULES",
+      "region": [
+        140,
+        3591,
+        456,
+        3614
+      ],
+      "ink": [
+        "#8FDBE4"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 9.17,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.17,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 clear-space mark",
+      "region": [
+        290,
+        3734,
+        450,
+        3894
+      ],
+      "ink": [
+        "#C9B0F0",
+        "#8FDBE4"
+      ],
+      "kind": "logo",
+      "bg": "#131217",
+      "interior": false,
+      "contrast": 9.72,
+      "req": 3.0,
+      "ok": true,
+      "contrast_png": 9.72,
+      "bg_png": "#131217"
+    },
+    {
+      "name": "04 \u00b7 clear-space caption",
+      "region": [
+        160,
+        3929,
+        582,
+        3954
+      ],
+      "ink": [
+        "#CBC9CF"
+      ],
+      "kind": "text",
+      "bg": "#131217",
+      "interior": false,
+      "contrast": 11.36,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.36,
+      "bg_png": "#131217"
+    },
+    {
+      "name": "04 \u00b7 DO heading",
+      "region": [
+        640,
+        3681,
+        697,
+        3706
+      ],
+      "ink": [
+        "#A6E7B5"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 10.05,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 10.05,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 DO item 1",
+      "region": [
+        640,
+        3731,
+        963,
+        3760
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 11.14,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.14,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 DO item 2",
+      "region": [
+        640,
+        3773,
+        1007,
+        3802
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 11.14,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.14,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 DO item 3",
+      "region": [
+        640,
+        3815,
+        1108,
+        3841
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 11.14,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.14,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 DO item 4",
+      "region": [
+        640,
+        3857,
+        1016,
+        3886
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 11.14,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.14,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "04 \u00b7 DON'T heading",
+      "region": [
+        1340,
+        3681,
+        1460,
+        3706
+      ],
+      "ink": [
+        "#F2B8B5"
+      ],
+      "kind": "text",
+      "bg": "#0B2732",
+      "interior": false,
+      "contrast": 9.11,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 9.11,
+      "bg_png": "#0B2732"
+    },
+    {
+      "name": "04 \u00b7 DON'T item 1",
+      "region": [
+        1340,
+        3731,
+        1784,
+        3760
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2732",
+      "interior": false,
+      "contrast": 12.08,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 12.08,
+      "bg_png": "#0B2732"
+    },
+    {
+      "name": "04 \u00b7 DON'T item 2",
+      "region": [
+        1340,
+        3773,
+        1716,
+        3799
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2934",
+      "interior": false,
+      "contrast": 11.81,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.81,
+      "bg_png": "#0B2934"
+    },
+    {
+      "name": "04 \u00b7 DON'T item 3",
+      "region": [
+        1340,
+        3815,
+        1775,
+        3841
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2934",
+      "interior": false,
+      "contrast": 11.81,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.81,
+      "bg_png": "#0B2934"
+    },
+    {
+      "name": "04 \u00b7 DON'T item 4",
+      "region": [
+        1340,
+        3857,
+        1795,
+        3886
+      ],
+      "ink": [
+        "#E6E1E9"
+      ],
+      "kind": "text",
+      "bg": "#0B2A35",
+      "interior": false,
+      "contrast": 11.68,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 11.68,
+      "bg_png": "#0B2A35"
+    },
+    {
+      "name": "footer \u00b7 line 1",
+      "region": [
+        140,
+        4069,
+        1219,
+        4096
+      ],
+      "ink": [
+        "#949499"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 4.75,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 4.75,
+      "bg_png": "#0B2E39"
+    },
+    {
+      "name": "footer \u00b7 line 2",
+      "region": [
+        140,
+        4109,
+        1546,
+        4132
+      ],
+      "ink": [
+        "#AFAFB4"
+      ],
+      "kind": "text",
+      "bg": "#0B2E39",
+      "interior": false,
+      "contrast": 6.57,
+      "req": 4.5,
+      "ok": true,
+      "contrast_png": 6.57,
+      "bg_png": "#0B2E39"
+    }
+  ],
+  "sheet_elements_count": 89,
+  "sheet_contrast_min": 4.69,
+  "sheet_contrast_failures": [],
+  "sheet_contrast_ok": true,
+  "all_ok": true
 }
