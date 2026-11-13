@@ -186,40 +186,85 @@ def _poly(coords, u):
     return [(x * u, y * u) for (x, y) in coords]
 
 
-def _poly_to_d(poly, holes=()):
-    def ring(pts):
-        return ("M " + " L ".join(f"{x:.2f} {y:.2f}" for x, y in pts) + " Z")
-    return " ".join(ring(poly.exterior.coords) for _ in [0]) if hasattr(poly, "exterior") \
-        else "M " + " L ".join(f"{x:.2f} {y:.2f}" for x, y in poly) + " Z"
+def _poly_to_d(geom, k=1.0, tx=0.0, ty=0.0, prec=2):
+    """Serialise a shapely (Multi)Polygon to SVG path data, honouring holes."""
+    geoms = [geom] if geom.geom_type == "Polygon" else list(geom.geoms)
+    out = []
+    for p in geoms:
+        rings = [p.exterior.coords] + [r.coords for r in p.interiors]
+        for ring in rings:
+            out.append("M " + " L ".join(
+                f"{x * k + tx:.{prec}f} {y * k + ty:.{prec}f}" for x, y in ring) + " Z")
+    return " ".join(out)
 
 
-def ingot_a_paths(S: float = 512.0):
+# v2 "Ingot A" master geometry, authored in a 1000-unit design box (y down).
+# Every edge is straight; the three primitives are unioned exactly (shapely).
+_INGOT_V2 = {
+    "H": 1000.0,      # design height
+    "b0": 556.0,      # bullion (right leg) left edge
+    "bw": 208.0,      # bullion width
+    "W": 188.0,       # diagonal leg horizontal width (=> even optical weight)
+    "S": 424.0,       # diagonal leg horizontal run (top->bottom)
+    "bar_y": 500.0,   # crossbar centre height (optical centre of the letter)
+    "bar_t": 62.0,    # crossbar thickness
+    "bar_over": 56.0,  # how far the crossbar runs past the bullion
+    "chamfer": 44.0,  # crown bevel on both top corners (the ingot read)
+    "topface": 96.0,  # bright top-face band height
+}
+
+
+def ingot_a_paths(S: float = 512.0, geom: dict | None = None):
     """Return dict layer -> svg path `d` for "The Ingot A", in a 0..S box.
 
     Built with exact boolean geometry (shapely), so the letterform is provably
-    an "A": a diagonal left leg + a vertical right leg joined at the apex,
-    with a horizontal crossbar that runs past the right leg as a gauge tick.
-    All edges are straight — no curve commands.
+    an "A": a diagonal left leg and a vertical bullion (right leg) that share a
+    flat, bevelled crown, joined by a crossbar that runs past the bullion as a
+    gauge read-out. All edges are straight — no curve commands.
     """
     from shapely.geometry import Polygon
     from shapely.ops import unary_union
 
-    u = S / 512.0
-    # ---- left leg: parallelogram centred on the line (300,72)->(96,452), t=92
-    left = Polygon(_poly([(259.5, 50.2), (340.5, 93.8), (136.5, 473.8), (55.5, 430.2)], u))
-    # ---- right leg: vertical bar (the bullion), x 346..438
-    right = Polygon(_poly([(346, 66), (438, 66), (438, 452), (346, 452)], u))
-    # ---- crossbar / gauge tick: spans both legs and runs past the right leg
-    bar = Polygon(_poly([(178, 296), (492, 296), (492, 338), (178, 338)], u))
-    a = unary_union([left, right, bar])
-    # ---- facet: bright top band on the right leg (measured element highlight)
-    facet = Polygon(_poly([(346, 66), (438, 66), (438, 120), (346, 120)], u))
+    g = dict(_INGOT_V2)
+    if geom:
+        g.update(geom)
+    H = g["H"]
+    b0 = g["b0"]
+    bw = g["bw"]
+    b1 = b0 + bw
+    W = g["W"]
+    S = g["S"]
+    yc = g["bar_y"]
+    T = g["bar_t"]
+    over = g["bar_over"]
+    cc = g["chamfer"]
 
-    def d(geom):
-        g = geom if geom.geom_type == "Polygon" else list(geom.geoms)[0]
-        return _poly_to_d(g)
+    # diagonal leg — flat crown, outer top-left corner bevelled
+    left = Polygon([(b0 - W + cc, 0.0), (b0, 0.0), (b0 - S, H), (b0 - W - S, H),
+                    (b0 - W, cc)])
+    # bullion (right leg) — top-right corner bevelled (the ingot read)
+    bull = Polygon([(b0, 0.0), (b1 - cc, 0.0), (b1, cc), (b1, H), (b0, H)])
+    # crossbar / gauge tick: left end flush with the leg's outer edge at its
+    # centre height, right end running past the bullion
+    xl = (b0 - W) - S * (yc / H)
+    bar = Polygon([(xl, yc - T / 2), (b1 + over, yc - T / 2),
+                   (b1 + over, yc + T / 2), (xl, yc + T / 2)])
+    a = unary_union([left, bull, bar])
+    # bright top face = the crown band across both legs
+    topface = Polygon([(b0 - W + cc, 0.0), (b1 - cc, 0.0), (b1, cc),
+                       (b1, g["topface"]), (b0 - W, g["topface"] + cc)])
 
-    return {"a": d(a), "facet": d(facet)}
+    # optical normalisation: equal margins on the widest axis
+    minx, miny, maxx, maxy = a.bounds
+    w, h = maxx - minx, maxy - miny
+    margin = 0.055
+    target = S * (1 - 2 * margin)
+    k = target / max(w, h)
+    tx = (S - w * k) / 2 - minx * k
+    ty = (S - h * k) / 2 - miny * k
+
+    return {"a": _poly_to_d(a, k, tx, ty),
+            "topface": _poly_to_d(topface, k, tx, ty)}
 
 
 def ingot_a_svg(size: int, fill_map: dict[str, str], bg: str | None = None,

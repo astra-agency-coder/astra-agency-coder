@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>AI ASTRA AGENCY — Status Board</title><style>
+*{box-sizing:border-box;margin:0}
+body{background:#07070C;color:#EEF0F7;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:44px}
+.board{max-width:1180px;margin:0 auto}
+h1{font-family:'Space Grotesk',system-ui;font-size:38px;letter-spacing:-.02em}
+h1 small{display:block;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#E8C766;margin-bottom:8px}
+.ts{color:#A9AEBF;font-size:13px;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}
+.kpi{background:#12121A;border:1px solid #2A2A38;border-radius:14px;padding:18px 20px}
+.kpi b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#A9AEBF}
+.kpi span{font-family:'Space Grotesk',system-ui;font-size:34px;color:#E8C766}
+.kpi i{font-style:normal;font-size:13px;color:#A9AEBF;margin-left:8px}
+h2{font-family:'Space Grotesk',system-ui;font-size:18px;margin:34px 0 12px;padding-bottom:9px;border-bottom:1px solid #2A2A38}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{text-align:left;padding:9px 12px;border-bottom:1px solid #2A2A38}
+th{color:#A9AEBF;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.num,.mono{font-family:'IBM Plex Mono',monospace}
+.ok{color:#16C79A} .warn{color:#E8C766} .bad{color:#FF4D6D}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+footer{margin-top:38px;padding-top:16px;border-top:1px solid #2A2A38;color:#A9AEBF;font-size:12px}
+</style></head><body><div class="board">
+  <h1><small>AI ASTRA AGENCY</small>Company status board</h1>
+  <div class="ts">Generated 2026-11-13 20:34 UTC · foundation phase</div>
+
+  <div class="kpis">
+    <div class="kpi"><b>Active agents</b><span>20</span><i>of 31 on roster</i></div>
+    <div class="kpi"><b>Departments</b><span>11</span><i>each with a manager</i></div>
+    <div class="kpi"><b>Readiness tests</b><span>13/13</span><i>passing</i></div>
+    <div class="kpi"><b>Dept repos</b><span>10/10</span><i>private, scoped</i></div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <h2>Departments &amp; managers</h2>
+      <table><tr><th>Department</th><th>Active agents</th><th>#</th></tr><tr><td><b>Analysis</b></td><td>astra-cao</td><td class="num">1</td></tr><tr><td><b>Business Development</b></td><td>astra-cbdo</td><td class="num">1</td></tr><tr><td><b>Creative</b></td><td>astra-brand-designer, astra-ccr, astra-design-critic, astra-design-systems</td><td class="num">4</td></tr><tr><td><b>Engineering</b></td><td>astra-cto</td><td class="num">1</td></tr><tr><td><b>Executive</b></td><td>astra-ceo</td><td class="num">1</td></tr><tr><td><b>Marketing</b></td><td>astra-cmo</td><td class="num">1</td></tr><tr><td><b>Operations</b></td><td>astra-coo</td><td class="num">1</td></tr><tr><td><b>Product</b></td><td>astra-cpo, citriage-dev, prod-competitor-analyst, prod-regional-scout</td><td class="num">4</td></tr><tr><td><b>Quality</b></td><td>astra-cqo, mgr-test-spec, test-agent-echo</td><td class="num">3</td></tr><tr><td><b>Research</b></td><td>astra-cro, astra-mkt-researcher</td><td class="num">2</td></tr><tr><td><b>Security</b></td><td>astra-ciso</td><td class="num">1</td></tr></table>
+    </div>
+    <div>
+      <h2>Integrations</h2>
+      <table><tr><th>Channel</th><th>Status</th></tr><tr><td>github</td><td class="ok">CONNECTED</td></tr><tr><td>gmail</td><td class="warn">NEEDS OWNER ACTION</td></tr><tr><td>telegram</td><td class="ok">CONNECTED</td></tr><tr><td>wallet</td><td class="ok">CONNECTED</td></tr></table>
+      <h2>Recent delegations</h2>
+      <table><tr><th>Time</th><th>Agent</th><th>Result</th></tr><tr><td class="mono">20:28</td><td>astra-brand-designer</td><td class="warn">running</td></tr><tr><td class="mono">20:21</td><td>astra-design-systems</td><td class="ok">finished</td></tr><tr><td class="mono">20:07</td><td>astra-cro</td><td class="ok">finished</td></tr><tr><td class="mono">19:08</td><td>astra-ccr</td><td class="ok">finished</td></tr><tr><td class="mono">18:59</td><td>astra-cqo</td><td class="warn">error</td></tr><tr><td class="mono">17:33</td><td>astra-cto</td><td class="ok">finished</td></tr></table>
+    </div>
+  </div>
+
+  <h2>Department repositories — one per manager, private</h2>
+  <table><tr><th>Manager</th><th>Repository</th><th>Access</th></tr><tr><td>astra-cao</td><td class="mono">dept-analysis</td><td class="ok">private + write</td></tr><tr><td>astra-cbdo</td><td class="mono">dept-business-development</td><td class="ok">private + write</td></tr><tr><td>astra-ccr</td><td class="mono">dept-creative</td><td class="ok">private + write</td></tr><tr><td>astra-cto</td><td class="mono">dept-engineering</td><td class="ok">private + write</td></tr><tr><td>astra-cmo</td><td class="mono">dept-marketing</td><td class="ok">private + write</td></tr><tr><td>astra-coo</td><td class="mono">dept-operations</td><td class="ok">private + write</td></tr><tr><td>astra-cpo</td><td class="mono">dept-product</td><td class="ok">private + write</td></tr><tr><td>astra-cqo</td><td class="mono">dept-quality</td><td class="ok">private + write</td></tr><tr><td>astra-cro</td><td class="mono">dept-research</td><td class="ok">private + write</td></tr><tr><td>astra-ciso</td><td class="mono">dept-security</td><td class="ok">private + write</td></tr></table>
+
+  <footer>Every manager holds one write-enabled deploy key bound to its own repository;
+  the company token is never shared. Generated from live company data — no figures invented.
+  Retired agents: 11.</footer>
+</div></body></html>
