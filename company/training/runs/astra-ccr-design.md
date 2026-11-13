@@ -1,8 +1,8 @@
 # Training run — astra-ccr — design
 
-- conversation: 527fc66f-cdb0-493b-bf68-9cf514799b0d
+- conversation: e3568931-4528-4d96-89a3-36f035f3b423
 - status: error
-- elapsed_s: 264.9
+- elapsed_s: 806.3
 
 ## Result
 
