@@ -347,6 +347,42 @@ def t13_wallet_registry() -> None:
            detail=f"invalid={bad}")
 
 
+# ── T14 Telegram Owner-only gate ─────────────────────────────────────
+def t14_telegram_gate() -> None:
+    """The CEO bot must accept only the allowlisted Owner and refuse secrets."""
+    sys.path.insert(0, str(ROOT / "ops"))
+    from integrations import telegram as T  # noqa: E402
+
+    owner = T._owner_id()
+    if not owner:
+        record("T14", "Telegram accepts only the Owner; never sends secrets",
+               False, "ASTRA_OWNER_TELEGRAM_ID not set",
+               detail="Owner must /start the bot to capture the id")
+        return
+
+    checks = {
+        "owner_ok": T.is_authorized(owner) is True,
+        "stranger_blocked": T.is_authorized(int(owner) + 1) is False,
+        "missing_blocked": T.is_authorized(None) is False,
+    }
+    stranger = {"update_id": 1, "message": {"from": {"id": int(owner) + 1},
+                "chat": {"id": int(owner) + 1, "type": "private"}, "text": "/hire evil"}}
+    checks["stranger_update"] = T.handle_update(stranger)["handled"] is False
+    owner_upd = {"update_id": 2, "message": {"from": {"id": int(owner)},
+                 "chat": {"id": int(owner), "type": "private"}, "text": "/status"}}
+    checks["owner_update"] = T.handle_update(owner_upd)["handled"] is True
+    try:
+        T.send("here is my password hunter2")
+        checks["secret_guard"] = False
+    except RuntimeError:
+        checks["secret_guard"] = True
+
+    bad = [k for k, v in checks.items() if not v]
+    record("T14", "Telegram accepts only the Owner; never sends secrets",
+           not bad, f"owner_id={owner} checks={len(checks) - len(bad)}/{len(checks)}",
+           detail="; ".join(bad))
+
+
 LIVE_TESTS = {
     "T02": t02_create_agent, "T03": t03_delegation, "T04": t04_sessions,
     "T10": t10_control_plane, "T12": t12_agent_scoped_write,
@@ -355,6 +391,7 @@ FAST_TESTS = {
     "T01": t01_ceo, "T05": t05_memory, "T06": t06_self_heal,
     "T07": t07_report, "T08": t08_security, "T09": t09_environment,
     "T11": t11_scoped_access, "T13": t13_wallet_registry,
+    "T14": t14_telegram_gate,
 }
 
 

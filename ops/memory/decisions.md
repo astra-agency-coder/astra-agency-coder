@@ -89,3 +89,16 @@ unset: the bot only accepts commands from the allowlisted Owner id, so we wait f
 the Owner's `/start` to capture the chat id before enabling send.
 **Boundary:** the bot must never accept commands from any other user; never send
 passwords/keys.
+
+---
+
+## D-0015 — Telegram channel live; Owner allowlisted
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+The Owner sent `/start`; the CEO captured the private chat id and stored it as
+`ASTRA_OWNER_TELEGRAM_ID` in the secret store (never in a file). The channel is
+now **live**: `send()` refuses when no Owner id is set and refuses text that looks
+like a secret; `handle_update()` rejects any non-Owner sender.
+**Verification:** new test **T14** — owner accepted, stranger rejected, missing id
+rejected, non-Owner update dropped, secret-looking send refused (6/6 PASS).
+**Boundary:** bot commands are accepted from the Owner id only; no passwords/keys
+are ever sent over the channel.
