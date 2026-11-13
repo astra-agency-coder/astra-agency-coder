@@ -168,11 +168,11 @@ const en: Dict = {
     verified: "verified",
     blockedLabel: "needs credentials",
     blockedNote:
-      "The API contract suite needs live Supabase credentials, which were cleared when the runtime was recycled. The site reports the last measured score rather than a remembered one — re-verification is queued, and the figure will update to 22/22 only once the suite actually passes.",
+      "Every figure here is produced by a run, not remembered. A suite that cannot run renders as unverified with its last measured score instead of a made-up one.",
     rows: [
       { label: "Readiness suite", value: "20 / 20", state: "ok" },
       { label: "Analysis engine", value: "27 / 27", state: "ok" },
-      { label: "API contract", value: "9 / 22", state: "blocked" },
+      { label: "API contract", value: "23 / 23", state: "ok" },
       { label: "Security red-team", value: "25 / 27 · 2 open", state: "ok" },
       { label: "Department repos", value: "10 / 10", state: "ok" },
       { label: "Site audit (3 locales × 3 viewports)", value: "9 / 9", state: "ok" },
@@ -297,11 +297,11 @@ const ar: Dict = {
     verified: "متحقَّق",
     blockedLabel: "يحتاج بيانات دخول",
     blockedNote:
-      "مجموعة اختبار عقد الـ API تحتاج بيانات دخول Supabase حيّة، وقد مُحيت عند إعادة تدوير بيئة التشغيل. الموقع يعرض آخر نتيجة مقيسة فعلاً لا رقماً محفوظاً — إعادة التحقق مُدرجة في القائمة، وسيتحدّث الرقم إلى 22/22 فقط عند نجاح المجموعة فعلاً.",
+      "كل رقم هنا ناتج عن تشغيل فعلي لا عن ذاكرة. أي مجموعة اختبار لا تستطيع العمل تُعرض كغير متحقَّق منها مع آخر نتيجة مقيسة، بدل رقم مختلق.",
     rows: [
       { label: "مجموعة الجاهزية", value: "20 / 20", state: "ok" },
       { label: "محرّك التحليل", value: "27 / 27", state: "ok" },
-      { label: "عقد الـ API", value: "9 / 22", state: "blocked" },
+      { label: "عقد الـ API", value: "23 / 23", state: "ok" },
       { label: "الفريق الأمني الهجومي", value: "25 / 27 · ثغرتان", state: "ok" },
       { label: "مستودعات الأقسام", value: "10 / 10", state: "ok" },
       { label: "تدقيق الموقع (3 لغات × 3 مقاسات)", value: "9 / 9", state: "ok" },
@@ -426,11 +426,11 @@ const tr: Dict = {
     verified: "doğrulandı",
     blockedLabel: "kimlik bilgisi gerekli",
     blockedNote:
-      "API sözleşmesi paketi canlı Supabase kimlik bilgilerine ihtiyaç duyar; bunlar çalışma ortamı yeniden oluşturulurken silindi. Site hatırlanan bir sayı yerine en son ölçülen puanı gösterir — yeniden doğrulama kuyruğa alındı ve rakam ancak paket gerçekten geçtiğinde 22/22'ye güncellenecek.",
+      "Buradaki her sayı bir çalıştırmadan üretilir, hatırlanmaz. Çalışamayan bir paket, uydurulmuş bir sayı yerine en son ölçülen puanla doğrulanmamış olarak gösterilir.",
     rows: [
       { label: "Hazırlık paketi", value: "20 / 20", state: "ok" },
       { label: "Analiz motoru", value: "27 / 27", state: "ok" },
-      { label: "API sözleşmesi", value: "9 / 22", state: "blocked" },
+      { label: "API sözleşmesi", value: "23 / 23", state: "ok" },
       { label: "Güvenlik kırmızı takımı", value: "25 / 27 · 2 açık", state: "ok" },
       { label: "Bölüm depoları", value: "10 / 10", state: "ok" },
       { label: "Site denetimi (3 dil × 3 görünüm)", value: "9 / 9", state: "ok" },

@@ -55,7 +55,7 @@ def engine() -> dict:
 def api_suite() -> dict:
     """Run the API suite against a live server; parse RESULT."""
     try:
-        p = subprocess.run([sys.executable, "api/test_api.py", "http://127.0.0.1:12012"],
+        p = subprocess.run([sys.executable, "api/test_api.py", "http://127.0.0.1:12001"],
                            cwd=TRADING, capture_output=True, text=True, timeout=420)
         m = re.search(r"RESULT\s+(\d+)/(\d+)\s+passed", p.stdout)
         if m:

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T19:27:41.899226+00:00",
+  "generated_at": "2026-11-13T19:30:36.033015+00:00",
   "readiness": {
     "status": "verified",
     "passed": 20,
@@ -15,8 +15,8 @@
   },
   "api": {
     "status": "verified",
-    "passed": 9,
-    "total": 22,
+    "passed": 23,
+    "total": 23,
     "source": "api/test_api.py"
   },
   "security": {
