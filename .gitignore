@@ -11,3 +11,7 @@ company/roster.corrupt.*.json
 
 # scraped raw research pages (large, third-party; keep derived notes only)
 deliveries/*/research/raw/
+
+# heavy media artifacts (keep deliverables lean; store media externally)
+*.wav
+**/video/audio/
