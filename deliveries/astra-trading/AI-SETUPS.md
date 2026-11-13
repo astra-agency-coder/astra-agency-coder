@@ -1,4 +1,4 @@
-# AstraGold — وحدة "الصفقات المقترحة من الـ AI" (AI-Proposed Setups)
+# Astra Trading — وحدة "الصفقات المقترحة من الـ AI" (AI-Proposed Setups)
 
 > الحالة: **مرحلة تخطيط** · ملحق لوثيقة `PLAN.md` · تاريخ: 2026-11-13
 

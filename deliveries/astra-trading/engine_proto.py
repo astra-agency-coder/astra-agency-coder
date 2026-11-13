@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""AstraGold — analysis prototype on REAL gold data (XAUUSD / COMEX GC=F).
+"""Astra Trading — analysis prototype on REAL gold data (XAUUSD / COMEX GC=F).
 
 Honest scope: this is a *technical analysis engine*, not a signal service.
 It computes structure (support/resistance), liquidity levels, session ranges,
 volatility (ATR) and a plain-language bias. No profit promises, no advice.
 
-Run:  python3 astragold_proto.py [--interval 1h] [--range 1mo]
-Out:  astragold-chart.png  + a printed analysis summary
+Run:  python3 engine_proto.py [--interval 1h] [--range 1mo]
+Out:  astra-trading-chart.png  + a printed analysis summary
 """
 from __future__ import annotations
 
@@ -104,7 +104,7 @@ def analyse(rows):
     }
 
 
-def draw(rows, info, out="astragold-chart.png"):
+def draw(rows, info, out="astra-trading-chart.png"):
     n = len(rows)
     x = np.arange(n)
     o = np.array([r[1] for r in rows]); h = np.array([r[2] for r in rows])
@@ -137,7 +137,7 @@ def draw(rows, info, out="astragold-chart.png"):
     for s in ax.spines.values():
         s.set_color("#2a2733")
     ax.set_xlim(-2, n + n * .12)
-    ax.set_title(f"AstraGold — {SYMBOL} structure analysis   |   bias: {info['bias'].upper()}   |   ATR {info['atr']:.2f}", color="#EDE9F3", fontsize=13, pad=14, loc="left")
+    ax.set_title(f"Astra Trading — {SYMBOL} structure analysis   |   bias: {info['bias'].upper()}   |   ATR {info['atr']:.2f}", color="#EDE9F3", fontsize=13, pad=14, loc="left")
     fig.tight_layout()
     fig.savefig(out, dpi=110, facecolor="#0B0A12")
     print(f"chart -> {out}")
@@ -150,7 +150,7 @@ def main():
     a = ap.parse_args()
     rows = fetch(SYMBOL, a.interval, a.range)["rows"]
     info = analyse(rows)
-    print(f"\nAstraGold prototype — {SYMBOL} @ {a.interval}/{a.range}")
+    print(f"\nAstra Trading prototype — {SYMBOL} @ {a.interval}/{a.range}")
     print(f"  bars            : {len(rows)}")
     print(f"  last price      : {info['last']:.2f}")
     print(f"  ATR(14)         : {info['atr']:.2f}")
