@@ -10,10 +10,16 @@ set -euo pipefail
 
 REMOTE="${1:-company}"
 BRANCH="${2:-main}"
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-TOKEN="$(python3 "$REPO_DIR/ops/secrets.py" >/dev/null 2>&1 || true)"
-TOKEN="$(cd "$REPO_DIR" && python3 -c "
+# Push from the current repo if we are inside one; otherwise from the project.
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  REPO_DIR="$(git rev-parse --show-toplevel)"
+else
+  REPO_DIR="$SCRIPT_DIR"
+fi
+
+TOKEN="$(cd "$SCRIPT_DIR" && python3 -c "
 import sys; sys.path.insert(0,'ops')
 import secrets
 print(secrets.resolve('GITHUB_TOKEN_WRITE') or '')
