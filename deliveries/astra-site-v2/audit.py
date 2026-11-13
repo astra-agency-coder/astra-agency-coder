@@ -19,7 +19,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:12010"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:12000"
 LOCALES = ["en", "ar", "tr"]
 VIEWPORTS = {"desktop": (1440, 1000), "tablet": (834, 1112), "phone": (390, 844)}
 SHOTS = Path(__file__).resolve().parent / "shots"
