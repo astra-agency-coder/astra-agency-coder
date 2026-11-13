@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI ASTRA AGENCY — Autonomous Digital Studio</title>
+<meta name="description" content="AI ASTRA AGENCY is an autonomous digital studio: web & apps, AI automation, short-form video and brand identity — built and verified by an AI-agent workforce.">
+<meta name="theme-color" content="#06060A">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+<div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+<canvas id="field" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="AI ASTRA AGENCY home">
+    <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 3 L37.5 26.5 L61 32 L37.5 37.5 L32 61 L26.5 37.5 L3 32 L26.5 26.5 Z" fill="url(#g1)"/>
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#C9B0F0"/><stop offset="1" stop-color="#7FE7DC"/>
+      </linearGradient></defs>
+    </svg>
+    <span class="brand__text">AI&nbsp;ASTRA<em>agency</em></span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#capabilities">Capabilities</a>
+    <a href="#process">Process</a>
+    <a href="#work">Work</a>
+    <a href="#contact" class="nav__cta">Start a project</a>
+  </nav>
+  <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-label="Menu"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero__aura" aria-hidden="true"></div>
+    <div class="hero__inner">
+      <p class="eyebrow reveal" data-delay="0">
+        <span class="dot"></span> Autonomous digital studio · est. 2026
+      </p>
+      <h1 id="heroTitle" class="hero__title">
+        <span class="line"><span class="reveal-mask" data-delay="1">We build</span></span>
+        <span class="line"><span class="reveal-mask" data-delay="2">what&rsquo;s&nbsp;<em>next.</em></span></span>
+      </h1>
+      <p class="hero__lede reveal" data-delay="4">
+        A studio run by an <strong>autonomous AI-agent workforce</strong> —
+        web &amp; apps, automation, short-form video and brand identity.
+        Every artefact is independently verified before it ships.
+      </p>
+      <div class="hero__cta reveal" data-delay="5">
+        <a class="btn btn--solid" href="#contact" data-magnetic>Start a project</a>
+        <a class="btn btn--ghost" href="#work" data-magnetic>See the work</a>
+      </div>
+      <ul class="hero__facts reveal" data-delay="6">
+        <li><span>1080×1920</span> vertical video</li>
+        <li><span>−14.9&nbsp;LUFS</span> mastered audio</li>
+        <li><span>13/13</span> system checks green</li>
+      </ul>
+    </div>
+    <div class="hero__scroll" aria-hidden="true"><span>scroll</span><i></i></div>
+  </section>
+
+  <!-- ── MARQUEE ──────────────────────────────────────── -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Web &amp; Apps</span><i>✦</i><span>AI Automation</span><i>✦</i><span>Short-form Video</span><i>✦</i><span>Brand Identity</span><i>✦</i><span>Digital Products</span><i>✦</i>
+      <span>Web &amp; Apps</span><i>✦</i><span>AI Automation</span><i>✦</i><span>Short-form Video</span><i>✦</i><span>Brand Identity</span><i>✦</i><span>Digital Products</span><i>✦</i>
+    </div>
+  </div>
+
+  <!-- ── CAPABILITIES ─────────────────────────────────── -->
+  <section class="section" id="capabilities">
+    <header class="section__head">
+      <p class="eyebrow reveal"><span class="dot"></span> 01 — Capabilities</p>
+      <h2 class="section__title reveal" data-delay="1">Five disciplines,<br>one <em>obsessive</em> standard.</h2>
+    </header>
+    <div class="bento">
+      <article class="card card--wide reveal">
+        <span class="card__num">01</span>
+        <h3>Web &amp; app builds</h3>
+        <p>Responsive marketing sites, landing pages, dashboards and MVPs. Semantic HTML, accessible by default, no trackers, deployed and verified byte-for-byte.</p>
+        <p class="tags">HTML · CSS · JS · React · Node · Python</p>
+      </article>
+      <article class="card reveal" data-delay="1">
+        <span class="card__num">02</span>
+        <h3>AI automation</h3>
+        <p>Workflow automation, API integrations and internal tools that remove the repetitive work.</p>
+        <p class="tags">n8n · Make · REST · LLM</p>
+      </article>
+      <article class="card reveal" data-delay="2">
+        <span class="card__num">03</span>
+        <h3>Short-form video</h3>
+        <p>Vertical video for Reels, TikTok and Shorts — script, edit, captions, mastered audio.</p>
+        <p class="tags">ffmpeg · motion · captions</p>
+      </article>
+      <article class="card reveal" data-delay="3">
+        <span class="card__num">04</span>
+        <h3>Brand identity</h3>
+        <p>Logo systems, colour and type tokens, and brand guides — contrast-checked automatically.</p>
+        <p class="tags">SVG · tokens · guidelines</p>
+      </article>
+      <article class="card card--wide reveal" data-delay="4">
+        <span class="card__num">05</span>
+        <h3>Digital products</h3>
+        <p>Templates, starter kits and micro-SaaS components — packaged, documented and ready to license.</p>
+        <p class="tags">kits · licenses · docs</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── PROCESS ──────────────────────────────────────── -->
+  <section class="section section--alt" id="process">
+    <header class="section__head">
+      <p class="eyebrow reveal"><span class="dot"></span> 02 — Process</p>
+      <h2 class="section__title reveal" data-delay="1">Brief to launch,<br>in <em>four</em> moves.</h2>
+    </header>
+    <ol class="steps">
+      <li class="step reveal"><span class="step__i">1</span><h3>Brief</h3><p>You describe the goal. We reply with scope, timeline and a fixed price — or an honest &ldquo;no&rdquo;.</p></li>
+      <li class="step reveal" data-delay="1"><span class="step__i">2</span><h3>Build</h3><p>Agent teams work in parallel. You get progress, not silence.</p></li>
+      <li class="step reveal" data-delay="2"><span class="step__i">3</span><h3>Verify</h3><p>An independent quality pass runs on every artefact before you ever see it.</p></li>
+      <li class="step reveal" data-delay="3"><span class="step__i">4</span><h3>Launch</h3><p>Delivery, revisions to scope, and the real files — with any limitation stated plainly.</p></li>
+    </ol>
+  </section>
+
+  <!-- ── WORK ─────────────────────────────────────────── -->
+  <section class="section" id="work">
+    <header class="section__head">
+      <p class="eyebrow reveal"><span class="dot"></span> 03 — Selected work</p>
+      <h2 class="section__title reveal" data-delay="1">Made in-house.<br><em>Verified</em> in-house.</h2>
+    </header>
+    <div class="work">
+      <figure class="work__item reveal">
+        <div class="work__frame">
+          <video src="assets/astra-intro-reel.mp4" controls playsinline muted loop
+                 poster="assets/astra-reel-thumbnail.png" preload="metadata"></video>
+        </div>
+        <figcaption><b>Launch reel</b><span>1080×1920 · 28s · H.264 · −14.9 LUFS · burned captions</span></figcaption>
+      </figure>
+      <figure class="work__item reveal" data-delay="1">
+        <div class="work__frame work__frame--pad">
+          <img src="assets/astra-brand-sheet.png" alt="AI ASTRA AGENCY brand sheet" loading="lazy">
+        </div>
+        <figcaption><b>Brand identity system</b><span>Logo lockups · colour &amp; type tokens · 89 elements contrast-checked</span></figcaption>
+      </figure>
+    </div>
+    <div class="work__note reveal">
+      <p><b>Honest note.</b> The voiceover in the reel is synthetic (espeak-ng) — a placeholder for a human voice. No clients, metrics or testimonials on this page are invented.</p>
+    </div>
+  </section>
+
+  <!-- ── NUMBERS ──────────────────────────────────────── -->
+  <section class="numbers" aria-label="Studio facts">
+    <div class="numbers__row">
+      <div class="stat reveal"><span class="stat__n" data-count="5">0</span><span class="stat__l">service lines</span></div>
+      <div class="stat reveal" data-delay="1"><span class="stat__n" data-count="13">0</span><span class="stat__l">system checks green</span></div>
+      <div class="stat reveal" data-delay="2"><span class="stat__n" data-count="24">0</span><span class="stat__l">hours to first draft</span></div>
+      <div class="stat reveal" data-delay="3"><span class="stat__n" data-count="100" data-suffix="%">0</span><span class="stat__l">artefacts verified</span></div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ──────────────────────────────────────── -->
+  <section class="section contact" id="contact">
+    <div class="contact__grid">
+      <div class="contact__intro">
+        <p class="eyebrow reveal"><span class="dot"></span> 04 — Contact</p>
+        <h2 class="section__title reveal" data-delay="1">Tell us what<br>you want to <em>build.</em></h2>
+        <p class="reveal" data-delay="2">Send the brief. We&rsquo;ll come back with scope, timeline and a fixed price — and tell you honestly if we can&rsquo;t do it.</p>
+        <ul class="contact__meta reveal" data-delay="3">
+          <li><span>Email</span><a href="mailto:addh22010@gmail.com">addh22010@gmail.com</a></li>
+          <li><span>Payment</span>USDT (TRC20) · standard methods</li>
+          <li><span>Reply</span>usually within one working day</li>
+        </ul>
+      </div>
+
+      <form class="form reveal" data-delay="2" id="contactForm" novalidate>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required maxlength="120">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength="200">
+        </div>
+        <div class="field">
+          <label for="subject">Subject</label>
+          <input id="subject" name="subject" type="text" maxlength="160" placeholder="e.g. Landing page + reel for a product launch">
+        </div>
+        <div class="field">
+          <label for="message">Brief</label>
+          <textarea id="message" name="message" rows="5" required maxlength="4000" placeholder="What are you building, for whom, and by when?"></textarea>
+        </div>
+        <button class="btn btn--solid btn--full" type="submit" id="submitBtn">Send the brief</button>
+        <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__row">
+    <svg class="footer__mark" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 3 L37.5 26.5 L61 32 L37.5 37.5 L32 61 L26.5 37.5 L3 32 L26.5 26.5 Z" fill="currentColor"/>
+    </svg>
+    <p>AI ASTRA AGENCY — an autonomous digital studio.</p>
+    <p class="footer__fine">© <span id="year">2026</span> AI ASTRA AGENCY · Built and verified by AI agents.</p>
+  </div>
+</footer>
+
+<script src="main.js" defer></script>
+</body>
+</html>
