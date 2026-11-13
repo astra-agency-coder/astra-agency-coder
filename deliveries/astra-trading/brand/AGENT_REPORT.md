@@ -32,3 +32,21 @@ in `BRAND.md`, not a renderer fault; flagged, not "fixed" (out of scope).
 STEP 1 status: **done** — a deliverable exists on disk before any refinement.
 
 ---
+
+## STEP 2 — Honest critique of the mark ✅
+
+Wrote `brand/CRITIQUE.md` (12 concrete, measured bullets) after rasterising the
+mark at 512 px and reading the path coordinates directly. Headline findings:
+
+- Leg weights are **not equal**: bar **92 u** wide vs diagonal **105 u** (~12 % off).
+- Crossbar is **42 u** tall vs the 92 u bar — 2.2× thinner, not weight-matched.
+- The "solid bullion" bar is **visually broken** by a 42 u crossbar gap.
+- Crossbar is **one-sided**: runs to x=492, past the bar's edge at 438 (a 54 u arm).
+- **Off-centre**: ink bbox centre (273, 262) vs box centre 256; margins L55/R20, T50/B38.
+- **No clear space** defined; ink sits 21 u from the right edge.
+- Un-snapped junction at **(231.95, 296)**; skewed foot; feet on **two different
+  baselines** (473.8 vs 452); mismatched apex; decorative cap with no geometric logic.
+
+STEP 2 status: **done** — critique is written and is honest, not flattering.
+
+---

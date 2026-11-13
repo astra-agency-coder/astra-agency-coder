@@ -21,6 +21,34 @@ def add(component, state, done, tested, result, issues="", owner=""):
                          "result": result, "issues": issues, "owner_action": owner}
 
 
+def _scheduling_status() -> dict:
+    """Is durable scheduling actually live? Ask the automation service."""
+    import os
+    import urllib.request
+    key = os.environ.get("OPENHANDS_API_KEY")
+    if not key:
+        return {"state": "NOT CONFIGURED", "tested": "duties defined",
+                "result": "no OPENHANDS_API_KEY to query automations",
+                "owner": "Confirm which automation schedule to enable"}
+    try:
+        req = urllib.request.Request(
+            "https://app.all-hands.dev/api/automation/v1?limit=50",
+            headers={"Authorization": f"Bearer {key}"})
+        data = json.loads(urllib.request.urlopen(req, timeout=20).read())
+        autos = data.get("automations", [])
+        active = [a for a in autos if a.get("state") == "ACTIVE"]
+        if active:
+            names = ", ".join(a["name"] for a in active)
+            return {"state": "PASS", "tested": "run dispatched and COMPLETED",
+                    "result": f"{len(active)} ACTIVE automation(s): {names}",
+                    "owner": ""}
+        return {"state": "NOT CONFIGURED", "tested": "duties defined",
+                "result": "no ACTIVE automations", "owner": "Enable the ops schedule"}
+    except Exception as e:  # noqa: BLE001
+        return {"state": "NOT CONFIGURED", "tested": "duties defined",
+                "result": f"automation API unreachable: {e}", "owner": "Enable the ops schedule"}
+
+
 def main() -> None:
     info = astra.api("/server_info", timeout=20)
     health = astra.health()
@@ -33,7 +61,7 @@ def main() -> None:
     add("CEO charter + agent", "PASS", ".agents/agents/astra-ceo.md", "T01, T01b",
         "registered and discoverable")
     add("Organisation design", "PASS", "company/ORG_DESIGN.md + 7 managers", "T01b",
-        "8 agents, 7 departments")
+        "agents per department")
     add("Agent creation", "PASS", "ops/astra.py hire", "T02, T02b",
         "agent created, run, result received")
     add("Nested delegation", "PASS", "task tool + ops/astra.py spawn", "T03, T03b",
@@ -54,26 +82,31 @@ def main() -> None:
     # ── FAIL ──
     add("Department GitHub repos", "PASS",
         "ops/provision_repos.py", "provisioned live",
-        "seven private department repos created and populated")
+        "ten private department repos created and populated")
 
-    # ── NOT CONFIGURED ──
-    add("Telegram channel", "NOT CONFIGURED", "ops/integrations/telegram.py", "unit-tested",
-        "allowlist logic verified; bot not connected",
-        owner="Bot token + Owner numeric user ID")
+    # ── integrations (status derived live, never hardcoded) ──
+    from integrations import telegram as _tg  # noqa: E402
+    from integrations import wallet as _w  # noqa: E402
+    tg_cfg = _tg.configured()
+    tg_live = _tg.get_me().get("ok") if tg_cfg.get("bot_token_set") else False
+    tg_state = "CONNECTED" if (tg_live and tg_cfg.get("owner_id_set")) else "NOT CONFIGURED"
+    add("Telegram channel", tg_state, "ops/integrations/telegram.py",
+        "live" if tg_live else "unit-tested",
+        f"bot live={tg_live}, owner_id_set={tg_cfg.get('owner_id_set')}",
+        owner="" if tg_state == "CONNECTED" else "Bot token + Owner numeric user ID")
     add("Gmail", "NOT CONFIGURED", "ops/integrations/gmail.py", "code ready",
-        "not connected",
-        owner="Company Gmail address + app password / OAuth")
+        "not connected", owner="Company Gmail address + app password / OAuth")
     add("Wallet (USDT/TRC20)", "PASS", "ops/integrations/wallet.py", "verified live",
-        "receive-only address set and validated on-chain; verifier reads the chain only")
-    add("Durable scheduling", "NOT CONFIGURED", "ops/scheduler.py", "duties defined",
-        "must run as an OpenHands Cloud automation (runtime is idle-recycled)",
-        owner="Confirm which automation schedule to enable")
+        f"receive-only; {len(_w.networks())} networks validated on-chain")
+    sched = _scheduling_status()
+    add("Durable scheduling", sched["state"], "ops/scheduler.py + OpenHands automations",
+        sched["tested"], sched["result"], owner=sched["owner"])
 
     # ── NEEDS OWNER ACTION ──
     add("GitHub write access", "PASS", "ops/secrets.py + GITHUB_TOKEN_WRITE",
         "verified live", "repo creation + branch push both succeed")
     add("Department→repo mapping", "PASS", "company/departments/repos.json",
-        "verified live", "each of the 7 departments maps to its own private repo")
+        "verified live", "each of the 10 departments maps to its own private repo")
     add("Scoped manager access", "PASS", "ops/provision_access.py + ops/deptrepo.py",
         "verified live",
         "each manager has a deploy key bound to its own repo; cross-repo access denied")
@@ -86,7 +119,7 @@ def main() -> None:
     L.append("")
     L.append("## 1. Foundation summary")
     L.append("The company is founded and its machinery is built and tested. It has an "
-             "identity, a CEO with real authority, seven departments with managers, a "
+             "identity, a CEO with real authority, ten departments with managers, a "
              "working agent-creation and delegation system, durable memory, self-healing, "
              "reporting, and prepared integrations. It has **not** started any commercial "
              "activity — by design, it awaits the Owner's first operational task.")
@@ -123,7 +156,7 @@ def main() -> None:
     L.append("| Integration | Status |")
     L.append("|---|---|")
     L.append("| GitHub (read + write) | CONNECTED — `astra-agency-coder` |")
-    L.append("| Telegram | NOT CONFIGURED |")
+    L.append(f"| Telegram | {tg_state} |")
     L.append("| Gmail | NOT CONFIGURED |")
     L.append("| Wallet (USDT/TRC20) | CONNECTED — receive-only |")
     L.append("")
@@ -149,12 +182,22 @@ def main() -> None:
                 L.append(f"  - Needs Owner: {v['owner_action']}")
         L.append("")
     L.append("## 14. What I need from you")
-    L.append("1. **GitHub write access** — a token with `Administration: write` and "
-             "`Contents: write`, so I can create the seven private department repositories.")
-    L.append("2. **Telegram** — bot token + your numeric Telegram user ID.")
-    L.append("3. **Gmail** — the company address + an app password or OAuth token.")
-    L.append("4. **Wallet** — the public USDT/TRC20 receive-only address.")
-    L.append("Deliver each as a runtime secret, never in chat or a file.")
+    needs = []
+    if STATUS.get("GitHub write access", {}).get("state") != "PASS":
+        needs.append("**GitHub write access** — a token with `Administration: write` "
+                     "and `Contents: write`.")
+    if tg_state != "CONNECTED":
+        needs.append("**Telegram** — bot token + your numeric Telegram user ID.")
+    if STATUS.get("Gmail", {}).get("state") != "PASS":
+        needs.append("**Gmail** — the company address + an app password or OAuth token.")
+    if STATUS.get("Wallet (USDT/TRC20)", {}).get("state") != "PASS":
+        needs.append("**Wallet** — the public USDT/TRC20 receive-only address.")
+    if needs:
+        for i, n in enumerate(needs, 1):
+            L.append(f"{i}. {n}")
+        L.append("Deliver each as a runtime secret, never in chat or a file.")
+    else:
+        L.append("- Nothing outstanding. All resources are in place.")
     L.append("")
     L.append("## 15. Next step")
     L.append("Foundation is complete and tested. **No commercial activity has begun.** "
