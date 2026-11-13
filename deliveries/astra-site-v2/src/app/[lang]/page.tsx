@@ -5,6 +5,7 @@ import { getDict } from "@/lib/dictionaries";
 import { company, departments, facts, marketSnapshot, workforce } from "@/lib/facts";
 import Nav from "@/components/Nav";
 import RevealObserver from "@/components/RevealObserver";
+import ScrollProgress from "@/components/ScrollProgress";
 import CandleChart from "@/components/CandleChart";
 import LiveTick from "@/components/LiveTick";
 import SetupCard from "@/components/SetupCard";
@@ -56,6 +57,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   return (
     <>
       <RevealObserver />
+      <ScrollProgress />
       <Nav links={links} cta={t.nav.cta} locale={lang} brand={company.name} langs={langs} />
 
       <main id="top">

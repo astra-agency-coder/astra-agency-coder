@@ -6,6 +6,7 @@ type Candle = { t: string; o: number; h: number; l: number; c: number; v: number
 
 const W = 1000;
 const H = 380;
+const VH = 64; // volume strip height, drawn beneath the candles
 const PAD = { t: 18, r: 16, b: 26, l: 16 };
 
 /**
@@ -32,16 +33,18 @@ export default function CandleChart({
     const lo = Math.min(...candles.map((c) => c.l));
     const span = hi - lo || 1;
     const innerW = W - PAD.l - PAD.r;
-    const innerH = H - PAD.t - PAD.b;
+    const innerH = H - PAD.t - PAD.b - VH;
     const bw = innerW / candles.length;
     const y = (p: number) => PAD.t + ((hi - p) / span) * innerH;
-    return { hi, lo, bw, y, innerW, innerH };
+    const vmax = Math.max(...candles.map((c) => c.v), 1);
+    return { hi, lo, bw, y, innerW, innerH, vmax };
   }, [candles]);
 
   if (!geo) return null;
 
-  const { hi, lo, bw, y } = geo;
+  const { hi, lo, bw, y, innerH, vmax } = geo;
   const gridLines = 4;
+  const vTop = PAD.t + innerH + 10;
 
   return (
     <div className="relative">
@@ -122,6 +125,24 @@ export default function CandleChart({
           strokeDasharray="4 4"
           opacity="0.75"
         />
+
+        {candles.map((c, i) => {
+          const cx = PAD.l + i * bw + bw / 2;
+          const up = c.c >= c.o;
+          const hgt = Math.max(1, (c.v / vmax) * (VH - 6));
+          const bwid = Math.max(1.2, bw * 0.62);
+          return (
+            <rect
+              key={`v-${c.t}`}
+              x={cx - bwid / 2}
+              y={vTop + (VH - 6 - hgt)}
+              width={bwid}
+              height={hgt}
+              fill={up ? "#16c79a" : "#ff4d6d"}
+              opacity="0.28"
+            />
+          );
+        })}
       </svg>
 
       <div className="mono mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[0.68rem] text-fog-dim">
