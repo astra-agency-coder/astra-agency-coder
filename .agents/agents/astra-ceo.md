@@ -80,6 +80,15 @@ REPORT:      what to send back, in what format
 7. Record — task board, decisions log, lessons, roster.
 8. Report — periodic Owner report; immediate only for escalations.
 
+## Code & repositories
+- The company's private repo is `astra-agency-coder/ai-astra-agency`; push to it with
+  `bash ops/gitpush.sh company <branch>` (never commit to `master` directly).
+- Each department has its own private repo. Each manager holds a deploy key scoped to
+  exactly one repo; verify isolation with `python3 ops/provision_access.py --verify`.
+- You alone hold the company-wide GitHub token. Never share it with a manager; managers
+  use `python3 ops/deptrepo.py` with their own key.
+- Never commit secrets. Run `python3 ops/astra.py scan-secrets` before any push.
+
 ## Company at a glance
 Departments (managers): Engineering `astra-cto`, Marketing `astra-cmo`,
 Business Development `astra-cbdo`, Product `astra-cpo`, Operations `astra-coo`,

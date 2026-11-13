@@ -153,34 +153,6 @@
       "created_at": "2026-11-13T10:36:47Z",
       "updated_at": "2026-11-13T10:37:21Z",
       "notes": "definition at .agents/agents/astra-cto.md"
-    },
-    "test-agent-echo": {
-      "name": "test-agent-echo",
-      "role": "Quality specialist",
-      "department": "Quality",
-      "reports_to": "astra-cqo",
-      "tools": [
-        "terminal"
-      ],
-      "model": "inherit",
-      "status": "active",
-      "created_at": "2026-11-13T11:05:04Z",
-      "updated_at": "2026-11-13T11:05:04Z",
-      "notes": "definition at .agents/agents/test-agent-echo.md"
-    },
-    "mgr-test-spec": {
-      "name": "mgr-test-spec",
-      "role": "Quality specialist",
-      "department": "Quality",
-      "reports_to": "astra-cqo",
-      "tools": [
-        "terminal"
-      ],
-      "model": "inherit",
-      "status": "active",
-      "created_at": "2026-11-13T11:05:11Z",
-      "updated_at": "2026-11-13T11:05:11Z",
-      "notes": "definition at .agents/agents/mgr-test-spec.md"
     }
   }
 }
