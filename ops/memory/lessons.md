@@ -258,3 +258,16 @@ budget exhaustion.
 **What we change:** Give review-type delegations a higher `--max-iterations`
 (80+) and instruct the agent to write findings incrementally to its output file,
 so a budget stop still leaves usable results on disk.
+
+### 2026-11-13 — A 403 can mean "cannot see", not "does not exist"
+**What happened:** With the older read-only integration token, `POST /user/repos`
+returned 403 and `GET /user/repos` listed only one public repo. I recorded the
+department repos as "0/10, blocked". With the Owner's fine-grained PAT the same
+API returns 13 repos: all 10 private `dept-*` repos already existed, each with
+CHARTER.md, knowledge/ and work/, and accept pushes. Nothing had been missing.
+**What we learned:** A token that cannot see private resources reports the same
+403 as a resource that is genuinely absent. Absence of evidence was written
+down as evidence of absence — the exact failure the company must never make.
+**What we change:** Before recording "X does not exist", confirm the credential
+can see the resource class at all. State the credential's visibility limits in
+the finding, and re-verify with the widest credential available.
