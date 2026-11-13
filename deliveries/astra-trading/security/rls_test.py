@@ -153,6 +153,12 @@ def main() -> int:
         return uid, Client(url, anon, jwt, role_note)
 
     print("== setting up fixtures ==")
+    # purge any fixtures left by a previous interrupted run
+    for path in ("setups?idempotency_key=like.rt-*", "setups?idempotency_key=like.dbg-*",
+                 "setups?idempotency_key=like.f-*", "setups?idempotency_key=like.good-*",
+                 "payments?tx_hash=like.RT-TX-*", "agent_keys?name=like.rt-key-*"):
+        svc_c.rest(path, "DELETE", None, {"Prefer": "return=minimal"})
+
     u1 = make_user("victim-active", "active")
     u2 = make_user("attacker-active", "active")
     u3 = make_user("nosub-expired", "expired")
@@ -174,17 +180,23 @@ def main() -> int:
     st, created = svc_c.rest("setups", "POST", {
         "direction": "long", "entry": 2000, "stop_loss": 1990, "tp1": 2010, "tp2": 2020,
         "tp3": 2030, "risk_reward": 2.0, "confidence": 0.7, "published": True,
-        "status": "tp1_hit", "outcome_r": 1.0, "idempotency_key": f"rt-pub-{tag}"})
+        "status": "tp1_hit", "outcome_r": 1.0, "idempotency_key": f"rt-pub-{tag}"},
+        {"Prefer": "return=representation"})
     if isinstance(created, list) and created:
         created_setups.append(created[0]["id"])
         svc_c.rest("setup_events", "POST", {"setup_id": created[0]["id"], "to_status": "tp1_hit",
                                             "price": 2010, "reason": "rt fixture"})
+    else:
+        print(f"  ! published fixture not created: http={st} {str(created)[:160]}")
     st, created = svc_c.rest("setups", "POST", {
         "direction": "short", "entry": 2000, "stop_loss": 2010, "tp1": 1990, "tp2": 1980,
         "tp3": 1970, "risk_reward": 2.0, "confidence": 0.6, "published": False,
-        "status": "proposed", "idempotency_key": f"rt-shadow-{tag}"})
+        "status": "proposed", "idempotency_key": f"rt-shadow-{tag}"},
+        {"Prefer": "return=representation"})
     if isinstance(created, list) and created:
         created_setups.append(created[0]["id"])
+    else:
+        print(f"  ! shadow fixture not created: http={st} {str(created)[:160]}")
     # an agent key (hash only) and an audit row
     svc_c.rest("agent_keys", "POST", {"name": "rt-key-" + tag,
                                       "key_hash": uuid.uuid4().hex + uuid.uuid4().hex})
