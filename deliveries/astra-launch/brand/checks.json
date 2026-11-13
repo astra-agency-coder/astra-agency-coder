@@ -1,0 +1,34 @@
+{
+  "brand_sheet": {
+    "size": [
+      2400,
+      4184
+    ],
+    "ok": true
+  },
+  "svg_parse": {
+    "astra-lockup-horizontal-dark.svg": true,
+    "astra-lockup-horizontal-light.svg": true,
+    "astra-mark-dark.svg": true,
+    "astra-mark-light.svg": true,
+    "astra-mark-mono-black.svg": true,
+    "astra-mark-mono-white.svg": true,
+    "astra-mark.svg": true,
+    "astra-wordmark-dark.svg": true,
+    "astra-wordmark-light.svg": true
+  },
+  "sys_unbacked": [],
+  "contrast": {
+    "light primary/on-primary": 8.84,
+    "light on-surface/surface": 16.63,
+    "light secondary/on-secondary": 4.83,
+    "light tertiary/on-tertiary": 4.73,
+    "dark primary/on-primary": 8.25,
+    "dark on-surface/surface": 15.3,
+    "dark secondary/on-secondary": 10.52,
+    "dark tertiary/on-tertiary": 9.58,
+    "mark violet on light surface": 8.59,
+    "mark light-violet on dark surface": 10.27
+  },
+  "contrast_min": 4.73
+}

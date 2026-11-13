@@ -143,3 +143,17 @@ unusual-but-valid input, worst-case performance and the OS error surface — fou
 all of them.
 **Rule adopted:** a single "reproduce + check" pass is insufficient. Add a second
 adversarial round before a commercial PASS.
+
+## L-0011 — Static deliverables: verify with code, ship zero-dependency
+**Date:** 2026-11-13 · **Context:** Engineering delivered the company intro
+website (`deliveries/astra-launch/website/`). **Findings:** (a) a static site
+with no build step, no CDN and no external fonts renders offline and cannot
+break from a third-party outage — the fastest reliable client artefact;
+(b) committing the verification as a script (`verify_site.py`: html5lib strict
+parse + asset-existence + duplicate-id/anchor/heading checks + CSS fixed-width
+audit) makes the PASS reproducible instead of a one-off claim; (c) the test
+tool (`html5lib`) was not preinstalled and there is **no headless browser**, so
+pixel-level responsive rendering cannot be tested here — state that as a
+limitation, never imply it was tested. **Rule adopted:** every deliverable
+ships with a re-runnable verify script, and untested dimensions are listed
+explicitly in `VERIFY.md`.

@@ -18,3 +18,22 @@ Idempotent. Requires a token with repo-create + contents-write. Tested
 4. Run PB-006 to create its private repository.
 5. Create `company/departments/<slug>/` locally with README + CHARTER + knowledge/.
 6. Update `company/ORG_DESIGN.md` and `company/roster.json`.
+
+## PB-008 — Static website delivery (no build step)
+1. Build `index.html` (semantic landmarks, single `h1`, `lang`, viewport meta),
+   `styles.css` (mobile-first, fluid `max-width` container, `box-sizing:
+   border-box`, `minmax(0,1fr)` grids), `main.js` (progressive enhancement only
+   — content must stay visible with JS disabled).
+2. Prove no external deps: `grep -E 'https?://' index.html styles.css main.js`
+   must be empty.
+3. Commit `verify_site.py`; run it — html5lib strict parse, local-asset
+   existence, duplicate-id / in-page-anchor / heading-order checks, CSS
+   fixed-px-width audit. Expect `RESULT: PASS`.
+4. Serve and curl every asset -> expect `HTTP 200` for `/`, `index.html`,
+   `styles.css`, `main.js`, `assets/*`.
+5. `python3 ops/astra.py scan-secrets` -> `clean: true`.
+6. Deploy: `mkdir -p /tmp/astra_site && cp -r <site>/* /tmp/astra_site/` then
+   `nohup python3 -m http.server 12000 --directory /tmp/astra_site &`; record
+   `curl -sI http://127.0.0.1:12000/`.
+7. Independent QA pass; list untested dimensions (e.g. pixel rendering) in
+   `VERIFY.md`. Check for upstream `brand/tokens.json` before hardcoding colours.
