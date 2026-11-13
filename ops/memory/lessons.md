@@ -64,3 +64,20 @@ auto-registered with the runtime, so hired specialists cannot be delegated to ye
 blocker plainly, (b) do the work directly, and (c) retire the specialist with a reason.
 Proposed fix: wire `ops/astra.py hire` to call the runtime's `register_agent()` so the
 hire→delegate flow actually works. Every manager should report this if they hit it.
+
+### 2026-11-13 (update) — The `task` tool is blocked two ways; `spawn` is the working path
+**What happened:** The Research training run (astra-cro) confirmed the above and found a
+**second, independent** failure: delegating via the `task` tool to the one
+*pre-registered* Research specialist, `astra-mkt-researcher`, also fails — the runtime
+errors with `Tool 'web_search' not registered but was given to agent astra-mkt-researcher`,
+even though the agent's file lists only `terminal,file_editor,grep,glob`.
+**What we learned:** Two separate blockers stop `task`-tool delegation: (1) custom-hired
+agents are unresolved ("Unknown agent … Use register_agent()"), and (2) at least one
+pre-registered agent is given an **unregistered tool** (`web_search`), which aborts the run.
+Separately, the **child-conversation path** (`python3 ops/astra.py spawn <agent> "<brief>"`)
+reads the agent's `.md` definition directly and **works** — it ran both independent
+verification tasks successfully (7/7 demand claims, 7/7 pricing pages).
+**What we change:** When `task`-tool delegation fails, use `ops/astra.py spawn <agent>
+"<brief>"` — real delegation still happens, just through the other supported path. Report
+which path was used. Proposed fixes for Engineering: (a) call `register_agent()` on hire,
+and (b) stop attaching `web_search` to agents whose definitions do not declare it.

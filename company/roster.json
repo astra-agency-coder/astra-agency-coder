@@ -312,10 +312,11 @@
         "glob"
       ],
       "model": "inherit",
-      "status": "active",
+      "status": "retired",
       "created_at": "2026-11-13T12:12:36Z",
       "updated_at": "2026-11-13T12:12:36Z",
-      "notes": "definition at .agents/agents/res-demand-analyst.md"
+      "notes": "training run complete (2026-11-13); demand verification delivered and committed; workaround path used (spawn), task-tool delegation blocked",
+      "retired_at": "2026-11-13T12:21:41Z"
     },
     "res-competitive-analyst": {
       "name": "res-competitive-analyst",
@@ -329,10 +330,11 @@
         "glob"
       ],
       "model": "inherit",
-      "status": "active",
+      "status": "retired",
       "created_at": "2026-11-13T12:12:37Z",
       "updated_at": "2026-11-13T12:12:37Z",
-      "notes": "definition at .agents/agents/res-competitive-analyst.md"
+      "notes": "training run complete (2026-11-13); pricing verification delivered and committed; task-tool delegation blocked",
+      "retired_at": "2026-11-13T12:21:42Z"
     },
     "astra-brand-designer": {
       "name": "astra-brand-designer",
