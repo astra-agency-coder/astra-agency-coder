@@ -167,3 +167,38 @@ Owner-supplied tokens are written only to the OpenHands runtime secret store
 (`ops/secrets.py`), read into memory, and masked in every report. Files in the
 repo reference secret *names*, never values. Tokens pasted into chat are flagged
 to the Owner for rotation.
+
+## D-0013 — Publish only timeframes with a measured edge (2026-11-13)
+**Decision:** Astra Trading publishes setups on 4h and 1d only. 1h is retired
+from the scanner.
+**Rationale:** Walk-forward testing (70% train / 30% hold-out, 1496-bar gold
+series) shows 4h and 1d hold a positive expectancy out of sample; 1h is negative
+(avgR −0.137) with no stable edge. Publishing 1h would sell a signal we cannot
+show works.
+**Verified:** Full-series replay: 4h +0.40R/70% win, 1d +0.43R/71% win. Documented
+in `docs/EDGE.md` with the numbers and the method.
+**Owner:** astra-ceo
+
+## D-0014 — Entitlement lives in the database, not the browser (2026-11-13)
+**Decision:** Replace the localStorage "trial" with a server-side entitlement
+(`db/003_entitlements.sql`, `/api/v1/entitlements`) keyed to a device token.
+**Rationale:** A client-side gate is a suggestion, not a gate: clearing storage
+reset the trial and a paid flag was never verifiable. Trial (7d) and paid
+(+30d on verified USDT payment) now survive a browser wipe and are auditable.
+**Verified:** New device → trialing 7d (idempotent); verified payment →
+active/pro +30d. The deck reads its chip state from the server.
+**Owner:** astra-ceo
+
+## D-0015 — One deploy key per manager; the company token never reaches a manager (2026-11-13)
+**Decision:** Each department manager authenticates to GitHub with its own SSH
+deploy key, registered write-enabled on exactly one repository (its department
+repo). No manager ever receives the company-wide token.
+**Rationale:** Least privilege must be enforced by the platform, not by good
+behaviour. A GitHub deploy key is bound to a single repo by GitHub itself, so a
+manager cannot read or push another department's repo even if instructed to.
+**Verified:** `ops/provision_access.py --verify` → 10/10 managers reach their own
+repo and are denied every other repo. T11 in the suite now passes 10/10.
+**Note:** the first registration stored keys under a title that already existed,
+so the on-disk key did not match the registered one; the fix re-registers the
+current public key (fingerprint-compared) before verifying.
+**Owner:** astra-ceo

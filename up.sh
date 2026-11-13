@@ -26,4 +26,10 @@ for _ in $(seq 1 20); do
   [ "$code" = "200" ] && break
 done
 printf '[up] trading healthcheck -> HTTP %s\n' "${code:-000}"
-[ "${code:-000}" = "200" ]
+[ "${code:-000}" = "200" ] || exit 1
+
+echo "[up] astra trading live loop (scan -> score) -> heartbeat /tmp/astra-loop-heartbeat.json"
+pkill -f '^python3 engine/loop\.py --interval' 2>/dev/null || true
+( cd "$ROOT/deliveries/astra-trading" && ASTRA_API_BASE=http://127.0.0.1:12001 \
+    nohup python3 engine/loop.py --interval 300 > /tmp/astra-loop.log 2>&1 & )
+printf '[up] loop started\n'

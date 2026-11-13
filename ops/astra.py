@@ -24,6 +24,7 @@ import glob
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -361,6 +362,31 @@ def scan_secrets() -> tuple[bool, list[str]]:
                 offenders.append(f"{path.relative_to(ROOT)}:{label}")
     return (not offenders, offenders)
 
+def ensure_trading_loop() -> dict:
+    """Idempotently ensure the Astra Trading scan+score loop is running.
+
+    Called by the scheduler every 10 minutes. If the loop process is already
+    alive it does nothing; otherwise it restarts it detached. This is what keeps
+    setups flowing from `proposed` to a scored outcome when the runtime is idle
+    or has just been recycled.
+    """
+    pattern = r"^python3 engine/loop\.py --interval"
+    running = subprocess.run(["pgrep", "-f", pattern],
+                             capture_output=True, text=True).stdout.split()
+    if running:
+        return {"ok": True, "action": "already-running", "pids": running}
+
+    api = "http://127.0.0.1:12001"
+    trading = ROOT / "deliveries" / "astra-trading"
+    log = open("/tmp/astra-loop.log", "ab")
+    proc = subprocess.Popen(
+        ["python3", "engine/loop.py", "--interval", "300"],
+        cwd=str(trading), stdout=log, stderr=subprocess.STDOUT,
+        env={**os.environ, "ASTRA_API_BASE": api},
+        start_new_session=True,
+    )
+    return {"ok": True, "action": "started", "pid": proc.pid, "api": api}
+
 
 # ── CLI ──────────────────────────────────────────────────────────────
 
@@ -374,6 +400,7 @@ def main() -> None:
     sub.add_parser("health")
     sub.add_parser("tasks")
     sub.add_parser("scan-secrets")
+    sub.add_parser("ensure-trading-loop")
 
     h = sub.add_parser("hire")
     h.add_argument("name")
@@ -440,6 +467,8 @@ def main() -> None:
         clean, offenders = scan_secrets()
         print(json.dumps({"clean": clean, "offenders": offenders}, indent=2))
         sys.exit(0 if clean else 1)
+    elif a.cmd == "ensure-trading-loop":
+        print(json.dumps(ensure_trading_loop(), indent=2))
 
 
 if __name__ == "__main__":

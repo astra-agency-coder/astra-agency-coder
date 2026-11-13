@@ -8,12 +8,11 @@ import { ChartDeck } from './chart.js';
 
 const LS = {
   locale: 'astra.locale',
-  trial: 'astra.trialStart',
+  device: 'astra.deviceToken',
   showSessions: 'astra.showSessions',
 };
 
 const TF_LIST = ['5m', '15m', '1h', '4h', '1d'];
-const TRIAL_DAYS = 7;
 const DAY_MS = 86400000;
 const WALLET = 'TFBEwXbB4iTyaPC2mtwu5yXSeDjEegJmE6';
 
@@ -25,6 +24,7 @@ const state = {
   error: null,
   showSessions: true,
   lastGood: null,
+  ent: null,
 };
 
 /* ------------------------------------------------------------------ */
@@ -43,26 +43,39 @@ function pickLocale() {
 }
 
 /* ------------------------------------------------------------------ */
-/* trial                                                               */
+/* entitlement (server-backed trial + subscription)                     */
 /* ------------------------------------------------------------------ */
-function trialStart() {
-  let s = lsGet(LS.trial);
-  if (!s) { s = new Date().toISOString(); lsSet(LS.trial, s); }
-  const d = new Date(s);
-  return isNaN(d.getTime()) ? new Date() : d;
+/* The trial is a server fact, not a localStorage date. The client holds an
+   opaque device token, sends it as X-Device-Token, and the API resolves the
+   entitlement from the database. This is why "7 days left" and "trial ended"
+   can no longer disagree: both come from one row. */
+function deviceToken() {
+  let tok = lsGet(LS.device);
+  if (!tok || tok.length < 16) {
+    const rand = (crypto && crypto.randomUUID) ? crypto.randomUUID().replace(/-/g, '')
+      : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    tok = `dev_${rand}`;
+    lsSet(LS.device, tok);
+  }
+  return tok;
 }
-function trialInfo() {
-  const started = trialStart();
-  const elapsed = Date.now() - started.getTime();
-  const total = TRIAL_DAYS * DAY_MS;
-  const left = total - elapsed;
-  const daysLeft = Math.max(0, Math.ceil(left / DAY_MS));
-  const expired = left <= 0;
+
+async function fetchEntitlement() {
+  const res = await fetch('/api/v1/entitlement', { headers: { 'X-Device-Token': deviceToken() } });
+  if (!res.ok) throw new Error(`entitlement ${res.status}`);
+  return res.json();
+}
+
+function entitlementView(ent) {
+  if (!ent) return { active: false, expired: false, daysLeft: 0, plan: null, labelKey: 'trial.ended', vars: {} };
+  const daysLeft = Math.max(0, Number(ent.days_left || 0));
+  const expired = !ent.active;
   let labelKey = 'trial.daysLeft', vars = { n: daysLeft };
   if (expired) labelKey = 'trial.ended';
-  else if (daysLeft <= 0) { labelKey = 'trial.hoursLeft'; vars = { n: Math.max(1, Math.ceil(left / 3600000)) }; }
+  else if (ent.status === 'active' && ent.plan === 'pro') labelKey = 'trial.pro';
   else if (daysLeft === 1) labelKey = 'trial.dayLeft';
-  return { started, daysLeft, expired, labelKey, vars };
+  else if (daysLeft === 0) labelKey = 'trial.hoursLeft', vars = { n: 24 };
+  return { active: !!ent.active, expired, daysLeft, plan: ent.plan, status: ent.status, labelKey, vars };
 }
 
 /* ------------------------------------------------------------------ */
@@ -468,7 +481,7 @@ function runCalc() {
 /* trial gate                                                          */
 /* ------------------------------------------------------------------ */
 function renderTrial() {
-  const info = trialInfo();
+  const info = state.ent || entitlementView(null);
   const chip = $('#trial-chip');
   chip.classList.toggle('expired', info.expired);
   chip.innerHTML = info.expired
@@ -556,12 +569,24 @@ function buildTfSwitch() {
   }
 }
 
+async function refreshEntitlement() {
+  try {
+    state.ent = entitlementView(await fetchEntitlement());
+  } catch {
+    // Network failure must not silently unlock paid content.
+    state.ent = entitlementView(null);
+  }
+  renderTrial();
+  return state.ent;
+}
+
 function init() {
   state.locale = pickLocale();
   state.showSessions = lsGet(LS.showSessions) !== '0';
   buildLangSwitch();
   buildTfSwitch();
   applyLocale();
+  refreshEntitlement();
 
   // calculator inputs
   $('#acct-size').value = calcState.account;
@@ -585,10 +610,11 @@ function init() {
     try { await navigator.clipboard.writeText(WALLET); toast(tr('trial.copied')); }
     catch { toast(WALLET); }
   });
-  $('#gate-reset').addEventListener('click', () => {
-    lsSet(LS.trial, new Date().toISOString());
-    renderTrial();
-    toast(tr('trial.resetDemo'));
+  $('#gate-reset').addEventListener('click', async () => {
+    // Server-side state: "reset" now means re-check entitlement (e.g. after
+    // an operator confirmed a payment), not forge a new trial locally.
+    await refreshEntitlement();
+    toast(tr('trial.refreshed'));
   });
 
   // retry on error

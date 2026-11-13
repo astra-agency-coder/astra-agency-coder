@@ -33,6 +33,9 @@ DUTIES = [
     {"name": "secret_scan", "cron": "0 3 * * *",
      "cmd": ["python3", "ops/astra.py", "scan-secrets"],
      "desc": "scan tracked files for secret patterns"},
+    {"name": "trading_loop", "cron": "*/10 * * * *",
+     "cmd": ["python3", "ops/astra.py", "ensure-trading-loop"],
+     "desc": "ensure the Astra Trading scan+score loop is alive (idempotent)"},
 ]
 
 

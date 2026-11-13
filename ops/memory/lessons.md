@@ -271,3 +271,25 @@ down as evidence of absence — the exact failure the company must never make.
 **What we change:** Before recording "X does not exist", confirm the credential
 can see the resource class at all. State the credential's visibility limits in
 the finding, and re-verify with the widest credential available.
+
+### 2026-11-13 — A long-lived process keeps the code it imported at boot
+**What happened:** I tuned `engine/analysis.py` (per-timeframe profiles,
+near-zone selection) and `engine/agent.py` (edge-backed timeframes), but the
+running scan loop kept producing the old 1h setup with a stop at 0.5×ATR. The
+loop had imported the module at start; editing the file on disk changed nothing.
+**What we learned:** A daemon is not the source tree. Correctness after an edit
+requires a restart (or a reload), and any "the fix is live" claim must be checked
+against the running process's output, not the file's contents.
+**What we change:** After changing engine code, restart the loop and read one
+fresh setup from the DB to confirm the new numbers before reporting it live.
+
+### 2026-11-13 — A far-away zone is not a setup
+**What happened:** The 4h setup chose the strongest resistance at 3980.8 while
+price sat at 3877 — 3×ATR away, so it could never trigger inside the 24h
+validity window. The rule "pick the strongest zone" was silent about reachability.
+**What we learned:** A limit setup has two gates: edge (does the rule make money)
+and reachability (can price get there before the order expires). Optimising only
+the first produces untradeable calls.
+**What we change:** `build_setup` now prefers the strongest zone *within 3×ATR*
+of price, falling back to the full pool only if none qualifies. Full-series
+replay improved from +0.17R/+0.31R (4h/1d) to +0.40R/+0.43R with win rates 70%/71%.

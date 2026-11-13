@@ -18,6 +18,7 @@ Loop:       python3 agent.py --loop 300
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -25,7 +26,6 @@ import sys
 import time
 import urllib.error
 import urllib.request
-import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,7 +36,12 @@ import analysis as A  # noqa: E402
 from market import fetch_candles  # noqa: E402
 
 API_BASE = os.environ.get("ASTRA_API_BASE", "http://127.0.0.1:8100")
-TIMEFRAMES = ("1h", "4h", "15m")
+# Only the timeframes whose setups survived walk-forward hold-out (engine/
+# experiments.py, docs/experiments.json) are published. 1h/15m have no stable
+# edge, so we do not sell them; publishing them would be dishonest.
+TIMEFRAMES = ("4h", "1d")
+# The regime gate needs more history than a 100-bar quote window provides.
+SCAN_COUNT = 400
 
 
 def _sec():
@@ -63,6 +68,15 @@ def agent_key() -> str | None:
 # tools
 # --------------------------------------------------------------------------- #
 def tool_fetch_candles(symbol: str, tf: str, n: int = 300):
+    # Long-history provider so the regime EMA(200) has enough bars; falls back
+    # to the short quote feed automatically if the long source is unreachable.
+    try:
+        from market import fetch_history
+        hist = fetch_history(symbol, tf, ttl=1800)
+        if len(hist) >= 210:
+            return hist[:max(n, 260)]
+    except Exception:  # noqa: BLE001
+        pass
     return fetch_candles(symbol, tf, n)
 
 
@@ -91,12 +105,27 @@ def tool_wait_for_opportunity():
     return {"submitted": False, "reason": "no setup met the quality bar"}
 
 
+def setup_idempotency_key(setup: dict, bar_time: str = "") -> str:
+    """Deterministic key so the same market picture cannot be submitted twice.
+
+    Identity = symbol + timeframe + direction + entry + the forming bar's open
+    time. Re-scanning the same bar is a replay (the API returns the stored row);
+    a new bar with a genuinely different entry is a new setup.
+    """
+    ident = "|".join(str(x) for x in (
+        setup.get("symbol"), setup.get("timeframe"), setup.get("direction"),
+        setup.get("entry"), bar_time,
+    ))
+    return f"{AGENT_NAME}-{hashlib.sha256(ident.encode()).hexdigest()[:32]}"
+
+
 def tool_submit_setup(setup: dict) -> dict:
     key = agent_key()
     if not key:
         return {"ok": False, "error": "no agent key configured (ASTRA_AGENT_KEY)"}
     payload = dict(setup)
-    payload["idempotency_key"] = payload.get("idempotency_key") or f"{AGENT_NAME}-{uuid.uuid4().hex}"
+    if not payload.get("idempotency_key"):
+        return {"ok": False, "error": "missing idempotency_key"}
     payload["source_agent"] = AGENT_NAME
     req = urllib.request.Request(
         f"{API_BASE}/api/v1/setups", method="POST",
@@ -121,9 +150,10 @@ def scan_once(verbose: bool = True) -> dict:
     report = {"at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
               "considered": [], "submitted": None}
     best = None
+    best_bar = ""
     for tf in TIMEFRAMES:
         try:
-            candles = tool_fetch_candles("XAUUSD", tf, 300)
+            candles = tool_fetch_candles("XAUUSD", tf, SCAN_COUNT)
         except Exception as e:  # noqa: BLE001
             report["considered"].append({"tf": tf, "error": str(e)[:120]})
             continue
@@ -135,6 +165,7 @@ def scan_once(verbose: bool = True) -> dict:
         })
         if s and (best is None or s.confidence > best.confidence):
             best = s
+            best_bar = candles[0].t
     if best is None:
         report.update(tool_wait_for_opportunity())
     else:
@@ -146,10 +177,14 @@ def scan_once(verbose: bool = True) -> dict:
             "confidence": best.confidence, "factors": best.factors,
             "invalidation": best.invalidation,
             "rationale_en": best.rationale,
+            "idempotency_key": setup_idempotency_key(
+                {"symbol": best.symbol, "timeframe": best.timeframe,
+                 "direction": best.direction, "entry": best.entry}, best_bar),
         }
         res = tool_submit_setup(payload)
         report["submitted"] = {"tf": best.timeframe, "direction": best.direction,
                                "entry": best.entry, "confidence": best.confidence,
+                               "idempotency_key": payload["idempotency_key"],
                                "result": res}
         if verbose:
             print(f"  submitted {best.direction} {best.entry} ({best.timeframe}) -> {res}")

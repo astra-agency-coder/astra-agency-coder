@@ -135,25 +135,6 @@
       "updated_at": "2026-11-13T10:37:21Z",
       "notes": "definition at .agents/agents/astra-cro.md"
     },
-    "astra-cto": {
-      "name": "astra-cto",
-      "role": "Chief Technology Officer",
-      "department": "Engineering",
-      "reports_to": "astra-ceo",
-      "tools": [
-        "terminal",
-        "file_editor",
-        "task_tracker",
-        "task_tool_set",
-        "grep",
-        "glob"
-      ],
-      "model": "inherit",
-      "status": "active",
-      "created_at": "2026-11-13T10:36:47Z",
-      "updated_at": "2026-11-13T10:37:21Z",
-      "notes": "definition at .agents/agents/astra-cto.md"
-    },
     "astra-ccr": {
       "name": "astra-ccr",
       "role": "Creative specialist",
@@ -538,6 +519,25 @@
       "created_at": "2026-11-13T17:33:08Z",
       "updated_at": "2026-11-13T17:33:08Z",
       "notes": "definition at .agents/agents/mgr-test-spec.md"
+    },
+    "astra-cto": {
+      "name": "astra-cto",
+      "role": "astra-cto",
+      "department": "Engineering",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T20:21:02Z",
+      "updated_at": "2026-11-13T20:21:02Z",
+      "notes": "recovered by heal"
     }
   }
 }

@@ -167,7 +167,7 @@ def evaluate_all(interval: int | None = None):
         print(f"[{datetime.now(timezone.utc).isoformat(timespec='seconds')}] "
               f"evaluated {len(rows)} open, {moved} moved")
         if not interval:
-            return
+            return moved
         time.sleep(interval)
 
 

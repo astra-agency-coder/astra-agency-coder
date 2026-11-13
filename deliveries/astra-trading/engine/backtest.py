@@ -29,7 +29,8 @@ from analysis import build_setup, _clean  # noqa: E402
 from market import Candle, fetch_candles  # noqa: E402
 
 WARMUP = 60          # bars needed before the engine can form a view
-LOOKBACK = 200       # bars the engine is allowed to see at each step
+LOOKBACK = 320       # bars the engine sees at each step (must exceed the
+                     # longest regime EMA — 200 — or the trend gate is inert)
 
 
 @dataclass

@@ -99,6 +99,15 @@ def sb_patch(table: str, query: str, patch: dict, secret: bool = True) -> Any:
     return json.loads(body) if body.strip() else []
 
 
+def sb_rpc(fn: str, args: dict) -> Any:
+    url = f"{SUPABASE_URL}/rest/v1/rpc/{fn}"
+    h = sb_headers(True)
+    req = urllib.request.Request(url, data=json.dumps(args).encode(), headers=h, method="POST")
+    with urllib.request.urlopen(req, timeout=20) as r:
+        body = r.read().decode()
+    return json.loads(body) if body.strip() else None
+
+
 # --------------------------------------------------------------------------- #
 # models
 # --------------------------------------------------------------------------- #
@@ -434,6 +443,55 @@ def verify_payment(body: PaymentIn):
 def wallet_info():
     return {"network": "TRON (TRC20)", "currency": "USDT",
             "address": WALLET_TRC20 or None, "configured": bool(WALLET_TRC20)}
+
+
+# ---------------------------- entitlements ------------------------------- #
+# Trial and subscription state is a server fact keyed by an anonymous device
+# token, not browser localStorage. The client sends the token it was issued in
+# the `X-Device-Token` header; the server hashes it and resolves the entitlement.
+import hashlib as _hashlib  # noqa: E402
+
+
+class DeviceIn(BaseModel):
+    locale: str | None = None
+
+
+def _device_token(request: Request) -> str:
+    tok = request.headers.get("x-device-token", "")
+    if not tok or len(tok) < 16:
+        raise HTTPException(401, "missing device token")
+    return tok
+
+
+def _token_hash(tok: str) -> str:
+    return _hashlib.sha256(tok.encode()).hexdigest()
+
+
+@app.get("/api/v1/entitlement")
+def get_entitlement(request: Request):
+    """Resolve (and on first use, start) the caller's trial. Server-side truth."""
+    tok = _device_token(request)
+    rows = sb_rpc("ensure_entitlement", {"p_token_hash": _token_hash(tok)})
+    row = rows[0] if isinstance(rows, list) and rows else (rows or {})
+    if not row:
+        raise HTTPException(503, "entitlement unavailable")
+    return {
+        "status": row.get("status"),
+        "plan": row.get("plan"),
+        "trial_started_at": row.get("trial_started_at"),
+        "trial_ends_at": row.get("trial_ends_at"),
+        "paid_until": row.get("paid_until"),
+        "days_left": row.get("days_left"),
+        "active": bool(row.get("active")),
+        "trial_days": TRIAL_DAYS,
+    }
+
+
+@app.post("/api/v1/devices")
+def register_device(body: DeviceIn, request: Request):
+    """Idempotently register a device token and return its entitlement."""
+    _device_token(request)  # validates presence
+    return get_entitlement(request)
 
 
 # ---------------------------- contact ------------------------------------ #

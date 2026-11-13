@@ -139,7 +139,9 @@ export const STRINGS = {
     'trial.copy': 'Copy',
     'trial.copied': 'Address copied',
     'trial.howTo': 'Send USDT on the TRON (TRC20) network to the address above, then contact us with the transaction ID to activate.',
-    'trial.resetDemo': 'Restart trial (demo)',
+    'trial.resetDemo': 'Refresh access',
+    'trial.refreshed': 'Access refreshed',
+    'trial.pro': 'Pro · active',
     'trial.monthly': 'per month',
     'trial.price': '$39',
 
@@ -294,7 +296,9 @@ export const STRINGS = {
     'trial.copy': 'نسخ',
     'trial.copied': 'تم نسخ العنوان',
     'trial.howTo': 'أرسل USDT على شبكة TRON (TRC20) إلى العنوان أعلاه، ثم تواصل معنا برقم العملية للتفعيل.',
-    'trial.resetDemo': 'إعادة التجربة (تجريبي)',
+    'trial.resetDemo': 'تحديث الوصول',
+    'trial.refreshed': 'تم تحديث الوصول',
+    'trial.pro': 'احترافي · نشط',
     'trial.monthly': 'شهرياً',
     'trial.price': '$39',
 
@@ -449,7 +453,9 @@ export const STRINGS = {
     'trial.copy': 'Kopyala',
     'trial.copied': 'Adres kopyalandı',
     'trial.howTo': 'Yukarıdaki adrese TRON (TRC20) ağında USDT gönderin, ardından aktivasyon için işlem kimliğiyle bize ulaşın.',
-    'trial.resetDemo': 'Denemeyi yeniden başlat (demo)',
+    'trial.resetDemo': 'Erişimi yenile',
+    'trial.refreshed': 'Erişim yenilendi',
+    'trial.pro': 'Pro · aktif',
     'trial.monthly': 'aylık',
     'trial.price': '$39',
 

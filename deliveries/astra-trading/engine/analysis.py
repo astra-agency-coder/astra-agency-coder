@@ -287,6 +287,23 @@ def bias(candles: Sequence[Candle]) -> dict:
             "last_close": round(last, 3)}
 
 
+def trend_ok(candles: Sequence[Candle], direction: str, period: int) -> bool:
+    """Regime gate: longs only above the long EMA, shorts only below it.
+
+    A walk-forward sweep (engine/experiments.py) showed the 1h zone setups have
+    no hold-out edge on their own; the same setups become positive once they
+    only trade in the direction of the long trend. This is that gate.
+    """
+    if period <= 0:
+        return True
+    closes = [c.c for c in reversed(_clean(candles))]
+    if len(closes) < period + 1:
+        return True
+    e = ema(closes, period)[-1]
+    last = closes[-1]
+    return last > e if direction == "long" else last < e
+
+
 # --------------------------------------------------------------------------- #
 # setup construction
 # --------------------------------------------------------------------------- #
@@ -309,9 +326,34 @@ class Setup:
     rationale: str = ""
 
 
+# Per-timeframe strategy profiles, chosen by walk-forward hold-out performance
+# (engine/experiments.py), not by taste. 1h needs a 200-EMA regime gate to be
+# positive; 4h and 1d carry the edge directly. See docs/experiments.json.
+PROFILE = {
+    "1m": {"target_r": 1.0, "stop_atr": 1.5, "trend_period": 200},
+    "5m": {"target_r": 1.5, "stop_atr": 1.5, "trend_period": 200},
+    "15m": {"target_r": 1.5, "stop_atr": 1.5, "trend_period": 200},
+    "30m": {"target_r": 1.5, "stop_atr": 1.5, "trend_period": 200},
+    "1h": {"target_r": 1.0, "stop_atr": 1.5, "trend_period": 200},
+    "4h": {"target_r": 2.0, "stop_atr": 1.0, "trend_period": 0},
+    "1d": {"target_r": 1.5, "stop_atr": 1.0, "trend_period": 0},
+}
+
+
 def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
-                min_rr: float = 1.5) -> Setup | None:
-    """Build the best available setup, or None if nothing meets the bar."""
+                min_rr: float = 1.5, target_r: float | None = None,
+                stop_atr: float | None = None, trend_period: int | None = None) -> Setup | None:
+    """Build the best available setup, or None if nothing meets the bar.
+
+    The two primary knobs (`target_r`, `stop_atr`) plus an optional trend gate
+    come from a walk-forward sweep (engine/experiments.py), which is the only
+    honest way to choose them: a config that wins in-sample and loses on the
+    hold-out is worthless. Per-timeframe profiles encode what survived.
+    """
+    prof = PROFILE.get(timeframe, PROFILE["1h"])
+    target_r = prof["target_r"] if target_r is None else target_r
+    stop_atr = prof["stop_atr"] if stop_atr is None else stop_atr
+    trend_period = prof["trend_period"] if trend_period is None else trend_period
     candles = _clean(candles)
     if len(candles) < 60:
         return None
@@ -329,29 +371,38 @@ def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
     # choose a direction from structure, then look for a zone to trade from
     if b["direction"].startswith("bullish"):
         supports = [s for s in z["supports"] if s["low"] < price]
-        if not supports:
+        # Prefer zones the price can actually reach soon: among the strong ones
+        # inside 3×ATR, take the strongest, tie-broken by nearest. A zone 3 ATR
+        # away would never trigger inside the 24h validity window.
+        near = [s for s in supports if (price - s["high"]) <= a * 3.0]
+        pool = near or supports
+        if not pool:
             return None
-        zone = max(supports, key=lambda s: (s["strength"], s["high"]))
+        zone = max(pool, key=lambda s: (s["strength"], -abs(price - s["high"])))
         entry = zone["high"]
-        stop = zone["low"] - a * 0.5
+        stop = zone["low"] - a * stop_atr
         risk = entry - stop
         if risk <= 0:
             return None
-        tp1, tp2, tp3 = entry + risk, entry + risk * 2, entry + risk * 3
+        tp1, tp2, tp3 = (entry + risk * target_r, entry + risk * target_r * 2,
+                         entry + risk * target_r * 3)
         factors.append(f"support zone {zone['low']:.2f}–{zone['high']:.2f} ({zone['touches']} touches)")
         factors.append(f"EMA21 {b['ema21']:.2f} above EMA50 {b['ema50']:.2f}")
         direction, inval = "long", f"close below {stop:.2f}"
     elif b["direction"].startswith("bearish"):
         resistances = [r for r in z["resistances"] if r["high"] > price]
-        if not resistances:
+        near = [r for r in resistances if (r["low"] - price) <= a * 3.0]
+        pool = near or resistances
+        if not pool:
             return None
-        zone = max(resistances, key=lambda r: (r["strength"], -r["low"]))
+        zone = max(pool, key=lambda r: (r["strength"], -abs(r["low"] - price)))
         entry = zone["low"]
-        stop = zone["high"] + a * 0.5
+        stop = zone["high"] + a * stop_atr
         risk = stop - entry
         if risk <= 0:
             return None
-        tp1, tp2, tp3 = entry - risk, entry - risk * 2, entry - risk * 3
+        tp1, tp2, tp3 = (entry - risk * target_r, entry - risk * target_r * 2,
+                         entry - risk * target_r * 3)
         factors.append(f"resistance zone {zone['low']:.2f}–{zone['high']:.2f} ({zone['touches']} touches)")
         factors.append(f"EMA21 {b['ema21']:.2f} below EMA50 {b['ema50']:.2f}")
         direction, inval = "short", f"close above {stop:.2f}"
@@ -362,7 +413,13 @@ def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
     if rr < min_rr:
         return None
 
-    factors.append(f"ATR(14) {a:.2f} — stop placed beyond 0.5×ATR")
+    # Regime gate: skip setups that fight the long trend (see trend_ok).
+    if trend_period and not trend_ok(candles, direction, trend_period):
+        return None
+    if trend_period:
+        factors.append(f"aligned with EMA{trend_period} trend")
+
+    factors.append(f"ATR(14) {a:.2f} — stop placed beyond {stop_atr:g}×ATR")
     factors.append(f"session: {sess['name']} ({sess['note']})")
     near = [l for l in liq if abs(l.price - entry) < a * 2][:2]
     for l in near:
@@ -383,8 +440,13 @@ def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
 
 def analyse(symbol: str = "XAUUSD", timeframe: str = "1h", count: int = 300) -> dict:
     """Full analysis payload for the chart + setup card."""
-    from market import fetch_candles
-    candles = _clean(fetch_candles(symbol, timeframe, count))
+    from market import fetch_candles, fetch_history
+    # Prefer the long series so the regime gate and zone clustering see real
+    # structure; the short quote feed only has ~100 bars and cannot support the
+    # EMA(200) gate the tuned profiles rely on.
+    candles = _clean(fetch_history(symbol, timeframe, ttl=1800)) or _clean(
+        fetch_candles(symbol, timeframe, count))
+    candles = candles[:count]
     if not candles:
         return {"symbol": symbol, "timeframe": timeframe, "price": None, "atr": 0.0,
                 "bias": bias([]), "session": session_context(),

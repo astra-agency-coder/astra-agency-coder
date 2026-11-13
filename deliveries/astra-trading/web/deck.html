@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07070C">
+<meta name="description" content="Astra Trading — AI gold (XAU/USD) analysis: support/resistance, liquidity zones, session context and rule-based setups. Analysis, not advice.">
+<meta name="robots" content="index,follow">
+<title>Astra Trading — Command Deck</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================ TOP BAR ============================ -->
+  <header class="topbar">
+    <div class="brand">
+      <a href="/" style="display:flex;align-items:center;gap:inherit;color:inherit;text-decoration:none">
+      <img src="assets/logo-mark.svg" alt="Astra Trading" width="34" height="34">
+      <div class="brand-txt">
+        <span class="brand-name">Astra Trading</span>
+        <span class="brand-sub" data-i18n="brand.sub">AI ASTRA AGENCY</span>
+      </div>
+      </a>
+    </div>
+
+    <div class="live-pill" id="live-pill">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="live-text">CONNECTING…</span>
+    </div>
+
+    <div class="topbar-spacer"></div>
+
+    <span id="trial-chip" class="trial-chip">◷</span>
+
+    <div class="lang-switch" id="lang-switch" role="group" data-i18n-aria="a11y.langswitch" aria-label="Language"></div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+
+      <!-- ======================= CHART COLUMN ======================= -->
+      <section class="col-chart">
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title" data-i18n="chart.title">XAUUSD — Gold / US Dollar</span>
+            <span class="spacer"></span>
+            <label class="row gap2 sess-toggle" style="font-size:12px;color:var(--on-subtle)">
+              <input type="checkbox" id="toggle-sessions" checked>
+              <span data-i18n="chart.legend.session">Session shading</span>
+            </label>
+          </div>
+
+          <div class="card-body" style="padding-bottom:0">
+            <div class="row between">
+              <div id="price-head"></div>
+              <div class="row gap2">
+                <div class="tf-switch" id="tf-switch" role="group" data-i18n-aria="tf.label" aria-label="Timeframe"></div>
+                <button class="btn btn-ghost btn-sm" id="retry-btn" type="button" data-i18n="common.retry">Retry</button>
+              </div>
+            </div>
+            <div class="stat-sub" id="status-source" style="margin-top:6px"></div>
+          </div>
+
+          <div class="chart-holder" id="chart-holder">
+            <canvas id="chart" role="img" aria-label="XAUUSD candlestick chart with support, resistance and liquidity zones"></canvas>
+            <div class="chart-empty" data-i18n="chart.empty">No chart data for this timeframe.</div>
+          </div>
+
+          <div class="chart-legend">
+            <span class="legend-item"><span class="swatch" style="background:var(--bull)"></span><span data-i18n="chart.legend.candles">Candles</span> (▲<span style="color:var(--bull)">bull</span> / ▼<span style="color:var(--bear)">bear</span>)</span>
+            <span class="legend-item"><span class="swatch band-sup"></span><span data-i18n="chart.legend.support">Support zone</span></span>
+            <span class="legend-item"><span class="swatch band-res"></span><span data-i18n="chart.legend.resistance">Resistance zone</span></span>
+            <span class="legend-item"><span class="swatch line-liq"></span><span data-i18n="chart.legend.liquidity">Liquidity</span></span>
+            <span class="legend-item"><span class="swatch line-price"></span><span data-i18n="chart.legend.price">Current price</span></span>
+          </div>
+
+          <div class="ticker" aria-hidden="true">
+            <div class="ticker-track" id="ticker-track"></div>
+          </div>
+        </div>
+
+        <!-- position size calculator -->
+        <div class="card">
+          <div class="card-head"><span class="card-title" data-i18n="calc.title">Position size calculator</span></div>
+          <div class="card-body">
+            <div class="calc-grid">
+              <div class="field">
+                <label for="acct-size" data-i18n="calc.account">Account size (USD)</label>
+                <input type="number" id="acct-size" min="0" step="100" inputmode="decimal" value="10000">
+              </div>
+              <div class="field">
+                <label for="risk-pct" data-i18n="calc.riskPct">Risk per trade (%)</label>
+                <input type="number" id="risk-pct" min="0" step="0.1" inputmode="decimal" value="1">
+              </div>
+              <div class="field">
+                <label for="contract-size" data-i18n="calc.contract">Contract size (oz / lot)</label>
+                <input type="number" id="contract-size" min="1" step="1" inputmode="decimal" value="100">
+              </div>
+              <div class="field">
+                <label for="stop-dist" data-i18n="calc.stopDist">Stop distance (USD)</label>
+                <input type="number" id="stop-dist" min="0" step="0.01" inputmode="decimal" value="0">
+              </div>
+            </div>
+            <div class="calc-out" id="calc-out"></div>
+            <p class="stat-sub" style="margin-top:10px" data-i18n="calc.note">Auto-filled from the setup. Educational sizing only — not advice.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================= SIDE COLUMN ======================= -->
+      <aside class="col-side">
+
+        <!-- setup card (gated) -->
+        <div class="card gate" id="setup-gate">
+          <div class="gate-content">
+            <div class="card-head">
+              <span class="card-title" data-i18n="setup.title">AI-proposed setup</span>
+            </div>
+            <div class="card-body" id="setup-body"></div>
+          </div>
+          <div class="gate-overlay">
+            <div class="gate-overlay-inner">
+              <div class="lock-badge" id="gate-lock" aria-hidden="true"></div>
+              <h3 id="gate-title">Your free trial has ended</h3>
+              <p id="gate-body"></p>
+              <button class="btn" id="gate-upgrade" type="button"></button>
+              <p id="gate-crypto" class="mono" style="font-size:12px;color:var(--gold-300)"></p>
+              <div style="width:100%;text-align:start">
+                <div class="stat-k" id="gate-wallet-label"></div>
+                <div class="wallet" id="gate-wallet"></div>
+                <div class="row gap2" style="margin-top:8px">
+                  <button class="btn btn-ghost btn-sm" id="gate-copy" type="button">Copy</button>
+                  <button class="btn btn-ghost btn-sm" id="gate-reset" type="button"></button>
+                </div>
+                <p class="stat-sub" id="gate-howto" style="margin-top:10px"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- live readings -->
+        <div class="card">
+          <div class="card-head"><span class="card-title" data-i18n="readings.title">Live readings</span></div>
+          <div class="stats" id="readings"></div>
+          <div class="card-body" style="padding-top:12px;border-top:1px solid var(--outline)">
+            <div class="session-note" id="session-note"></div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- ==================== DISCLAIMER (every screen) ==================== -->
+  <div class="disclaimer-bar" role="note">
+    <span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1.6 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6.2v3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.8" r="0.9" fill="currentColor"/></svg></span>
+    <span data-i18n="disclaimer.short">Technical analysis for education only — not investment advice.</span>
+    <span class="spacer"></span>
+    <span class="mono" style="color:var(--gold-300);font-size:11px">XAUUSD · Analysis, not advice</span>
+  </div>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="site-foot">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo-mark.svg" alt="" width="30" height="30">
+        <div>
+          <div class="brand-name" data-i18n="footer.about" style="margin-bottom:6px">Astra Trading</div>
+          <p class="muted" style="margin:0;font-size:13px;line-height:1.55" data-i18n="footer.aboutText"></p>
+        </div>
+      </div>
+      <div>
+        <div class="foot-h" data-i18n="footer.product">Product</div>
+        <ul class="foot-links">
+          <li><a href="#" data-i18n="footer.link.chart">Live chart</a></li>
+          <li><a href="#" data-i18n="footer.link.setups">AI setups</a></li>
+          <li><a href="#" data-i18n="footer.link.pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-h" data-i18n="footer.legal">Legal</div>
+        <ul class="foot-links">
+          <li><a href="#" data-i18n="footer.link.risk">Risk disclosure</a></li>
+          <li><a href="#" data-i18n="footer.link.terms">Terms of use</a></li>
+          <li><a href="#" data-i18n="footer.link.privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-note">
+      <p style="margin:0 0 8px" data-i18n="disclaimer.full"></p>
+      <p style="margin:0" data-i18n="footer.rights"></p>
+      <p style="margin:6px 0 0;color:var(--on-subtle)" data-i18n="footer.ai"></p>
+    </div>
+  </footer>
+
+  <div class="mini-disclaimer" role="note" data-i18n="disclaimer.short"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

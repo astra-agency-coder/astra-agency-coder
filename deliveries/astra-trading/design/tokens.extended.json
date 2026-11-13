@@ -1,0 +1,202 @@
+{
+  "$schema": "https://design-tokens.org/format/0.0.1",
+  "brand": "Astra Trading",
+  "parent_brand": "AI ASTRA AGENCY",
+  "version": "1.1",
+  "extends": "../brand/tokens.json",
+  "generated": "2026-11-13",
+  "notes": "Additive extension of brand/tokens.json. Colour and typography are CARRIED OVER UNCHANGED from the brand file (see `color` and `typography` below, which are verbatim copies for convenience — the brand file remains the single source of truth). Everything under `spacing`, `radius`, `shadow`, `motion`, `z`, `opacity`, `border`, `breakpoint`, `layout` is new in v1.1.",
+
+  "color": {
+    "_note": "UNCHANGED from brand/tokens.json v1.0. Do not edit here — edit the brand file.",
+    "reference": {
+      "gold-100": "#FBF3DA", "gold-200": "#F3E2AE", "gold-300": "#E8C766",
+      "gold-400": "#D9AF3A", "gold-500": "#C9A227", "gold-600": "#A8851A",
+      "gold-700": "#856A16", "gold-800": "#5C4A11", "gold-900": "#2E260A",
+      "violet-200": "#D9CBF7", "violet-300": "#C9B0F0", "violet-500": "#7C4DFF",
+      "violet-700": "#5A2EA6", "violet-900": "#2A1650",
+      "neutral-0": "#FFFFFF", "neutral-3": "#07070C", "neutral-5": "#0C0C13",
+      "neutral-8": "#12121A", "neutral-12": "#1B1B26", "neutral-20": "#2A2A38",
+      "neutral-40": "#5A5F72", "neutral-60": "#767C90", "neutral-70": "#A9AEBF",
+      "neutral-90": "#EEF0F7", "neutral-100": "#14141B",
+      "bull-400": "#16C79A", "bull-600": "#0E9E79", "bull-700": "#06775B",
+      "bear-400": "#FF4D6D", "bear-600": "#D92D4E", "flat-400": "#8E93A6"
+    },
+    "semantic": {
+      "dark": {
+        "background": "neutral-3", "on-background": "neutral-90",
+        "surface-1": "neutral-8", "surface-2": "neutral-12",
+        "on-surface": "neutral-90", "on-surface-muted": "neutral-70",
+        "on-surface-subtle": "neutral-60",
+        "outline": "neutral-20", "outline-strong": "neutral-40",
+        "primary": "gold-300", "primary-strong": "gold-500", "on-primary": "neutral-3",
+        "accent": "violet-300",
+        "bull": "bull-400", "bear": "bear-400", "flat": "flat-400",
+        "chart-bg": "neutral-5", "error": "bear-400", "success": "bull-400"
+      },
+      "light": {
+        "background": "neutral-0", "on-background": "neutral-100",
+        "surface-1": "#F7F7FB", "surface-2": "#ECECF3",
+        "on-surface": "neutral-100", "on-surface-muted": "neutral-40",
+        "outline": "#D6D6E0", "outline-strong": "neutral-40",
+        "primary": "gold-700", "primary-strong": "gold-700", "on-primary": "neutral-0",
+        "accent": "violet-700",
+        "bull": "bull-700", "bear": "bear-600", "flat": "neutral-40",
+        "chart-bg": "#F2F2F7", "error": "bear-600", "success": "bull-600"
+      }
+    },
+    "overlay": {
+      "scrim-40": "rgba(7,7,12,0.40)",
+      "scrim-72": "rgba(7,7,12,0.72)",
+      "scrim-94": "rgba(7,7,12,0.94)",
+      "gold-wash-04": "rgba(232,199,102,0.04)",
+      "gold-wash-10": "rgba(232,199,102,0.10)",
+      "violet-wash-16": "rgba(201,176,240,0.16)",
+      "bull-wash-14": "rgba(22,199,154,0.14)",
+      "bear-wash-14": "rgba(255,77,109,0.14)",
+      "blur-glass": "rgba(7,7,12,0.72)"
+    }
+  },
+
+  "typography": {
+    "_note": "Families and px scale UNCHANGED from brand/tokens.json. Line-height, weight and tracking are NEW here.",
+    "display": { "family": "Space Grotesk", "licence": "OFL-1.1" },
+    "body": { "family": "IBM Plex Sans", "licence": "OFL-1.1" },
+    "arabic": { "family": "IBM Plex Sans Arabic", "licence": "OFL-1.1" },
+    "mono": { "family": "IBM Plex Mono", "licence": "OFL-1.1" },
+    "scale_px": {
+      "xs": 12, "sm": 14, "base": 16, "lg": 18, "xl": 22,
+      "2xl": 28, "3xl": 36, "4xl": 48, "5xl": 64
+    },
+    "display_scale_px": {
+      "hero": 72, "h1": 56, "h2": 40, "h3": 30, "h4": 24, "lead": 20
+    },
+    "line_height": {
+      "tight": 1.05, "snug": 1.2, "normal": 1.5, "relaxed": 1.65
+    },
+    "weight": { "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+    "tracking": {
+      "tighter": "-0.03em", "tight": "-0.01em", "normal": "0",
+      "wide": "0.04em", "wider": "0.10em", "widest": "0.14em"
+    },
+    "measure": { "prose": "68ch", "narrow": "46ch", "wide": "92ch" }
+  },
+
+  "spacing": {
+    "_note": "4px base grid. Named tokens (space-*) map onto brand space_px 1..8 and extend beyond.",
+    "space-0": "0px",
+    "space-1": "4px",
+    "space-2": "8px",
+    "space-3": "12px",
+    "space-4": "16px",
+    "space-5": "24px",
+    "space-6": "32px",
+    "space-7": "48px",
+    "space-8": "64px",
+    "space-9": "96px",
+    "space-10": "128px",
+    "space-11": "160px",
+    "space-12": "192px",
+    "gutter": { "mobile": "16px", "tablet": "24px", "desktop": "32px" },
+    "section-y": { "mobile": "64px", "tablet": "96px", "desktop": "128px" }
+  },
+
+  "radius": {
+    "none": "0px",
+    "xs": "4px",
+    "sm": "6px",
+    "md": "10px",
+    "lg": "16px",
+    "xl": "24px",
+    "2xl": "32px",
+    "pill": "999px",
+    "circle": "50%"
+  },
+
+  "shadow": {
+    "_note": "Dark-first: shadows read as ambient depth, not hard drops. Gold glow is reserved for the primary CTA and the live price chip.",
+    "none": "none",
+    "xs": "0 1px 2px rgba(0,0,0,0.40)",
+    "sm": "0 2px 6px rgba(0,0,0,0.45)",
+    "md": "0 8px 24px rgba(0,0,0,0.50)",
+    "lg": "0 16px 40px rgba(0,0,0,0.55)",
+    "xl": "0 28px 64px rgba(0,0,0,0.60)",
+    "inset-hairline": "inset 0 1px 0 rgba(255,255,255,0.04)",
+    "gold-glow": "0 0 0 1px rgba(232,199,102,0.30), 0 10px 34px rgba(201,162,39,0.22)",
+    "focus-ring": "0 0 0 2px #07070C, 0 0 0 4px #E8C766",
+    "focus-ring-danger": "0 0 0 2px #07070C, 0 0 0 4px #FF4D6D"
+  },
+
+  "motion": {
+    "duration": {
+      "instant": "0ms",
+      "fast": "120ms",
+      "base": "200ms",
+      "slow": "320ms",
+      "slower": "520ms",
+      "tape": "32000ms"
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "emphasized": "cubic-bezier(0.2, 0, 0, 1.2)",
+      "decelerate": "cubic-bezier(0, 0, 0, 1)",
+      "accelerate": "cubic-bezier(0.3, 0, 1, 1)",
+      "linear": "linear"
+    },
+    "distance": { "lift": "-1px", "rise": "8px", "slide": "16px" },
+    "reduced_motion": "All non-essential motion (ticker tape, pulse dot, price flash) is disabled under prefers-reduced-motion: reduce."
+  },
+
+  "z": {
+    "base": 0,
+    "raised": 10,
+    "dropdown": 20,
+    "sticky": 40,
+    "overlay": 50,
+    "modal": 60,
+    "popover": 70,
+    "toast": 80,
+    "tooltip": 90,
+    "max": 9999
+  },
+
+  "opacity": {
+    "disabled": 0.45,
+    "muted": 0.72,
+    "hover-wash": 0.08,
+    "pressed-wash": 0.14,
+    "scrim": 0.72
+  },
+
+  "border": {
+    "hairline": "1px",
+    "thick": "2px",
+    "focus": "2px",
+    "style": "solid",
+    "style-dashed": "dashed"
+  },
+
+  "blur": { "glass": "10px", "scrim": "2px" },
+
+  "icon": { "xs": "14px", "sm": "16px", "md": "20px", "lg": "24px", "xl": "32px" },
+
+  "breakpoint": {
+    "xs": "380px", "sm": "520px", "md": "820px",
+    "lg": "1180px", "xl": "1440px", "2xl": "1680px"
+  },
+
+  "layout": {
+    "container": { "max": "1240px", "wide": "1560px", "prose": "720px" },
+    "grid": { "columns": 12, "gap": "24px" },
+    "header-height": "64px"
+  },
+
+  "rtl": {
+    "enabled": true,
+    "logical_properties": true,
+    "mirror_icons": ["arrow-right", "chevron-right", "external-link"],
+    "never_mirror": ["logo-mark", "candlestick-chart", "price-axis", "numeric-values", "play-triangle"],
+    "numeric_direction": "ltr",
+    "notes": "Layout uses CSS logical properties (margin-inline, padding-inline, inset-inline, border-inline-*) so RTL is structural, not a transform. Arabic uses IBM Plex Sans Arabic for ALL text; Latin numerals remain Western (market convention)."
+  }
+}
