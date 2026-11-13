@@ -256,12 +256,24 @@ def version():
 @app.get("/api/analysis")
 def get_analysis(tf: str = Query("1h"), symbol: str = Query("XAUUSD"), count: int = Query(300, ge=60, le=1000)):
     rate_limit("analysis", 120)
-    if tf not in A.__dict__ and tf not in ("1m", "5m", "15m", "30m", "1h", "4h", "1d"):
+    if tf not in ("1m", "5m", "15m", "30m", "1h", "4h", "1d"):
         raise HTTPException(400, "unsupported timeframe")
     try:
-        return A.analyse(symbol, tf, count)
+        payload = A.analyse(symbol, tf, count)
     except Exception as e:  # noqa: BLE001
         raise HTTPException(503, f"analysis unavailable: {e}")
+    # the deck reads bid/ask + provenance from the same payload
+    try:
+        from market import fetch_tick
+        t = fetch_tick(symbol)
+        payload["tick"] = {"bid": t.get("bid"), "ask": t.get("ask"),
+                           "mid": t.get("mid"), "spread": t.get("spread"),
+                           "source": t.get("source"), "ts": t.get("timestamp")}
+        payload["source"] = "live"
+    except Exception:  # noqa: BLE001
+        payload["tick"] = None
+        payload["source"] = "engine"
+    return payload
 
 
 @app.get("/api/quote")
@@ -439,3 +451,13 @@ def contact(body: ContactIn):
 @app.exception_handler(Exception)
 async def unhandled(request: Request, exc: Exception):
     return JSONResponse({"error": "internal error"}, status_code=500)
+
+
+# --------------------------------------------------------------------------- #
+# serve the Command Deck (single origin: no CORS, no second deployment)
+# --------------------------------------------------------------------------- #
+WEB_DIR = ROOT / "web"
+if WEB_DIR.is_dir():
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/", StaticFiles(directory=str(WEB_DIR), html=True), name="deck")

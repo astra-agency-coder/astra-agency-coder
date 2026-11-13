@@ -111,10 +111,7 @@ async function load(tf) {
   state.error = null;
   paintStatus();
   try {
-    const r = await fetch(`/api/analysis?tf=${encodeURIComponent(tf)}`, { cache: 'no-store' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    if (!data || !Array.isArray(data.candles) || data.candles.length < 2) throw new Error('bad payload');
+    const data = await fetchAnalysis(tf);
     state.data = data;
     state.lastGood = data;
     state.loading = false;
@@ -126,6 +123,39 @@ async function load(tf) {
     if (!state.lastGood) { state.data = null; renderAll(); }
     paintStatus();
   }
+}
+
+/* The deck is served by server.py, which exposes GET /api/analysis. If that
+   endpoint is absent (e.g. the files are opened under a plain static server),
+   fall back to the bundled snapshot in data/fixtures/<tf>.json so the deck still
+   renders — and says so honestly via `source: "fixture"`. */
+async function fetchAnalysis(tf) {
+  try {
+    const r = await fetch(`/api/analysis?tf=${encodeURIComponent(tf)}`, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    if (data && Array.isArray(data.candles) && data.candles.length >= 2) return normalize(data, tf, data.source || 'live');
+  } catch (e) { /* fall through to the static snapshot */ }
+
+  const r2 = await fetch(`data/fixtures/${encodeURIComponent(tf)}.json`, { cache: 'no-store' });
+  if (!r2.ok) throw new Error(`no live data and no snapshot for ${tf}`);
+  const snap = await r2.json();
+  return normalize(snap, tf, 'fixture');
+}
+
+/* Fill in the additive fields the server would normally add (tick, source,
+   generated_at) so the UI has one shape to render regardless of origin. */
+function normalize(d, tf, source) {
+  d.timeframe = d.timeframe || tf;
+  d.source = source;
+  if (!d.generated_at) d.generated_at = d.candles?.[0]?.t || new Date().toISOString();
+  if (!d.tick) {
+    const c = Number(d.candles?.[0]?.c ?? d.price ?? 0);
+    const half = 0.085;
+    d.tick = { bid: +(c - half).toFixed(3), ask: +(c + half).toFixed(3), spread: 0.17,
+               mid: +c.toFixed(3), source: 'derived from last candle', ts: d.candles?.[0]?.t };
+  }
+  return d;
 }
 
 /* ------------------------------------------------------------------ */
