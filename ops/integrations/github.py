@@ -4,14 +4,23 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import urllib.error
 import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import secrets as _secrets  # noqa: E402
 
 API = "https://api.github.com"
 
 
 def token() -> str | None:
-    return os.environ.get("GITHUB_TOKEN") or os.environ.get("OH_GIT_CREDENTIAL_ACCESS_TOKEN_GITHUB")
+    # Prefer the Owner-provided write-capable token; fall back to the runtime
+    # read-only token so read paths still work without it.
+    return (_secrets.resolve("GITHUB_TOKEN_WRITE")
+            or os.environ.get("GITHUB_TOKEN")
+            or os.environ.get("OH_GIT_CREDENTIAL_ACCESS_TOKEN_GITHUB"))
 
 
 def _req(path: str, method: str = "GET", payload: dict | None = None):
