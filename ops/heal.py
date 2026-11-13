@@ -33,9 +33,12 @@ HEAL_LOG = ROOT / "ops" / "logs" / "heal.jsonl"
 # place would let the older launcher win the port and regress the public site.
 # Expected up unless ASTRA_SITE_EXPECTED=0; repaired by re-running the
 # idempotent launcher, bounded by MAX_ATTEMPTS.
-SITE_DIR = ROOT / "deliveries" / "astra-site"
+SITE_DIR = ROOT / "deliveries" / "astra-site-v2"
 SITE_SERVE = SITE_DIR / "serve.sh"
 SITE_PORT = os.environ.get("ASTRA_SITE_PORT", "12000")
+# Fallback for a hard rollback: the previous static site, kept intact.
+SITE_FALLBACK_DIR = ROOT / "deliveries" / "astra-site"
+SITE_FALLBACK_SERVE = SITE_FALLBACK_DIR / "serve.sh"
 
 
 def now() -> str:
@@ -112,7 +115,7 @@ def _repair_site() -> str:
     if not SITE_SERVE.exists():
         raise RuntimeError(f"launcher not found: {SITE_SERVE}")
     p = subprocess.run(["bash", str(SITE_SERVE)], capture_output=True, text=True,
-                       env={**os.environ, "ASTRA_SITE_PORT": SITE_PORT}, timeout=60)
+                       env={**os.environ, "ASTRA_SITE_PORT": SITE_PORT}, timeout=900)
     tail = (p.stdout + p.stderr).strip().splitlines()
     detail = tail[-1] if tail else "no output"
     if p.returncode != 0:
@@ -181,7 +184,7 @@ def _detect_site() -> bool:
     if not _site_expected():
         return True  # opt-out: site intentionally down, nothing to repair
     import urllib.request
-    url = f"http://127.0.0.1:{SITE_PORT}/"
+    url = f"http://127.0.0.1:{SITE_PORT}/en"
     try:
         with urllib.request.urlopen(url, timeout=5) as r:
             return r.status == 200

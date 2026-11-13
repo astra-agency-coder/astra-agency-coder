@@ -41,7 +41,10 @@ class Candle:
 
 
 def _cache_path(symbol: str, tf: str, count: int) -> Path:
-    return CACHE / f"{symbol}_{tf}_{count}.json"
+    # Symbol comes from callers, so keep it filesystem-safe: a bad value must
+    # never produce a path outside CACHE (or an over-long filename).
+    safe = "".join(ch for ch in symbol.upper() if ch.isalnum())[:16] or "UNKNOWN"
+    return CACHE / f"{safe}_{tf}_{int(count)}.json"
 
 
 def fetch_candles(symbol: str = "XAUUSD", timeframe: str = "1h",

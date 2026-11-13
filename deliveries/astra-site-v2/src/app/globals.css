@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────
+   AI ASTRA AGENCY — design system
+   Palette derived from the real product brand tokens
+   (deliveries/astra-trading/brand/tokens.json). Dark-first.
+   ──────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-ink: #06060a;
+  --color-ink-2: #0a0a11;
+  --color-ink-3: #101018;
+  --color-ink-4: #171722;
+  --color-line: #23232f;
+  --color-line-2: #2e2e3d;
+
+  --color-gold: #c9a227;
+  --color-gold-bright: #e8c766;
+  --color-gold-soft: #f3e2ae;
+  --color-gold-deep: #856a16;
+
+  --color-violet: #7c4dff;
+  --color-violet-soft: #c9b0f0;
+
+  --color-bull: #16c79a;
+  --color-bear: #ff4d6d;
+
+  --color-fog: #a9aebf;
+  --color-fog-dim: #767c90;
+  --color-snow: #eef0f7;
+
+  --font-display: var(--font-display), Georgia, serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --rail: clamp(1.25rem, 5vw, 7rem);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-snow);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+[dir="rtl"] body { font-family: var(--font-ar), var(--font-sans), sans-serif; }
+
+::selection {
+  background: color-mix(in oklab, var(--color-gold) 45%, transparent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.aurora {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60rem 40rem at 78% -8%, color-mix(in oklab, var(--color-violet) 22%, transparent), transparent 60%),
+    radial-gradient(48rem 34rem at 8% 4%, color-mix(in oklab, var(--color-gold) 14%, transparent), transparent 62%),
+    radial-gradient(70rem 50rem at 50% 108%, color-mix(in oklab, var(--color-gold) 8%, transparent), transparent 60%);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.shell {
+  position: relative;
+  z-index: 2;
+  padding-inline: var(--rail);
+  max-width: 92rem;
+  margin-inline: auto;
+}
+
+/* ── type ─────────────────────────────────────────────────────── */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-fog-dim);
+}
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+.gold-text {
+  background: linear-gradient(100deg, var(--color-gold-soft), var(--color-gold-bright) 40%, var(--color-gold) 70%, var(--color-gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── surfaces ─────────────────────────────────────────────────── */
+.panel {
+  position: relative;
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-3) 92%, transparent), color-mix(in oklab, var(--color-ink-2) 96%, transparent));
+  overflow: hidden;
+}
+
+.panel--lift {
+  box-shadow: 0 1px 0 color-mix(in oklab, #fff 6%, transparent) inset, 0 30px 60px -30px rgba(0, 0, 0, 0.9);
+}
+
+.hairline { border-top: 1px solid var(--color-line); }
+
+.sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-gold-bright) 70%, transparent), transparent);
+  opacity: 0.7;
+}
+
+/* ── reveal on scroll (visible without JS) ────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .marquee__track { animation: none !important; }
+  .pulse::after { animation: none; }
+}
+
+/* ── marquee ──────────────────────────────────────────────────── */
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: slide 38s linear infinite;
+}
+[dir="rtl"] .marquee__track { animation-direction: reverse; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ── live ticker ──────────────────────────────────────────────── */
+.tick-up { color: var(--color-bull); }
+.tick-down { color: var(--color-bear); }
+
+.pulse {
+  position: relative;
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-bull);
+}
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid var(--color-bull);
+  animation: ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  80%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ── buttons ──────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.btn--gold {
+  background: linear-gradient(180deg, var(--color-gold-bright), var(--color-gold));
+  color: #17130a;
+  box-shadow: 0 12px 30px -12px color-mix(in oklab, var(--color-gold) 70%, transparent);
+}
+.btn--gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -14px color-mix(in oklab, var(--color-gold) 85%, transparent);
+}
+.btn--ghost {
+  border-color: var(--color-line-2);
+  color: var(--color-snow);
+  background: color-mix(in oklab, var(--color-ink-3) 70%, transparent);
+}
+.btn--ghost:hover { border-color: var(--color-gold); transform: translateY(-2px); }
+
+/* ── nav ──────────────────────────────────────────────────────── */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav[data-stuck="true"] {
+  background: color-mix(in oklab, var(--color-ink) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--color-line);
+}
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding-inline: 0.15rem;
+  color: var(--color-fog);
+  text-decoration: none;
+  font-size: 0.86rem;
+  transition: color 0.2s ease;
+}
+.nav__link:hover { color: var(--color-snow); }
+.nav__link::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 6px 0;
+  height: 1px;
+  background: var(--color-gold-bright);
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nav__link:hover::after { transform: scaleX(1); }
+
+/* Touch targets: never smaller than 40px on any axis. */
+.tap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+}
+.tap--pill {
+  min-width: 2.6rem;
+  padding-inline: 0.7rem;
+}
+
+/* ── grids & tags ─────────────────────────────────────────────── */
+.rule-grid {
+  background-image:
+    linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 78%);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-line-2);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--color-fog);
+  white-space: nowrap;
+}
+.tag--gold { border-color: color-mix(in oklab, var(--color-gold) 55%, transparent); color: var(--color-gold-bright); }
+.tag--bull { border-color: color-mix(in oklab, var(--color-bull) 55%, transparent); color: var(--color-bull); }

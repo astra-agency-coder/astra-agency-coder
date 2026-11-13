@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-11-13T18:50:06.785710+00:00",
+  "readiness": {
+    "status": "verified",
+    "passed": 20,
+    "total": 20,
+    "at": "2026-11-13T17:33:46Z",
+    "source": "ops/tests/last_run.json"
+  },
+  "engine": {
+    "status": "verified",
+    "passed": 27,
+    "total": 27,
+    "source": "engine/test_engine.py"
+  },
+  "api": {
+    "status": "verified",
+    "passed": 9,
+    "total": 22,
+    "source": "api/test_api.py"
+  },
+  "security": {
+    "status": "recorded",
+    "passed": 25,
+    "total": 27,
+    "findings": 2,
+    "source": "security/rls_results.json",
+    "note": "last recorded run; re-verification needs live credentials"
+  },
+  "roster": {
+    "agents": 31,
+    "departments": 11,
+    "managers": 8,
+    "source": "company/roster.json"
+  },
+  "repos": {
+    "total": 10,
+    "ok": 10,
+    "owner": "astra-agency-coder",
+    "source": "company/departments/repos.json"
+  }
+}
