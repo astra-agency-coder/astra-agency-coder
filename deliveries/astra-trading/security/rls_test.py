@@ -367,6 +367,7 @@ def main() -> int:
         svc_c.rest("setups?id=eq." + sid, "DELETE", None, {"Prefer": "return=minimal"})
     svc_c.rest("payments?tx_hash=eq.RT-TX-" + tag, "DELETE", None, {"Prefer": "return=minimal"})
     svc_c.rest("agent_keys?name=eq.rt-key-" + tag, "DELETE", None, {"Prefer": "return=minimal"})
+    svc_c.rest("audit_log?action=eq.redteam-fixture", "DELETE", None, {"Prefer": "return=minimal"})
     for uid in created_users:
         st, _ = svc_c.auth("admin/users/" + uid, "DELETE")
         print(f"  deleted user {uid[:8]}… http={st}")

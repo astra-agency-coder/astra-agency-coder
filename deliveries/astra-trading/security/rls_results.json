@@ -162,6 +162,14 @@
       "evidence": "http=403 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"setups\"'}"
     },
     {
+      "check": "setups policy hides unpublished (shadow) setups",
+      "control": "RLS: setups_read has no `published` predicate",
+      "expected": "unpublished setups hidden from users",
+      "result": "FAIL",
+      "verdict": "MISSING",
+      "evidence": "unpublished fixture WAS returned to an active subscriber \u2014 shadow-mode setups leak"
+    },
+    {
       "check": "expired-trial user cannot read setups",
       "control": "RLS: setups_read requires active/trialing subscription",
       "expected": "0 rows",
@@ -175,7 +183,7 @@
       "expected": "rejected by check constraint",
       "result": "PASS",
       "verdict": "ENFORCED",
-      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (a1d2d660-22be-4219-8b18-8bc23831bc70, XAUUSD, long, limit, 2000.00000, 2010.00000, null, null, null, null, 1h, null, null, null, null, null, [], nul"
+      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (cd80850a-560d-4959-b2ba-dad262b4d68f, XAUUSD, long, limit, 2000.00000, 2010.00000, null, null, null, null, 1h, null, null, null, null, null, [], nul"
     },
     {
       "check": "CHECK rejects short with stop BELOW entry",
@@ -183,7 +191,7 @@
       "expected": "rejected by check constraint",
       "result": "PASS",
       "verdict": "ENFORCED",
-      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (ad40bc6f-2c99-402b-8b0d-1f7e63dda3fd, XAUUSD, short, limit, 2000.00000, 1990.00000, null, null, null, null, 1h, null, null, null, null, null, [], nu"
+      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (07f9252b-a5fb-4121-9bbe-0d1de38fed49, XAUUSD, short, limit, 2000.00000, 1990.00000, null, null, null, null, 1h, null, null, null, null, null, [], nu"
     },
     {
       "check": "CHECK accepts a valid long setup (control)",
