@@ -55,3 +55,37 @@ password). The module resolves them from the secret store or the environment.
 the real account password out of everything. Only the Owner can create it (needs the
 Google account login + 2FA), which is the one human step.
 **Boundary:** the password is never written to a file, never committed, never printed.
+
+---
+
+## D-0012 — Creative department created (video + design)
+**Date:** 2026-11-13 · **By:** CEO (astra-ceo) · **Status:** adopted
+The Owner requested intensive training for a **video-production and design**
+capability. No existing department owned visual/video work, so the CEO created a
+new **Creative** department (manager `astra-ccr`, Chief Creative Officer) rather
+than overloading Marketing. It has its own private repo `dept-creative` and its
+own scoped deploy key, like every other department.
+**Rationale:** departments own one domain; creative production is its own domain
+with its own tools (ffmpeg, Pillow, browser) and its own quality bar.
+**Result:** 9 agents total (CEO + 8 managers); access isolation re-verified
+(8/8 managers isolated to their own repo).
+
+## D-0013 — Training is a run, not a document
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+Added `ops/train.py` + `company/training/curricula/*.md`. A training module counts
+only when it produces a **real artifact** with a **check** that passed. The
+manager is spawned in its own conversation, does the work with real tools, writes
+durable knowledge to its scoped repo, and returns an evidence-backed report.
+**Rationale:** the Owner explicitly rejected file-only "training"; skills must be
+demonstrated with outputs (video files, code, cited research).
+**Bound:** retries ≤ 3; failures are recorded, not hidden.
+
+## D-0014 — Telegram bot token stored; Owner id pending
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+The Owner provided the company bot token (`Usytvqozbwoz_bot`). It is stored in the
+secret store as `ASTRA_TELEGRAM_BOT_TOKEN` and never written to a file. The
+module now resolves it from the secret store. `ASTRA_OWNER_TELEGRAM_ID` is still
+unset: the bot only accepts commands from the allowlisted Owner id, so we wait for
+the Owner's `/start` to capture the chat id before enabling send.
+**Boundary:** the bot must never accept commands from any other user; never send
+passwords/keys.

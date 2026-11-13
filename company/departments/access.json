@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T11:01:23Z",
+  "generated_at": "2026-11-13T11:48:55Z",
   "model": "one write-enabled deploy key per manager, bound to one repo",
   "note": "Private keys live in ~/.astra/keys (0600) and the secret store only. They are never committed.",
   "managers": [
@@ -58,6 +58,14 @@
       "access": "write",
       "scope": "this repository only",
       "key_ref": "~/.astra/keys/astra-cro_deploy"
+    },
+    {
+      "manager": "astra-ccr",
+      "department": "Creative",
+      "repo": "astra-agency-coder/dept-creative",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-ccr_deploy"
     }
   ]
 }

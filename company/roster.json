@@ -153,6 +153,56 @@
       "created_at": "2026-11-13T10:36:47Z",
       "updated_at": "2026-11-13T10:37:21Z",
       "notes": "definition at .agents/agents/astra-cto.md"
+    },
+    "astra-ccr": {
+      "name": "astra-ccr",
+      "role": "Creative specialist",
+      "department": "Creative",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob",
+        "browser_tool_set"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T11:48:24Z",
+      "updated_at": "2026-11-13T11:48:24Z",
+      "notes": "definition at .agents/agents/astra-ccr.md"
+    },
+    "astra-video-editor": {
+      "name": "astra-video-editor",
+      "role": "Creative specialist",
+      "department": "Creative",
+      "reports_to": "astra-ccr",
+      "tools": [
+        "terminal"
+      ],
+      "model": "inherit",
+      "status": "retired",
+      "created_at": "2026-11-13T11:49:31Z",
+      "updated_at": "2026-11-13T11:49:31Z",
+      "notes": "training run complete; task tool could not resolve custom specialists",
+      "retired_at": "2026-11-13T11:54:27Z"
+    },
+    "astra-graphic-designer": {
+      "name": "astra-graphic-designer",
+      "role": "Creative specialist",
+      "department": "Creative",
+      "reports_to": "astra-ccr",
+      "tools": [
+        "terminal"
+      ],
+      "model": "inherit",
+      "status": "retired",
+      "created_at": "2026-11-13T11:49:31Z",
+      "updated_at": "2026-11-13T11:49:31Z",
+      "notes": "training run complete; task tool could not resolve custom specialists",
+      "retired_at": "2026-11-13T11:54:27Z"
     }
   }
 }

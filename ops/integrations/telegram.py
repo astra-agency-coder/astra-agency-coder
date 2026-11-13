@@ -10,18 +10,23 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import urllib.error
 import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import secrets as _secrets  # noqa: E402
 
 API = "https://api.telegram.org"
 
 
 def _token() -> str | None:
-    return os.environ.get("ASTRA_TELEGRAM_BOT_TOKEN")
+    return _secrets.resolve("ASTRA_TELEGRAM_BOT_TOKEN")
 
 
 def _owner_id() -> str | None:
-    v = os.environ.get("ASTRA_OWNER_TELEGRAM_ID")
+    v = _secrets.resolve("ASTRA_OWNER_TELEGRAM_ID")
     return str(v).strip() if v else None
 
 
@@ -29,7 +34,7 @@ def configured() -> dict:
     return {"bot_token_set": bool(_token()), "owner_id_set": bool(_owner_id())}
 
 
-def _call(method: str, payload: dict) -> dict:
+def _call(method: str, payload: dict, timeout: int = 30) -> dict:
     t = _token()
     if not t:
         raise RuntimeError("ASTRA_TELEGRAM_BOT_TOKEN not set")
@@ -37,14 +42,24 @@ def _call(method: str, payload: dict) -> dict:
         f"{API}/bot{t}/{method}", data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"}, method="POST")
     try:
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read())
     except urllib.error.HTTPError as e:
         return {"ok": False, "error": e.read().decode()[:300]}
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
 
 
 def get_me() -> dict:
     return _call("getMe", {})
+
+
+def get_updates(offset: int | None = None, timeout: int = 0) -> dict:
+    """Long-poll updates. Used to discover the Owner's chat id from their /start."""
+    payload: dict = {"timeout": timeout}
+    if offset is not None:
+        payload["offset"] = offset
+    return _call("getUpdates", payload, timeout=max(30, timeout + 10))
 
 
 def send(text: str) -> dict:

@@ -39,6 +39,8 @@ DEPARTMENTS = {
                 "Independent verification of all deliverables before they ship."),
     "Research": ("astra-cro", "dept-research",
                  "Market, technical and competitive intelligence for the company."),
+    "Creative": ("astra-ccr", "dept-creative",
+                 "Video production, graphic design, brand assets, thumbnails."),
 }
 
 

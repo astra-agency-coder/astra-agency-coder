@@ -298,8 +298,8 @@ def t11_scoped_access() -> None:
             bad.append(f"{manager}: own={own.returncode} cross={other.returncode}")
         checked += 1
     record("T11", "Manager access is scoped to its own repo only",
-           checked == 7 and not bad,
-           f"managers={checked} isolated={checked - len(bad)}",
+           checked == len(DEPARTMENTS) and not bad,
+           f"managers={checked}/{len(DEPARTMENTS)} isolated={checked - len(bad)}",
            detail="; ".join(bad))
 
 
