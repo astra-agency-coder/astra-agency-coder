@@ -220,10 +220,19 @@ html[lang="ar"] .stat-k { font-family: var(--f-arabic); letter-spacing: 0; text-
 
 /* ticker */
 .ticker { border-top: 1px solid var(--outline); background: var(--neutral-5); overflow: hidden; }
-.ticker-track { display: flex; gap: var(--s5); padding: 8px var(--s4); white-space: nowrap; will-change: transform; }
-html[dir="rtl"] .ticker-track { flex-direction: row-reverse; }
+.ticker-track { display: flex; gap: var(--s5); padding: 8px var(--s4); white-space: nowrap; will-change: transform; width: max-content; animation: tape 32s linear infinite; animation-play-state: paused; }
+@keyframes tape { from { transform: translate3d(0,0,0); } to { transform: translate3d(calc(-1 * var(--scroll, 50%)),0,0); } }
+html[dir="rtl"] .ticker-track { flex-direction: row-reverse; animation-direction: reverse; }
 .tick-item { font-family: var(--f-mono); font-size: 12.5px; display: inline-flex; gap: 8px; align-items: center; }
 .tick-item .t { color: var(--on-subtle); }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none !important; } .dot { animation: none; } }
+
+/* session toggle: label is the tap target (>= 22px), checkbox sized to match */
+.sess-toggle { min-height: 24px; align-items: center; cursor: pointer; }
+.sess-toggle input { width: 16px; height: 16px; accent-color: var(--primary); margin: 0; }
+
+/* inline svg icons (never font-dependent) */
+.ico-svg { display: inline-block; vertical-align: -0.08em; flex-shrink: 0; }
 
 /* ---------- setup card ---------- */
 .dir-badge {

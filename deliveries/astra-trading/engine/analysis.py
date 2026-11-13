@@ -12,6 +12,7 @@ Implements:
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, asdict, field
 from datetime import datetime, timezone
 from typing import Sequence
@@ -22,11 +23,33 @@ from market import Candle
 # --------------------------------------------------------------------------- #
 # volatility
 # --------------------------------------------------------------------------- #
+def _finite(x) -> bool:
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x)
+
+
+def _clean(candles: Sequence[Candle]) -> list[Candle]:
+    """Drop candles whose OHLC is not a finite, positive, ordered number set.
+
+    Market feeds occasionally emit gaps, NaNs or sentinel values; a single bad
+    bar must not take the whole analysis down.
+    """
+    out = []
+    for c in candles or []:
+        if not all(_finite(v) for v in (c.o, c.h, c.l, c.c)):
+            continue
+        if min(c.o, c.h, c.l, c.c) <= 0:
+            continue
+        if c.h < c.l:
+            continue
+        out.append(c)
+    return out
+
+
 def atr(candles: Sequence[Candle], period: int = 14) -> float:
     """Average true range over the most recent `period` candles."""
-    if len(candles) < 2:
+    seq = list(reversed(_clean(candles)))     # oldest → newest
+    if len(seq) < 2:
         return 0.0
-    seq = list(reversed(candles))            # oldest → newest
     trs: list[float] = []
     for i in range(1, len(seq)):
         prev, cur = seq[i - 1], seq[i]
@@ -75,9 +98,11 @@ def swing_points(candles: Sequence[Candle], left: int = 2, right: int = 2):
 
     `candles` is newest-first; we work oldest-first internally.
     """
-    seq = list(reversed(candles))
+    seq = list(reversed(_clean(candles)))
     highs, lows = [], []
     n = len(seq)
+    if n < left + right + 1:
+        return highs, lows
     for i in range(left, n - right):
         window = seq[i - left:i + right + 1]
         cur = seq[i]
@@ -126,6 +151,9 @@ def relevant(zones: list[Zone], price: float, atr_value: float,
 
 def find_zones(candles: Sequence[Candle], atr_value: float | None = None,
                left: int = 2, right: int = 2, span: float = 12.0) -> dict:
+    candles = _clean(candles)
+    if not candles:
+        return {"atr": 0.0, "tolerance": 0.0, "resistances": [], "supports": []}
     a = atr_value or atr(candles)
     tol = max(a * 0.35, 0.4)                  # band width scales with volatility
     price = candles[0].c
@@ -151,8 +179,11 @@ class Liquidity:
 def find_liquidity(candles: Sequence[Candle], atr_value: float) -> list[Liquidity]:
     """Liquidity pools where stops are likely to rest."""
     out: list[Liquidity] = []
+    candles = _clean(candles)
+    if not candles:
+        return out
     seq = list(reversed(candles))
-    tol = max(atr_value * 0.25, 0.3)
+    tol = max((atr_value if _finite(atr_value) else 0.0) * 0.25, 0.3)
 
     # equal highs / lows (double tops/bottoms within tolerance)
     highs = [(c.t, c.h) for c in seq]
@@ -232,6 +263,10 @@ def session_context(now: datetime | None = None) -> dict:
 # structure bias
 # --------------------------------------------------------------------------- #
 def bias(candles: Sequence[Candle]) -> dict:
+    candles = _clean(candles)
+    if len(candles) < 2:
+        return {"direction": "neutral", "score": 0.0, "ema21": None,
+                "ema50": None, "last_close": None}
     closes = [c.c for c in reversed(candles)]
     e21 = ema(closes, 21)
     e50 = ema(closes, 50)
@@ -277,11 +312,12 @@ class Setup:
 def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
                 min_rr: float = 1.5) -> Setup | None:
     """Build the best available setup, or None if nothing meets the bar."""
+    candles = _clean(candles)
     if len(candles) < 60:
         return None
     price = candles[0].c
     a = atr(candles)
-    if a <= 0:
+    if not _finite(a) or a <= 0:
         return None
     z = find_zones(candles, a)
     b = bias(candles)
@@ -348,7 +384,11 @@ def build_setup(candles: Sequence[Candle], timeframe: str = "1h",
 def analyse(symbol: str = "XAUUSD", timeframe: str = "1h", count: int = 300) -> dict:
     """Full analysis payload for the chart + setup card."""
     from market import fetch_candles
-    candles = fetch_candles(symbol, timeframe, count)
+    candles = _clean(fetch_candles(symbol, timeframe, count))
+    if not candles:
+        return {"symbol": symbol, "timeframe": timeframe, "price": None, "atr": 0.0,
+                "bias": bias([]), "session": session_context(),
+                "zones": find_zones([]), "liquidity": [], "setup": None, "candles": []}
     a = atr(candles)
     return {
         "symbol": symbol, "timeframe": timeframe,

@@ -9,13 +9,14 @@ run offline in tests.
 from __future__ import annotations
 
 import json
+import math
 import os
 import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable  # noqa: F401
 
 BASE = os.environ.get("BIQUOTE_BASE", "https://biquote.io").rstrip("/")
 CACHE = Path(os.environ.get("ASTRA_CACHE_DIR", "/tmp/astra-cache"))
@@ -71,19 +72,32 @@ def fetch_candles(symbol: str = "XAUUSD", timeframe: str = "1h",
     raise RuntimeError(f"market data unavailable for {symbol} {timeframe}: {last}")
 
 
-def _parse(payload: dict) -> list[Candle]:
-    bars: Iterable[dict] = payload.get("bars", [])
+def _parse(payload) -> list[Candle]:
+    if not isinstance(payload, dict):
+        return []
+    bars = payload.get("bars")
+    if not isinstance(bars, list):
+        return []
     out: list[Candle] = []
     for b in bars:
+        if not isinstance(b, dict):
+            continue
         try:
-            out.append(Candle(
-                t=str(b.get("openTime") or b.get("time") or ""),
-                o=float(b["open"]), h=float(b["high"]),
-                l=float(b["low"]), c=float(b["close"]),  # noqa: E741
-                v=float(b.get("tickVolume") or b.get("volume") or 0),
-            ))
+            o, h, l, c = (float(b["open"]), float(b["high"]),  # noqa: E741
+                          float(b["low"]), float(b["close"]))
         except (KeyError, TypeError, ValueError):
             continue
+        if not all(math.isfinite(v) and v > 0 for v in (o, h, l, c)) or h < l:  # noqa: E741
+            continue
+        try:
+            v = float(b.get("tickVolume") or b.get("volume") or 0)
+        except (TypeError, ValueError):
+            v = 0.0
+        out.append(Candle(
+            t=str(b.get("openTime") or b.get("time") or ""),
+            o=o, h=h, l=l, c=c,  # noqa: E741
+            v=v if math.isfinite(v) else 0.0,
+        ))
     out.sort(key=lambda c: c.t, reverse=True)
     return out
 
