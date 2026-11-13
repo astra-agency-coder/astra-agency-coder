@@ -376,6 +376,16 @@ def t14_telegram_gate() -> None:
         checks["secret_guard"] = False
     except RuntimeError:
         checks["secret_guard"] = True
+    try:
+        T.send_document("/nonexistent/file.mp4", "x")
+        checks["missing_file_guard"] = False
+    except RuntimeError:
+        checks["missing_file_guard"] = True
+    try:
+        T.send_photo(__file__, "my api key is abc123")
+        checks["file_caption_guard"] = False
+    except RuntimeError:
+        checks["file_caption_guard"] = True
 
     bad = [k for k, v in checks.items() if not v]
     record("T14", "Telegram accepts only the Owner; never sends secrets",

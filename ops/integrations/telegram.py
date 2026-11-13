@@ -90,13 +90,94 @@ def handle_update(update: dict) -> dict:
     return {"handled": True, "authorized": True, "sender": sender, "text": text}
 
 
-_SECRET_HINTS = ("password", "private key", "seed phrase", "recovery code",
-                 "mnemonic", "2fa code", "otp code")
+_SECRET_HINTS = ("password", "passwd", "private key", "seed phrase",
+                 "recovery code", "mnemonic", "2fa code", "otp code",
+                 "api key", "apikey", "api_key", "secret", "token",
+                 "credential", "private_key")
 
 
 def _looks_secret(text: str) -> bool:
     low = text.lower()
     return any(h in low for h in _SECRET_HINTS)
+
+
+def _multipart(method: str, fields: dict, file_field: str, path: Path,
+               timeout: int = 300) -> dict:
+    """POST a file (and simple fields) to Telegram using multipart/form-data."""
+    t = _token()
+    if not t:
+        raise RuntimeError("ASTRA_TELEGRAM_BOT_TOKEN not set")
+    boundary = "----AstraBoundary" + os.urandom(16).hex()
+    parts: list[bytes] = []
+    for k, v in fields.items():
+        parts.append(f"--{boundary}\r\nContent-Disposition: form-data; "
+                     f'name="{k}"\r\n\r\n{v}\r\n'.encode())
+    data = path.read_bytes()
+    parts.append(f"--{boundary}\r\nContent-Disposition: form-data; "
+                 f'name="{file_field}"; filename="{path.name}"\r\n'
+                 f"Content-Type: application/octet-stream\r\n\r\n".encode())
+    parts.append(data)
+    parts.append(f"\r\n--{boundary}--\r\n".encode())
+    body = b"".join(parts)
+    req = urllib.request.Request(
+        f"{API}/bot{t}/{method}", data=body,
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+        method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return {"ok": False, "error": e.read().decode()[:400]}
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
+def send_document(path: str | Path, caption: str = "") -> dict:
+    """Send a file to the Owner only. Refuses non-files or secret-looking captions."""
+    p = Path(path)
+    if not p.is_file():
+        raise RuntimeError(f"not a file: {p}")
+    if caption and _looks_secret(caption):
+        raise RuntimeError("refusing to send a caption that looks like a secret")
+    oid = _owner_id()
+    if not oid:
+        raise RuntimeError("ASTRA_OWNER_TELEGRAM_ID not set — refusing to send")
+    return _multipart("sendDocument", {"chat_id": oid, "caption": caption[:1000]},
+                      "document", p)
+
+
+def send_video(path: str | Path, caption: str = "") -> dict:
+    """Send a video to the Owner only (falls back to document on failure)."""
+    p = Path(path)
+    if not p.is_file():
+        raise RuntimeError(f"not a file: {p}")
+    if caption and _looks_secret(caption):
+        raise RuntimeError("refusing to send a caption that looks like a secret")
+    oid = _owner_id()
+    if not oid:
+        raise RuntimeError("ASTRA_OWNER_TELEGRAM_ID not set — refusing to send")
+    r = _multipart("sendVideo", {"chat_id": oid, "caption": caption[:1000],
+                                 "supports_streaming": "true"}, "video", p)
+    if not r.get("ok"):
+        r = send_document(p, caption)
+    return r
+
+
+def send_photo(path: str | Path, caption: str = "") -> dict:
+    """Send a photo to the Owner only (falls back to document on failure)."""
+    p = Path(path)
+    if not p.is_file():
+        raise RuntimeError(f"not a file: {p}")
+    if caption and _looks_secret(caption):
+        raise RuntimeError("refusing to send a caption that looks like a secret")
+    oid = _owner_id()
+    if not oid:
+        raise RuntimeError("ASTRA_OWNER_TELEGRAM_ID not set — refusing to send")
+    r = _multipart("sendPhoto", {"chat_id": oid, "caption": caption[:1000]},
+                   "photo", p)
+    if not r.get("ok"):
+        r = send_document(p, caption)
+    return r
 
 
 if __name__ == "__main__":

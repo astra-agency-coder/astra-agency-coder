@@ -119,6 +119,34 @@ else:
     notes.append("brand/tokens.json not present -> palette was hand-picked; "
                  "re-map :root when Creative publishes tokens")
 
+print("\n== 5. Colour contrast (WCAG 2.1) ==")
+def _lum(hexs):
+    h = hexs.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    f = lambda c: c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+def _ratio(fg, bg):
+    a, b = _lum(fg), _lum(bg)
+    hi, lo = max(a, b), min(a, b)
+    return (hi + 0.05) / (lo + 0.05)
+
+pairs = [
+    ("body text",       "#E6E1E9", "#0B0A12"),
+    ("muted text",      "#CBC9CF", "#0B0A12"),
+    ("muted on card",   "#CBC9CF", "#1C1B20"),
+    ("primary heading", "#C9B0F0", "#0B0A12"),
+    ("secondary link",  "#8FDBE4", "#0B0A12"),
+    ("tertiary eyebrow","#F5D488", "#0B0A12"),
+    ("button label",    "#2D1450", "#C9B0F0"),
+]
+worst = min(_ratio(f, b) for _, f, b in pairs)
+for name, fg, bg in pairs:
+    r = _ratio(fg, bg)
+    print(f"  INFO  {r:5.2f}:1  {name}")
+check(worst >= 4.5,
+      f"min contrast {worst:.2f}:1 >= WCAG AA 4.5:1 (normal text)",
+      f"min contrast {worst:.2f}:1 below WCAG AA 4.5:1")
+
 print("\n== Summary ==")
 for n in notes:
     print(f"  NOTE  {n}")

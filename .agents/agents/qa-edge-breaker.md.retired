@@ -1,7 +1,7 @@
 ---
 name: qa-edge-breaker
 description: >
-  Adversarial edge-case and robustness tester: hunts crashes, bad input, malformed config.
+  qa-edge-breaker — Quality specialist at AI ASTRA AGENCY.
 department: Quality
 reports_to: astra-cqo
 tools:

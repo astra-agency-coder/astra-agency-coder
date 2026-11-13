@@ -102,3 +102,15 @@ like a secret; `handle_update()` rejects any non-Owner sender.
 rejected, non-Owner update dropped, secret-looking send refused (6/6 PASS).
 **Boundary:** bot commands are accepted from the Owner id only; no passwords/keys
 are ever sent over the channel.
+
+---
+
+## D-0016 — Telegram file delivery (video + brand) to the Owner
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+The Owner asked for the Reels video and the visual identity on Telegram. Added
+`send_document` / `send_video` / `send_photo` to the Telegram integration
+(multipart upload), all Owner-only and all refusing secret-looking captions or
+missing files. Sent: reel MP4, thumbnail, brand sheet, three logo SVGs, and two
+ZIP packs (brand kit, reel pack).
+**Verification:** T14 extended to 8 checks (adds missing-file guard and
+caption-secret guard); full suite **13/13 PASS**.
