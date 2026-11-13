@@ -114,3 +114,16 @@ missing files. Sent: reel MP4, thumbnail, brand sheet, three logo SVGs, and two
 ZIP packs (brand kit, reel pack).
 **Verification:** T14 extended to 8 checks (adds missing-file guard and
 caption-secret guard); full suite **13/13 PASS**.
+
+---
+
+## D-0017 — Company website (cinematic) + real email bridge
+**Date:** 2026-11-13 · **By:** CEO · **Status:** adopted
+Owner asked for a striking company site wired to the company mailbox. Built
+`deliveries/astra-site/` — an "OBSIDIAN" dark cinematic one-page site (self-hosted
+fonts, constellation canvas, scroll reveals, count-up, custom cursor) with a real
+contact endpoint (`POST /api/contact`) that emails `ASTRA_GMAIL_ADDRESS` over
+Gmail SMTP. No secrets are written to disk or served.
+**Verification:** public URL 200; the contact endpoint returns `{"ok": true}` and
+the message really arrives in the mailbox. Engineering delegated to add a verify
+script, `serve.sh`/`healthcheck.sh`, a bounded `ops/heal.py` check and an a11y pass.
