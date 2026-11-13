@@ -92,6 +92,8 @@ def repos() -> dict:
     items = d.get("repos", [])
     ok = sum(1 for r in items if r.get("ok"))
     return {"total": len(items), "ok": ok, "owner": d.get("owner"),
+            "status": d.get("status"), "reason": d.get("reason"),
+            "needs": d.get("needs"),
             "source": "company/departments/repos.json"}
 
 

@@ -189,3 +189,29 @@ from the feed took down the whole analysis path. Normalise at the boundary
 ## 2026-11-13 — Keep the site on 12000, the product on 12001
 `ops/heal.py` and `astra-site/healthcheck.sh` both assume `ASTRA_SITE_PORT=12000`.
 Moving the company site silently breaks self-healing. Product services get 12001.
+
+### 2026-11-13 — A page must not claim what a suite cannot prove
+**What happened:** The site showed "API contract 23/23". Re-running the suite
+gave 9/22: Supabase credentials were cleared when the runtime recycled, so the
+key store was unavailable. The old figure was remembered, not measured.
+**What we learned:** Any number that reaches the Owner or the public must be
+produced by a run, not by memory. A remembered score is a false claim.
+**What we change:** `tools/gen_facts.py` executes the suites and writes
+`src/data/facts.json`; the site reads only that file, and a suite that cannot
+run renders as "needs credentials" with the last measured score.
+
+### 2026-11-13 — `curl` without `-f` treats a 404 as success
+**What happened:** `serve.sh` reported "already up on :12000" while the old
+static site was serving a 404 on `/en`. The health check passed on a broken
+deployment.
+**What we learned:** `curl -s -o /dev/null` exits 0 on HTTP errors. A readiness
+probe must assert a 2xx, not merely a connection.
+**What we change:** Launchers and probes use `curl -fsS` so only a 2xx counts.
+
+### 2026-11-13 — A backtest below 30 trades proves nothing
+**What happened:** The new backtester returned 2 closed trades on the free
+feed, which the raw numbers would render as "100% win rate".
+**What we learned:** The data source caps history at 101 bars per timeframe, so
+edge cannot be established from it. Publishing the ratio would be dishonest.
+**What we change:** `sample_adequate` is false below 30 closed trades and the
+result carries a note explaining why; a real sample needs a longer-history feed.

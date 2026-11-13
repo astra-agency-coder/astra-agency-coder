@@ -141,3 +141,17 @@ wrong, stale tree. Fixed by setting the default branch to `main`.
 are left untouched for audit. PR #1 (foundation-v2 → master) is left open but
 superseded; it should be closed or re-targeted deliberately, not silently.
 **Verification:** `GET /repos/.../ai-astra-agency` → `default_branch = main`.
+
+## D-0010 — Company site is a Next.js 16 build on :12000
+**Date:** 2026-11-13
+**Decision:** Replace the static `deliveries/astra-site` with
+`deliveries/astra-site-v2` (Next.js 16, App Router, 3 locales) as the canonical
+public site. `ops/heal.py` and `up.sh` now target it; the old static site stays
+in the tree as a rollback path.
+**Rationale:** The static page could not carry live engine data, real RTL or a
+locale-aware build, and its figures were hand-typed. The new site reads
+`src/data/facts.json`, which `tools/gen_facts.py` generates by running the
+suites, so no figure on the page can drift from the truth.
+**Verified:** 3 locales return 200, audit 9/9 clean, heal reports the site OK,
+public URL serves the new build.
+**Owner:** astra-ceo

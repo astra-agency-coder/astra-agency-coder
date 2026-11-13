@@ -106,7 +106,7 @@ const en: Dict = {
   },
   metrics: [
     { label: "Readiness checks", value: "20/20", note: "agents, delegation, sessions, security" },
-    { label: "Department repos isolated", value: "10/10", note: "scoped keys, verified" },
+    { label: "Department repos created", value: "0/10", note: "blocked: token is read-only" },
     { label: "Engine tests", value: "27/27", note: "analysis, setups, integrity" },
     { label: "Agents on staff", value: "31", note: "across 11 departments" },
   ],
@@ -235,7 +235,7 @@ const ar: Dict = {
   },
   metrics: [
     { label: "فحوص الجاهزية", value: "20/20", note: "الوكلاء، التفويض، الجلسات، الأمن" },
-    { label: "عزل مستودعات الأقسام", value: "10/10", note: "مفاتيح مقيّدة، متحقَّق منها" },
+    { label: "مستودعات الأقسام المُنشأة", value: "0/10", note: "متوقف: التوكن للقراءة فقط" },
     { label: "اختبارات المحرّك", value: "27/27", note: "التحليل، الإعدادات، السلامة" },
     { label: "وكيل على الملاك", value: "31", note: "عبر 11 قسماً" },
   ],
@@ -364,7 +364,7 @@ const tr: Dict = {
   },
   metrics: [
     { label: "Hazırlık kontrolleri", value: "20/20", note: "ajanlar, devir, oturumlar, güvenlik" },
-    { label: "İzole bölüm depoları", value: "10/10", note: "kapsamlı anahtarlar, doğrulandı" },
+    { label: "Oluşturulan bölüm depoları", value: "0/10", note: "engellendi: jeton salt okunur" },
     { label: "Motor testleri", value: "27/27", note: "analiz, kurulumlar, bütünlük" },
     { label: "Kadrolu ajan", value: "31", note: "11 bölüm genelinde" },
   ],

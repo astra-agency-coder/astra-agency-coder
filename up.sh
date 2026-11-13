@@ -5,14 +5,14 @@
 #   ./up.sh
 #
 # Ports are fixed by convention (see AGENTS.md):
-#   12000 company site   (ops/heal.py + astra-site/healthcheck.sh assume this)
+#   12000 company site   (ops/heal.py assumes this; Next.js in astra-site-v2)
 #   12001 Astra Trading  (deck + API on one origin)
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "[up] company site -> :12000"
-( cd "$ROOT/deliveries/astra-site" && ASTRA_SITE_PORT=12000 bash serve.sh )
+( cd "$ROOT/deliveries/astra-site-v2" && ASTRA_SITE_PORT=12000 bash serve.sh )
 
 echo "[up] astra trading -> :12001"
 cd "$ROOT/deliveries/astra-trading"

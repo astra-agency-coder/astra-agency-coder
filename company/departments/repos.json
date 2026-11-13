@@ -1,56 +1,81 @@
 {
   "owner": "astra-agency-coder",
-  "generated_at": "2026-11-13T17:26:05Z",
+  "checked_at": "2026-11-13T18:59:18.056721+00:00",
+  "status": "blocked",
+  "reason": "The GITHUB_TOKEN is a read-only integration token for astra-agency-coder. It cannot create repositories (POST /user/repos -> 403 'Resource not accessible by integration') and cannot push to the existing repo (git push -> 403). Verified 2026-11-13.",
+  "needs": "A token or GitHub App installation with 'Administration: write' and 'Contents: write' on the astra-agency-coder account, or the Owner creates the 10 private repos manually.",
+  "desired": 10,
+  "created": 0,
   "repos": [
     {
       "repo": "astra-agency-coder/dept-engineering",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-marketing",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-business-development",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-product",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-operations",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-quality",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-research",
-      "action": "updated",
-      "ok": true
-    },
-    {
-      "repo": "astra-agency-coder/dept-creative",
-      "action": "updated",
-      "ok": true
+      "manager": "astra-cto",
+      "private": true,
+      "action": "not created",
+      "ok": false
     },
     {
       "repo": "astra-agency-coder/dept-security",
-      "action": "created",
-      "ok": true
+      "manager": "astra-ciso",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-product",
+      "manager": "astra-cpo",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-quality",
+      "manager": "astra-cqo",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-creative",
+      "manager": "astra-ccr",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-marketing",
+      "manager": "astra-cmo",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-research",
+      "manager": "astra-cro",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-operations",
+      "manager": "astra-coo",
+      "private": true,
+      "action": "not created",
+      "ok": false
     },
     {
       "repo": "astra-agency-coder/dept-analysis",
-      "action": "created",
-      "ok": true
+      "manager": "astra-cao",
+      "private": true,
+      "action": "not created",
+      "ok": false
+    },
+    {
+      "repo": "astra-agency-coder/dept-business-development",
+      "manager": "astra-cbdo",
+      "private": true,
+      "action": "not created",
+      "ok": false
     }
   ]
 }

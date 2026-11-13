@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T18:50:06.785710+00:00",
+  "generated_at": "2026-11-13T18:59:32.167342+00:00",
   "readiness": {
     "status": "verified",
     "passed": 20,
@@ -35,8 +35,11 @@
   },
   "repos": {
     "total": 10,
-    "ok": 10,
+    "ok": 0,
     "owner": "astra-agency-coder",
+    "status": "blocked",
+    "reason": "The GITHUB_TOKEN is a read-only integration token for astra-agency-coder. It cannot create repositories (POST /user/repos -> 403 'Resource not accessible by integration') and cannot push to the existing repo (git push -> 403). Verified 2026-11-13.",
+    "needs": "A token or GitHub App installation with 'Administration: write' and 'Contents: write' on the astra-agency-coder account, or the Owner creates the 10 private repos manually.",
     "source": "company/departments/repos.json"
   }
 }

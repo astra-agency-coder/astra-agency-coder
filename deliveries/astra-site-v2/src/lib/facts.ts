@@ -33,7 +33,10 @@ export const facts = rawFacts as unknown as {
   api: Measured;
   security: Measured;
   roster: { agents: number; departments: number; managers: number; source: string };
-  repos: { total: number; ok: number; owner: string | null; source: string };
+  repos: {
+    total: number; ok: number; owner: string | null;
+    status?: string; reason?: string; needs?: string; source: string;
+  };
 };
 
 export const company = {
