@@ -95,6 +95,30 @@ check(re.search(r'box-sizing\s*:\s*border-box', css) is not None,
 notes.append("no headless browser available in this environment; responsive "
              "check is static (viewport meta + CSS heuristics), not pixel-level")
 
+print("\n== 4. Brand-token conformance (Creative tokens.json v2) ==")
+tokens_path = os.path.join(ROOT, "..", "brand", "tokens.json")
+if os.path.isfile(tokens_path):
+    import json
+    with open(tokens_path, encoding="utf-8") as fh:
+        tok = json.load(fh)
+    dark = tok["color"]["sys_resolved"]["dark"]
+    expect = {
+        "background": dark["background"],
+        "on-surface": dark["on-surface"],
+        "primary":    dark["primary"],
+        "secondary":  dark["secondary"],
+        "tertiary":   dark["tertiary"],
+    }
+    for role, val in expect.items():
+        check(val.upper() in css.upper(),
+              f"brand token {role} {val} present in styles.css",
+              f"brand token {role} {val} NOT found in styles.css")
+    ver = tok.get("meta", {}).get("version", "?")
+    notes.append(f"aligned to brand tokens.json v{ver} (dark theme)")
+else:
+    notes.append("brand/tokens.json not present -> palette was hand-picked; "
+                 "re-map :root when Creative publishes tokens")
+
 print("\n== Summary ==")
 for n in notes:
     print(f"  NOTE  {n}")
