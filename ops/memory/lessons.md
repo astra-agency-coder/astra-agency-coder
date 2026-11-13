@@ -245,3 +245,16 @@ rendered in DejaVu Sans — a font from nowhere in the design system — while
 needs an explicit stack for each script.
 **What we change:** `[dir="rtl"] .display` and `[dir="rtl"] .eyebrow` name
 `var(--font-ar)` first, and drop the Latin negative tracking.
+
+### 2026-11-13 — A review delegation needs a bigger budget than a task
+**What happened:** The adversarial-QA delegation to `astra-cqo` ended with
+`code: MaxIterationsReached` at 60 iterations, an empty final result, and no
+report. The Creative review, given 60 iterations but a tighter brief, finished
+at 1205 s with a 322-line file.
+**What we learned:** Exploratory work (QA, review, audit) spends iterations
+before it produces anything, so the same budget that finishes a build task
+leaves no room to write the report. The failure looked like a crash but was a
+budget exhaustion.
+**What we change:** Give review-type delegations a higher `--max-iterations`
+(80+) and instruct the agent to write findings incrementally to its output file,
+so a budget stop still leaves usable results on disk.
