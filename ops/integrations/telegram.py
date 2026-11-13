@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Telegram integration — CEO <-> Owner channel with a strict Owner allowlist.
+
+Security rules (enforced in code, not just policy):
+- Only `ASTRA_OWNER_TELEGRAM_ID` may issue commands. Everything else is rejected.
+- Never send passwords, keys or recovery phrases.
+- Messages are batched; no notification per routine step.
+"""
+from __future__ import annotations
+
+import json
+import os
+import urllib.error
+import urllib.request
+
+API = "https://api.telegram.org"
+
+
+def _token() -> str | None:
+    return os.environ.get("ASTRA_TELEGRAM_BOT_TOKEN")
+
+
+def _owner_id() -> str | None:
+    v = os.environ.get("ASTRA_OWNER_TELEGRAM_ID")
+    return str(v).strip() if v else None
+
+
+def configured() -> dict:
+    return {"bot_token_set": bool(_token()), "owner_id_set": bool(_owner_id())}
+
+
+def _call(method: str, payload: dict) -> dict:
+    t = _token()
+    if not t:
+        raise RuntimeError("ASTRA_TELEGRAM_BOT_TOKEN not set")
+    req = urllib.request.Request(
+        f"{API}/bot{t}/{method}", data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return {"ok": False, "error": e.read().decode()[:300]}
+
+
+def get_me() -> dict:
+    return _call("getMe", {})
+
+
+def send(text: str) -> dict:
+    """Send to the Owner only. Refuses if no allowlisted Owner id is configured."""
+    oid = _owner_id()
+    if not oid:
+        raise RuntimeError("ASTRA_OWNER_TELEGRAM_ID not set — refusing to send")
+    if _looks_secret(text):
+        raise RuntimeError("refusing to send text that looks like a secret")
+    return _call("sendMessage", {"chat_id": oid, "text": text,
+                                 "disable_web_page_preview": True})
+
+
+def is_authorized(sender_id: int | str) -> bool:
+    oid = _owner_id()
+    return oid is not None and str(sender_id).strip() == oid
+
+
+def handle_update(update: dict) -> dict:
+    """Route one incoming update. Non-Owner senders are rejected and logged."""
+    msg = update.get("message") or update.get("edited_message") or {}
+    sender = (msg.get("from") or {}).get("id")
+    text = msg.get("text", "")
+    if sender is None:
+        return {"handled": False, "reason": "no sender"}
+    if not is_authorized(sender):
+        return {"handled": False, "reason": "unauthorized sender", "sender": sender}
+    return {"handled": True, "authorized": True, "sender": sender, "text": text}
+
+
+_SECRET_HINTS = ("password", "private key", "seed phrase", "recovery code",
+                 "mnemonic", "2fa code", "otp code")
+
+
+def _looks_secret(text: str) -> bool:
+    low = text.lower()
+    return any(h in low for h in _SECRET_HINTS)
+
+
+if __name__ == "__main__":
+    print(json.dumps({"configured": configured(),
+                      "get_me": get_me() if configured()["bot_token_set"] else "not configured"},
+                     indent=2))

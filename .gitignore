@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+ops/logs/*.log
+ops/tests/last_run.json
+ops/reports/*-latest.md
+company/roster.corrupt.*.json

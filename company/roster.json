@@ -1,0 +1,188 @@
+{
+  "company": "AI ASTRA AGENCY",
+  "agents": {
+    "astra-cbdo": {
+      "name": "astra-cbdo",
+      "role": "astra-cbdo",
+      "department": "Business Development",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cbdo.md"
+    },
+    "astra-ceo": {
+      "name": "astra-ceo",
+      "role": "astra-ceo",
+      "department": "Executive",
+      "reports_to": "owner",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob",
+        "browser_tool_set"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-ceo.md"
+    },
+    "astra-cmo": {
+      "name": "astra-cmo",
+      "role": "astra-cmo",
+      "department": "Marketing",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cmo.md"
+    },
+    "astra-coo": {
+      "name": "astra-coo",
+      "role": "astra-coo",
+      "department": "Operations",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-coo.md"
+    },
+    "astra-cpo": {
+      "name": "astra-cpo",
+      "role": "astra-cpo",
+      "department": "Product",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cpo.md"
+    },
+    "astra-cqo": {
+      "name": "astra-cqo",
+      "role": "astra-cqo",
+      "department": "Quality",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cqo.md"
+    },
+    "astra-cro": {
+      "name": "astra-cro",
+      "role": "astra-cro",
+      "department": "Research",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cro.md"
+    },
+    "astra-cto": {
+      "name": "astra-cto",
+      "role": "astra-cto",
+      "department": "Engineering",
+      "reports_to": "astra-ceo",
+      "tools": [
+        "terminal",
+        "file_editor",
+        "task_tracker",
+        "task_tool_set",
+        "grep",
+        "glob"
+      ],
+      "model": "inherit",
+      "status": "active",
+      "created_at": "2026-11-13T10:36:47Z",
+      "updated_at": "2026-11-13T10:37:21Z",
+      "notes": "definition at .agents/agents/astra-cto.md"
+    },
+    "test-agent-echo": {
+      "name": "test-agent-echo",
+      "role": "test-agent-echo",
+      "department": "Quality",
+      "reports_to": "astra-cqo",
+      "tools": [
+        "terminal"
+      ],
+      "model": "inherit",
+      "status": "retired",
+      "created_at": "2026-11-13T10:39:29Z",
+      "updated_at": "2026-11-13T10:39:29Z",
+      "notes": "test artifact",
+      "retired_at": "2026-11-13T10:44:14Z"
+    },
+    "mgr-test-spec": {
+      "name": "mgr-test-spec",
+      "role": "mgr-test-spec",
+      "department": "Quality",
+      "reports_to": "astra-cqo",
+      "tools": [
+        "terminal"
+      ],
+      "model": "inherit",
+      "status": "retired",
+      "created_at": "2026-11-13T10:40:35Z",
+      "updated_at": "2026-11-13T10:40:35Z",
+      "notes": "test artifact",
+      "retired_at": "2026-11-13T10:44:14Z"
+    }
+  }
+}
