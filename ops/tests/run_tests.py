@@ -303,9 +303,39 @@ def t11_scoped_access() -> None:
            detail="; ".join(bad))
 
 
+# ── T12 end-to-end: a real manager agent writes to its scoped repo ────
+def t12_agent_scoped_write() -> None:
+    """Spawn a real manager agent and confirm it can write to its own repo."""
+    sys.path.insert(0, str(ROOT / "ops"))
+    from provision_repos import DEPARTMENTS  # noqa: E402
+    import github  # noqa: E402
+
+    manager, slug = next((m, s) for _d, (m, s, _p) in DEPARTMENTS.items()
+                         if m == "astra-cto")
+    marker = f"t12-{int(time.time())}"
+    brief = (
+        "Foundation test, no commercial work. Do exactly this: "
+        "1) run `python3 ops/deptrepo.py clone astra-cto` "
+        f"2) create knowledge/t12.md containing the single line `{marker}` "
+        "3) run `python3 ops/deptrepo.py save astra-cto 'test: T12 scoped write'` "
+        "4) reply with exactly T12_OK and the push line. "
+        "Do not touch any other repository. Never print a key."
+    )
+    res = astra.spawn(manager, brief, max_iterations=20, timeout_s=300)
+    # Confirm the artifact reached the remote repo through the API.
+    code, d = github._req(f"/repos/{github.whoami()['login']}/{slug}"
+                          "/contents/knowledge/t12.md")
+    landed = code == 200 and marker in __import__("base64").b64decode(
+        d.get("content", "")).decode(errors="replace")
+    ok = res["status"] == "finished" and "T12_OK" in res["result"] and landed
+    record("T12", "A real manager agent writes only to its scoped repo", ok,
+           f"status={res['status']} remote_artifact={landed} conv={res['conversation_id']}",
+           detail=res["result"][:200])
+
+
 LIVE_TESTS = {
     "T02": t02_create_agent, "T03": t03_delegation, "T04": t04_sessions,
-    "T10": t10_control_plane,
+    "T10": t10_control_plane, "T12": t12_agent_scoped_write,
 }
 FAST_TESTS = {
     "T01": t01_ceo, "T05": t05_memory, "T06": t06_self_heal,

@@ -1,6 +1,6 @@
 # AI ASTRA AGENCY — COMPANY READY
 
-_Foundation report generated 2026-11-13T11:03:14Z_
+_Foundation report generated 2026-11-13T11:06:22Z_
 
 ## 1. Foundation summary
 The company is founded and its machinery is built and tested. It has an identity, a CEO with real authority, seven departments with managers, a working agent-creation and delegation system, durable memory, self-healing, reporting, and prepared integrations. It has **not** started any commercial activity — by design, it awaits the Owner's first operational task.
@@ -16,7 +16,7 @@ The company is founded and its machinery is built and tested. It has an identity
 - Holds authority, operating loop, brief format, anti-fabrication rules.
 
 ## 4. Agent creation system
-- 8 agents on the roster; create more with `python3 ops/astra.py hire`.
+- 10 agents on the roster; create more with `python3 ops/astra.py hire`.
 - Managers are instructed and able to create their own specialists (tested).
 
 ## 5. Delegation & sessions
@@ -39,7 +39,7 @@ The company is founded and its machinery is built and tested. It has an identity
 | Gmail | NOT CONFIGURED |
 | Wallet (USDT/TRC20) | CONNECTED — receive-only |
 
-## 9. Test results — 11/11 PASS
+## 9. Test results — 18/18 PASS
 | ID | Test | Result |
 |---|---|---|
 | T01 | CEO definition complete | PASS |
@@ -53,6 +53,13 @@ The company is founded and its machinery is built and tested. It has an identity
 | T08d | Control plane holds no hardcoded credentials | PASS |
 | T09 | Environment exposes required capabilities | PASS |
 | T11 | Manager access is scoped to its own repo only | PASS |
+| T02 | Create a new agent | PASS |
+| T02b | Run the new agent and receive its result | PASS |
+| T03 | Manager creates and delegates to a specialist | PASS |
+| T03b | Specialist agent was actually created by the manager | PASS |
+| T04 | Session continuity across a follow-up in the same conversation | PASS |
+| T10 | Control plane spawns and collects a real result | PASS |
+| T12 | A real manager agent writes only to its scoped repo | PASS |
 
 ## 10. PASS
 - **Company identity** — implemented: company/IDENTITY.md; tested: reviewed; result: defined with hard constraints.
