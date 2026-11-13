@@ -14,6 +14,7 @@ import math
 from pathlib import Path
 
 import uharfbuzz as hb
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
@@ -139,7 +140,9 @@ def text_path_d(text: str, font_file: str, size: float, weight: int | None = Non
             parts.append(f'<g transform="translate({ox:.3f} {oy:.3f}) scale({scale:.6f} {-scale:.6f})"><path d="{d}"/></g>')
             # track extents cheaply via glyph bounds
             try:
-                gb = gs[gname].getBounds()  # font units, y-up
+                bp = BoundsPen(gs)
+                gs[gname].draw(bp)
+                gb = bp.bounds  # font units, y-up
                 if gb:
                     x0, y0, x1, y1 = gb
                     for (px, py) in ((x0, y0), (x1, y1), (x0, y1), (x1, y0)):
