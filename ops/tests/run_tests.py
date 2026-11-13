@@ -393,6 +393,59 @@ def t14_telegram_gate() -> None:
            detail="; ".join(bad))
 
 
+# ── T15 entitlement: paid coverage is never reported as trial days ────
+def t15_entitlement_days() -> None:
+    """A paid device must report paid-until days, not trial days."""
+    import importlib.util as _ilu
+    import hashlib as _h
+    import json as _j
+    import urllib.request as _u
+    import uuid as _uuid
+
+    spec = _ilu.spec_from_file_location("sec", str(ROOT / "ops" / "secrets.py"))
+    sec = _ilu.module_from_spec(spec); spec.loader.exec_module(sec)
+    url, key = sec.resolve("ASTRA_SUPABASE_URL"), sec.resolve("ASTRA_SUPABASE_SECRET_KEY")
+    if not (url and key):
+        record("T15", "Paid entitlement reports paid days, not trial days",
+               False, "Supabase not configured", detail="missing secrets")
+        return
+    H = {"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+    api = "http://127.0.0.1:12001/api/v1/entitlement"
+
+    def rpc(fn: str, args: dict) -> None:
+        _u.urlopen(_u.Request(f"{url}/rest/v1/rpc/{fn}", data=_j.dumps(args).encode(),
+                              headers=H), timeout=20)
+
+    def ent(tok: str) -> dict:
+        return _j.loads(_u.urlopen(_u.Request(api, headers={"X-Device-Token": tok}),
+                                   timeout=20).read())
+
+    def drop(tok_hash: str) -> None:
+        _u.urlopen(_u.Request(f"{url}/rest/v1/devices?token_hash=eq.{tok_hash}",
+                              method="DELETE", headers=H), timeout=20)
+
+    checks: dict[str, bool] = {}
+    paid = f"dev_t15paid{_uuid.uuid4().hex[:22]}"; ph = _h.sha256(paid.encode()).hexdigest()
+    trial = f"dev_t15trial{_uuid.uuid4().hex[:22]}"; th = _h.sha256(trial.encode()).hexdigest()
+    try:
+        rpc("ensure_entitlement", {"p_token_hash": ph})
+        rpc("activate_entitlement", {"p_token_hash": ph, "p_days": 30})
+        p = ent(paid)
+        checks["paid_status"] = p["status"] == "active" and p["plan"] == "pro"
+        checks["paid_days"] = p["days_left"] >= 29
+        checks["paid_has_until"] = bool(p["paid_until"])
+        rpc("ensure_entitlement", {"p_token_hash": th})
+        t = ent(trial)
+        checks["trial_days"] = 6 <= t["days_left"] <= 7
+        checks["trial_plan"] = t["plan"] == "trial"
+    finally:
+        drop(ph); drop(th)
+    bad = [k for k, v in checks.items() if not v]
+    record("T15", "Paid entitlement reports paid days, not trial days",
+           not bad, f"checks={len(checks) - len(bad)}/{len(checks)}",
+           detail="; ".join(bad))
+
+
 LIVE_TESTS = {
     "T02": t02_create_agent, "T03": t03_delegation, "T04": t04_sessions,
     "T10": t10_control_plane, "T12": t12_agent_scoped_write,
@@ -401,7 +454,7 @@ FAST_TESTS = {
     "T01": t01_ceo, "T05": t05_memory, "T06": t06_self_heal,
     "T07": t07_report, "T08": t08_security, "T09": t09_environment,
     "T11": t11_scoped_access, "T13": t13_wallet_registry,
-    "T14": t14_telegram_gate,
+    "T14": t14_telegram_gate, "T15": t15_entitlement_days,
 }
 
 

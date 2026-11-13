@@ -87,7 +87,14 @@ begin
     v_ent.trial_started_at,
     v_ent.trial_ends_at,
     v_ent.paid_until,
-    greatest(0, ceil(extract(epoch from (v_ent.trial_ends_at - now())) / 86400))::int,
+    -- Paid coverage wins over the trial window: report days until whichever
+    -- end date is later, so a paying user never sees trial days remaining.
+    greatest(0, ceil(extract(epoch from (
+      greatest(
+        coalesce(v_ent.paid_until, to_timestamp(0)),
+        v_ent.trial_ends_at
+      ) - now()
+    )) / 86400))::int,
     (v_ent.status = 'active')
       or (v_ent.status = 'trialing' and v_ent.trial_ends_at > now())
       or (v_ent.paid_until is not null and v_ent.paid_until > now());

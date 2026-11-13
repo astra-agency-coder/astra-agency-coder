@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import math
 import os
 import sys
 import time
@@ -467,6 +468,31 @@ def _token_hash(tok: str) -> str:
     return _hashlib.sha256(tok.encode()).hexdigest()
 
 
+def _days_left(row: dict) -> int:
+    """Days until the later of paid coverage and the trial window.
+
+    The RPC computes this too, but a paying user must never be shown trial days
+    remaining even if the RPC is stale, so the API recomputes from the dates.
+    """
+    now = datetime.now(timezone.utc)
+
+    def _parse(v: Any) -> datetime | None:
+        if not v:
+            return None
+        try:
+            d = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+            return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+        except ValueError:
+            return None
+
+    ends = [d for d in (_parse(row.get("paid_until")),
+                        _parse(row.get("trial_ends_at"))) if d]
+    if not ends:
+        return 0
+    seconds_left = (max(ends) - now).total_seconds()
+    return max(0, math.ceil(seconds_left / 86400))
+
+
 @app.get("/api/v1/entitlement")
 def get_entitlement(request: Request):
     """Resolve (and on first use, start) the caller's trial. Server-side truth."""
@@ -481,7 +507,7 @@ def get_entitlement(request: Request):
         "trial_started_at": row.get("trial_started_at"),
         "trial_ends_at": row.get("trial_ends_at"),
         "paid_until": row.get("paid_until"),
-        "days_left": row.get("days_left"),
+        "days_left": _days_left(row),
         "active": bool(row.get("active")),
         "trial_days": TRIAL_DAYS,
     }
