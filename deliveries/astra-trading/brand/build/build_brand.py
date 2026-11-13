@@ -61,16 +61,16 @@ def render(svg_path: Path, png_path: Path, scale: float = 2.0, w=None, h=None):
 # 1. Mark files
 # --------------------------------------------------------------------------- #
 def build_mark_files():
-    # logo-mark.svg — primary mark on transparent (gold + bright facet)
+    # logo-mark.svg — primary mark on transparent (gold + bright topface)
     write(ROOT / "logo-mark.svg",
-          ingot_a_svg(512, {"a": GOLD, "facet": BRIGHT}, bg=None))
+          ingot_a_svg(512, {"a": GOLD, "topface": BRIGHT}, bg=None))
     # logo-mono.svg — single colour, inherits `color` (defaults to light ink)
     mono = ingot_a_svg(512, {"a": "currentColor"}, bg=None)
     mono = mono.replace('<svg xmlns', '<svg style="color:#EEF0F7" xmlns', 1)
     write(ROOT / "logo-mono.svg", mono)
     # logo-mark-bright.svg — mark for light backgrounds (deep gold)
     write(ROOT / "logo-mark-onlight.svg",
-          ingot_a_svg(512, {"a": GOLD_DEEP, "facet": GOLD_BRAND}, bg=None))
+          ingot_a_svg(512, {"a": GOLD_DEEP, "topface": GOLD_BRAND}, bg=None))
 
 
 # --------------------------------------------------------------------------- #
@@ -82,15 +82,15 @@ def _cap_ratio(font, weight=None):
     return (bb[3] - bb[1]) / 1000.0
 
 
-def _mark_group(x, y, size, a=GOLD, facet=BRIGHT):
-    inner = ingot_a_svg(512, {"a": a, "facet": facet}).split(">", 1)[1].replace("</svg>", "")
+def _mark_group(x, y, size, a=GOLD, topface=BRIGHT):
+    inner = ingot_a_svg(512, {"a": a, "topface": topface}).split(">", 1)[1].replace("</svg>", "")
     s = size / 512.0
     return (f'<g transform="translate({x:.2f} {y:.2f}) scale({s:.6f})">'
             f'{inner}</g>')
 
 
 def _lockup(x, y, mark_h=150.0, gap_ratio=0.34, word=WORD_EN, font=SG, weight=600,
-            tracking=0.035, mark_a=GOLD, mark_facet=BRIGHT, ink=INK, rule=GOLD,
+            tracking=0.035, mark_a=GOLD, mark_topface=BRIGHT, ink=INK, rule=GOLD,
             with_rule=True):
     """Return (svg_fragment, width, height) for a horizontal lockup at (x,y).
 
@@ -102,7 +102,7 @@ def _lockup(x, y, mark_h=150.0, gap_ratio=0.34, word=WORD_EN, font=SG, weight=60
     gap = mark_h * gap_ratio
     tx = x + mark_h + gap
     baseline = y + mark_h / 2.0 + cap / 2.0
-    frag = [_mark_group(x, y, mark_h, mark_a, mark_facet)]
+    frag = [_mark_group(x, y, mark_h, mark_a, mark_topface)]
     frag.append(f'<g transform="translate({tx:.2f} {baseline:.2f})" fill="{ink}">'
                 + text_path_d(word, font, size, weight=weight, tracking=tracking)[0]
                 + "</g>")
@@ -200,7 +200,7 @@ def build_wordmarks():
 # --------------------------------------------------------------------------- #
 def build_favicon():
     S = 32
-    inner = ingot_a_svg(512, {"a": GOLD, "facet": BRIGHT}).split(">", 1)[1].replace("</svg>", "")
+    inner = ingot_a_svg(512, {"a": GOLD, "topface": BRIGHT}).split(">", 1)[1].replace("</svg>", "")
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {S} {S}" '
            f'width="{S}" height="{S}" role="img" aria-label="Astra Trading">'
            f'<title>Astra Trading</title>'
@@ -232,9 +232,9 @@ def build_sheet():
     def panel(x, y, w, h, fill=SURF1, stroke=OUTLINE, rx=14):
         c.rect(x, y, w, h, fill=fill, stroke=stroke, sw=1.2, rx=rx)
 
-    def mark_at(x, y, size, a=GOLD, facet=BRIGHT):
+    def mark_at(x, y, size, a=GOLD, topface=BRIGHT):
         c.raw(f'<g transform="translate({x:.2f} {y:.2f})">'
-              + ingot_a_svg(512, {"a": a, "facet": facet}).split(">", 1)[1].replace("</svg>", "")
+              + ingot_a_svg(512, {"a": a, "topface": topface}).split(">", 1)[1].replace("</svg>", "")
               + "</g>")
 
     # ---------------- header ---------------- #
@@ -324,7 +324,7 @@ def build_sheet():
     # mark + mono + favicon
     panel(M + 1210, y, W - M - (M + 1210), 250)
     mark_at(M + 1234, y + 40, 152)
-    mark_at(M + 1420, y + 40, 152, a="#FFFFFF", facet="#FFFFFF")
+    mark_at(M + 1420, y + 40, 152, a="#FFFFFF", topface="#FFFFFF")
     c.raw(f'<g transform="translate({M+1606:.2f} {y+40:.2f})">'
           + _favicon_inner(152) + "</g>")
     c.text(M + 1234, y + 228, "logo-mark", PM, 15, MUTED, bg=SURF1, purpose="caption")
@@ -530,7 +530,7 @@ def _lockup_inner(mark_h=150.0, ink=INK, mark_a=GOLD):
 def _favicon_inner(size=170.0, radius_ratio=0.219):
     """Render the favicon tile at `size` px using its real 32px construction."""
     S = 32.0
-    inner = ingot_a_svg(512, {"a": GOLD, "facet": BRIGHT}).split(">", 1)[1].replace("</svg>", "")
+    inner = ingot_a_svg(512, {"a": GOLD, "topface": BRIGHT}).split(">", 1)[1].replace("</svg>", "")
     k = size / S
     return (f'<g transform="scale({k:.5f})">'
             f'<rect width="{S}" height="{S}" rx="{S*radius_ratio:.2f}" fill="{BG}"/>'

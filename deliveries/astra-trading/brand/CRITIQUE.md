@@ -1,54 +1,55 @@
 # Critique — Astra Trading mark (`logo-mark.svg`)
 
 Measured by rasterising the current file at 512 px and by reading the path
-coordinates directly. Numbers below are in the SVG's own 512-unit space.
+coordinates directly. Numbers below are in the SVG's own 512-unit space and were
+**verified** (perpendicular widths, angles and baselines computed, not eyeballed).
 
-Benchmarked against **Stripe** (single, mathematically-derived geometry),
-**Linear** (one idea, perfectly reduced, flawless optical balance) and
-**Revolut** (bold, weight-matched, crisp at any size).
+Benchmarked against **Stripe** (one mathematically-derived geometry), **Linear**
+(one idea, perfectly reduced, flawless optical balance) and **Revolut** (bold,
+weight-matched, crisp at any size).
 
-1. **Unequal leg weights.** The vertical bar is **92 u** wide (x 346→438) but the
-   left diagonal measures **105 u** horizontally. A ~13 u / 12 % mismatch — the
-   two legs read as different weights, which the eye catches instantly.
-2. **Crossbar is not weight-matched.** The crossbar is **42 u** tall (y 296→338)
-   against the bar's **92 u** width — 2.2× thinner. It reads as a wafer, not the
-   "gauge tick" of equal weight the concept claims.
-3. **The bar is broken, not solid.** The crossbar cuts a 42 u gap through the
-   vertical bar (bar spans y 66→296 and 338→452). `BRAND.md` §1 calls the right
-   leg "a solid vertical bar … a gold bullion"; here it is two stacked blocks.
-4. **One-sided, oversized tick.** The crossbar runs out to x = **492** while the
-   bar's right edge is **438** — a **54 u** arm (~59 % of the bar width) sticking
-   out to the right, with no counterpart on the left (there it merges into the
-   leg). The "tick" is asymmetric and top-heavy.
-5. **Optical centring is wrong.** Ink bbox is x **55.5→491** (centre 273) and
-   y **50.2→473.8** (centre 262) inside a box centred at 256 → the mark sits
-   down-and-right. Side margins are **L 55 / R 20** (Δ35) and **T 50 / B 38** (Δ12).
-6. **No clear space defined in-file.** Ink reaches x = 491, i.e. **21 u** from the
-   right edge; the bar is effectively flush right. There is no 0.5×height
-   clear-space box as §6 of `BRAND.md` promises.
-7. **Un-snapped, arbitrary junction.** The leg/crossbar junction is at
-   **(231.95, 296)** in an otherwise integer grid, and the leg's inner edge
-   (340.5→346) nearly coincides with the bar's left edge (346) over y 93.8→296,
-   leaving a ~5 u sliver instead of a clean corner.
-8. **Inconsistent apex.** The roof (259.5, 50.2)→(340.5, 93.8) sits at **28.3°**
-   from horizontal while the main diagonal is **61.8°** from horizontal — the two
-   top edges differ by ~90° with mismatched slopes. Worse, the bar's top-left
-   corner (346, 66) lies *above* the roof line (y ≈ 96.8 at x = 346), leaving a
-   small stray nub at the top.
-9. **Skewed foot.** The foot cut (55.5, 430.2)→(136.5, 473.8) is **not
-   perpendicular** to the leg axis, so the terminal is a parallelogram rather
-   than a clean square-cut foot.
-10. **No shared baseline.** The leg's lowest point is y = **473.8** but the bar's
-    is y = **452** — a **21.8 u** mismatch. The letter does not sit on a line and
-    looks tilted/floaty.
+First, what is **already right** (to be fair): the two legs *are* weight-matched —
+the diagonal's **perpendicular** width is **91.99 u** and the bar is **92 u**. The
+roof chamfer *is* perpendicular to the leg axis (28.3° vs the leg's 118.2°). So the
+concept is sound; the faults are in the junctions, centring and one proportion.
+
+Verified problems:
+
+1. **Crossbar is not weight-matched.** The crossbar is **42 u** tall (y 296→338)
+   against a **92 u** stroke — **2.19×** thinner. It reads as a wafer, not the
+   "gauge tick" of comparable weight the concept promises.
+2. **Crossbar overshoots asymmetrically.** It runs out to x = **492** while the
+   bar's right edge is **438** — a **54 u** arm (**59 %** of the stroke) on the
+   right, with no counterpart on the left. The "tick" is lopsided.
+3. **The mark is off-centre.** Ink bbox is x **55→491**, y **50→474** → centre
+   **(273, 262)** inside a 256-centred box. Side margins are **L 55 / R 20** (Δ35)
+   and **T 50 / B 38** (Δ12): it sits low and right.
+4. **No clear space is defined.** Ink reaches x = **491**, i.e. **21 u** from the
+   right edge — the bar is effectively flush right. `BRAND.md` §6 promises a
+   0.5 × height clear space; the file has none.
+5. **Two different baselines.** The leg's lowest point is y = **473.8** but the
+   bar's is y = **452** — a **21.8 u** mismatch. The letter does not sit on a line.
+6. **Skewed foot.** The foot cut (55.5, 430.2)→(136.5, 473.8) is **not
+   perpendicular** to the leg axis (axis · foot = **−44**, should be 0), so the
+   terminal is a parallelogram, not a clean square-cut foot.
+7. **Bar-top nub above the roof.** The bar's top-left corner is at y = **66**, but
+   the roof line only reaches y ≈ **96.8** at x = 346 — the bar pokes **30.8 u**
+   above the roof, a stray nub.
+8. **Roof is narrower than the stroke.** The roof chamfer spans **81 u**
+   horizontally (x 259.5→340.5) against a 92 u stroke, and stops **5.5 u** short of
+   the bar (x 346), so the apex is under-sized and detached from the bar.
+9. **Right silhouette is defined by the thin tick.** The rightmost extent (x 492)
+   is the **crossbar**, not the bullion bar (438) — the visual weight on the right
+   is carried by the weakest element.
+10. **Un-snapped junction.** The leg/crossbar junction is **(231.95, 296)** in an
+    otherwise integer grid — grid drift that makes the geometry non-provable.
 11. **Accidental aspect ratio.** The ink box is **436.5 × 423.6** (wider than tall
-    by ~13 u). For a balanced letterform that reads as an accident, not a choice.
-12. **Decorative cap with no geometric logic.** The two-tone cap
-    (346, 66)→(438, 120) is a 92 × 54 block on the bar top unrelated to the
-    stroke weight; at 16 px it collapses to a ~1.7 px dot that muddies the
-    silhouette.
+    by 13 u) — an accident, not a chosen proportion.
+12. **Cap with no geometric module.** The two-tone cap is 92 × **54** u; the 54 has
+    no relation to the 42 crossbar or the 92 stroke, and at 16 px it collapses to
+    ~1.7 px, muddying the silhouette (the mono file drops it entirely).
 
-**Summary:** the concept is sound, but the execution is not weight-matched, not
-centred, not snapped to a grid, and the "solid bullion" is visually broken. It
-would not survive next to Stripe/Linear/Revolut, which are all built from one
-provable geometry with a single stroke weight.
+**Summary:** the concept and the leg weights are fine, but the crossbar
+proportion, the centring, the two baselines, the skewed foot and the bar nub mean
+the mark would not hold up next to Stripe/Linear/Revolut. Fix those, keep the
+"Ingot A".

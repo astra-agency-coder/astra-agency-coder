@@ -98,7 +98,7 @@ calls (the bug behind the +0.17R era).
 - Locales ar/en/tr with full RTL mirror (`dir=rtl`); numerals stay LTR; charts
   stay LTR.
 - Board: `brand/brand-sheet.png`, generated from the tokens by
-  `tools/make_brand_sheet.py` so it cannot drift from the product.
+  `brand/build/build_brand.py` so it cannot drift from the product (regenerate with `python3 brand/build/build_brand.py`).
 - Design docs: `design/DESIGN_SYSTEM.md` (34 components), `INFORMATION_ARCHITECTURE.md`,
   `WIREFRAMES.md`, and the landing mockup `design/landing-mockup.html`.
 

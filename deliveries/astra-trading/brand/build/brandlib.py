@@ -233,20 +233,20 @@ def ingot_a_paths(S: float = 512.0, geom: dict | None = None):
     bw = g["bw"]
     b1 = b0 + bw
     W = g["W"]
-    S = g["S"]
+    run = g["S"]  # diagonal leg horizontal run (distinct from the output box size)
     yc = g["bar_y"]
     T = g["bar_t"]
     over = g["bar_over"]
     cc = g["chamfer"]
 
     # diagonal leg — flat crown, outer top-left corner bevelled
-    left = Polygon([(b0 - W + cc, 0.0), (b0, 0.0), (b0 - S, H), (b0 - W - S, H),
+    left = Polygon([(b0 - W + cc, 0.0), (b0, 0.0), (b0 - run, H), (b0 - W - run, H),
                     (b0 - W, cc)])
     # bullion (right leg) — top-right corner bevelled (the ingot read)
     bull = Polygon([(b0, 0.0), (b1 - cc, 0.0), (b1, cc), (b1, H), (b0, H)])
     # crossbar / gauge tick: left end flush with the leg's outer edge at its
     # centre height, right end running past the bullion
-    xl = (b0 - W) - S * (yc / H)
+    xl = (b0 - W) - run * (yc / H)
     bar = Polygon([(xl, yc - T / 2), (b1 + over, yc - T / 2),
                    (b1 + over, yc + T / 2), (xl, yc + T / 2)])
     a = unary_union([left, bull, bar])
@@ -272,7 +272,7 @@ def ingot_a_svg(size: int, fill_map: dict[str, str], bg: str | None = None,
     P = ingot_a_paths(float(size))
     body = "".join(
         f'<path d="{P[k]}" fill="{fill_map[k]}" fill-rule="evenodd"/>'
-        for k in ("a", "facet") if k in fill_map
+        for k in ("a", "topface") if k in fill_map
     )
     rect = f'<rect width="{size}" height="{size}" fill="{bg}"/>' if bg else ""
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
