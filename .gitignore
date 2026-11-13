@@ -4,3 +4,7 @@ ops/logs/*.log
 ops/tests/last_run.json
 ops/reports/*-latest.md
 company/roster.corrupt.*.json
+
+# transient provisioning workspaces
+.tmp_repos/
+.tmp_verify/
