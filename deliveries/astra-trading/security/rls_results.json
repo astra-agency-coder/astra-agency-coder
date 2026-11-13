@@ -1,0 +1,213 @@
+{
+  "project": "unrmzqnvfgaqrwyeqddn",
+  "results": [
+    {
+      "check": "anon cannot read profiles",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read subscriptions",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read setups",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read setup_events",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read payments",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read alerts",
+      "control": "RLS: anon has no SELECT grant/policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0 body=[]"
+    },
+    {
+      "check": "anon cannot read agent_keys",
+      "control": "RLS: no anon policy on secrets/audit",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0"
+    },
+    {
+      "check": "anon cannot read audit_log",
+      "control": "RLS: no anon policy on secrets/audit",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0"
+    },
+    {
+      "check": "anon cannot INSERT setups",
+      "control": "RLS: setups has SELECT policy only",
+      "expected": "write denied (401/403)",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=401 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"setups\"'}"
+    },
+    {
+      "check": "anon cannot INSERT profiles",
+      "control": "RLS deny-by-default",
+      "expected": "write denied",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=401 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"profi"
+    },
+    {
+      "check": "anon cannot INSERT alerts",
+      "control": "RLS deny-by-default",
+      "expected": "write denied",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=401 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"alert"
+    },
+    {
+      "check": "anon cannot INSERT agent_keys",
+      "control": "RLS deny-by-default",
+      "expected": "write denied",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=401 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"agent"
+    },
+    {
+      "check": "U2 cannot read U1's profiles rows",
+      "control": "RLS: user_id = auth.uid()",
+      "expected": "no rows owned by U1",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 returned=1 foreign(U1)=0 own(U2)=1"
+    },
+    {
+      "check": "U2 cannot read U1's subscriptions rows",
+      "control": "RLS: user_id = auth.uid()",
+      "expected": "no rows owned by U1",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 returned=1 foreign(U1)=0 own(U2)=1"
+    },
+    {
+      "check": "U2 cannot read U1's payments rows",
+      "control": "RLS: user_id = auth.uid()",
+      "expected": "no rows owned by U1",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 returned=0 foreign(U1)=0 own(U2)=0"
+    },
+    {
+      "check": "U2 cannot read U1's alerts rows",
+      "control": "RLS: user_id = auth.uid()",
+      "expected": "no rows owned by U1",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 returned=0 foreign(U1)=0 own(U2)=0"
+    },
+    {
+      "check": "U2 cannot UPDATE U1 profile",
+      "control": "RLS: profiles_self_update using id=auth.uid()",
+      "expected": "0 rows modified",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 modified=0"
+    },
+    {
+      "check": "U2 cannot read agent_keys",
+      "control": "RLS: no authenticated policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0"
+    },
+    {
+      "check": "U2 cannot read audit_log",
+      "control": "RLS: no authenticated policy",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0"
+    },
+    {
+      "check": "U2 cannot INSERT setups (write needs service role)",
+      "control": "RLS: setups has SELECT policy only",
+      "expected": "write denied",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=403 body={'code': '42501', 'details': None, 'hint': None, 'message': 'new row violates row-level security policy for table \"setups\"'}"
+    },
+    {
+      "check": "expired-trial user cannot read setups",
+      "control": "RLS: setups_read requires active/trialing subscription",
+      "expected": "0 rows",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 rows=0"
+    },
+    {
+      "check": "CHECK rejects long with stop ABOVE entry",
+      "control": "setups geometry CHECK",
+      "expected": "rejected by check constraint",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (a1d2d660-22be-4219-8b18-8bc23831bc70, XAUUSD, long, limit, 2000.00000, 2010.00000, null, null, null, null, 1h, null, null, null, null, null, [], nul"
+    },
+    {
+      "check": "CHECK rejects short with stop BELOW entry",
+      "control": "setups geometry CHECK",
+      "expected": "rejected by check constraint",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=400 body={'code': '23514', 'details': 'Failing row contains (ad40bc6f-2c99-402b-8b0d-1f7e63dda3fd, XAUUSD, short, limit, 2000.00000, 1990.00000, null, null, null, null, 1h, null, null, null, null, null, [], nu"
+    },
+    {
+      "check": "CHECK accepts a valid long setup (control)",
+      "control": "setups geometry CHECK",
+      "expected": "accepted",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=201 body="
+    },
+    {
+      "check": "track_record exposes no PII columns",
+      "control": "public view column allow-list",
+      "expected": "aggregate counters only",
+      "result": "PASS",
+      "verdict": "ENFORCED",
+      "evidence": "http=200 columns=['avg_r', 'breakevens', 'losses', 'open', 'total', 'wins'] leak=[]"
+    },
+    {
+      "check": "user cannot self-escalate role via profiles UPDATE",
+      "control": "RLS: profiles_self_update has no column allow-list",
+      "expected": "role stays 'user'",
+      "result": "FAIL",
+      "verdict": "MISSING",
+      "evidence": "role update ACCEPTED (http=200); user can now read 3 profiles incl. other users \u2014 staff bypass via public.is_staff()"
+    }
+  ]
+}
