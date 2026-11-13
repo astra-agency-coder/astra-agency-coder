@@ -126,3 +126,20 @@ defective tool. Always add (a) correctness probes with unusual-but-valid input,
 (b) worst-case performance, (c) the OS/permission error surface. See the Quality
 department playbook `knowledge/verification/PLAYBOOK.md` and the new
 `signature_probe.py` harness.
+
+## L-0009 — Delegation works via `astra.py spawn`, not the `task` tool
+**Date:** 2026-11-13 · **Context:** Quality training round 2. The `task` tool
+returns `Unknown agent` for freshly-hired specialists, but `python3 ops/astra.py
+spawn <specialist> "<brief>"` **does** run them. The Quality manager used this to
+run `qa-edge-breaker`, `qa-sec-auditor`, `qa-repro-auditor` successfully.
+**Resolution:** supersedes the blanket statement in L-0008. Departments *can*
+delegate to their own specialists — via `spawn`, not `task`.
+
+## L-0010 — One verification round is not enough
+**Date:** 2026-11-13 · **Context:** Quality's round 1 gave the Product tool a
+conditional PASS and missed 4 real defects (permission-crash, UUID normalisation
+bug, dropped error text, ReDoS). Round 2 — attacking correctness under
+unusual-but-valid input, worst-case performance and the OS error surface — found
+all of them.
+**Rule adopted:** a single "reproduce + check" pass is insufficient. Add a second
+adversarial round before a commercial PASS.
