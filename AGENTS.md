@@ -69,6 +69,16 @@ Each department has its own private GitHub repository under `astra-agency-coder`
 Specialists do not get their own repos; they work under `work/<agent>/` inside their
 department repo. Provision or refresh all of them with `python3 ops/provision_repos.py`.
 
+## Payments (receive-only, multi-network)
+Wallet addresses live in `company/finance/wallets.json` (public data, not secrets):
+USDT-TRC20 (primary) `TFBEwXbB4iTyaPC2mtwu5yXSeDjEegJmE6`, USDT-BEP20 + Ethereum
+`0x3321D9…d5C045`, Solana `3WqqQAa…81DwR`, Bitcoin `bc1q9ez…h2t`.
+- List networks: `python3 ops/integrations/wallet.py`
+- Validate all: `python3 -c "import sys;sys.path.insert(0,'ops');from integrations import wallet;print(wallet.validate_all())"`
+- Verify a payment: `wallet.verify_payment(txid, amount, network)` — on-chain only.
+- The company holds **no keys, signs nothing, transfers nothing, spends nothing**.
+- Never treat a screenshot or chat link as payment proof.
+
 ## Scoped manager access (least privilege)
 Each manager holds its OWN SSH keypair, registered as a **write-enabled deploy key on
 exactly one repository** — its department repo. GitHub binds a deploy key to a single

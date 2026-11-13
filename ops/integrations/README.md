@@ -32,9 +32,14 @@ tracked file.
 <a id="integration-gmail"></a>
 ## Gmail
 - Purpose: read business mail, classify, draft replies, follow up, read OTP.
-- Method: IMAP/SMTP with an app password, or the Gmail API with OAuth.
+- Account: `addh22010@gmail.com` (Owner-provided).
+- Method: IMAP/SMTP with a Google **app password**, or the Gmail API with OAuth.
+- Secrets (delivered via `Settings > Secrets`, never pasted into chat or files):
+  1. `ASTRA_GMAIL_ADDRESS` = `addh22010@gmail.com`
+  2. `ASTRA_GMAIL_APP_PASSWORD` = the 16-character Google app password
 - Rules: never store the password in a file; never bypass 2FA/CAPTCHA; send only
   legitimate business mail; no bulk unsolicited email.
+- Test: `python3 ops/integrations/gmail.py` (prints configured + inbox count).
 
 <a id="integration-github"></a>
 ## GitHub

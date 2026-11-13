@@ -1,0 +1,40 @@
+{
+  "_note": "Receive-only wallet addresses. Public addresses are safe to store; private keys / seed phrases are NEVER held by the company and never stored anywhere.",
+  "_policy": "Crypto-only collection. Receive-only. No signing, no transfers, no spending.",
+  "owner_supplied_at": "2026-11-13",
+  "primary": "usdt-trc20",
+  "wallets": {
+    "usdt-trc20": {
+      "address": "TFBEwXbB4iTyaPC2mtwu5yXSeDjEegJmE6",
+      "network": "Tron (TRC20)",
+      "assets": ["USDT", "USDC", "TRX"],
+      "primary": true,
+      "explorer": "https://tronscan.org/#/address/TFBEwXbB4iTyaPC2mtwu5yXSeDjEegJmE6"
+    },
+    "usdt-bep20": {
+      "address": "0x3321D953E2E4206c2a7EA8A8FDa9Bf9994d5C045",
+      "network": "BNB Smart Chain (BEP20)",
+      "assets": ["USDT", "USDC", "BUSD", "BNB"],
+      "explorer": "https://bscscan.com/address/0x3321D953E2E4206c2a7EA8A8FDa9Bf9994d5C045"
+    },
+    "ethereum": {
+      "address": "0x3321D953E2E4206c2a7EA8A8FDa9Bf9994d5C045",
+      "network": "Ethereum (ERC20)",
+      "assets": ["USDT", "USDC", "ETH"],
+      "note": "same key as usdt-bep20 (EVM address)",
+      "explorer": "https://etherscan.io/address/0x3321D953E2E4206c2a7EA8A8FDa9Bf9994d5C045"
+    },
+    "solana": {
+      "address": "3WqqQAa8LexDXrDFfTRhDtUwVhCgZAcKJuR4jsr81DwR",
+      "network": "Solana",
+      "assets": ["USDT", "USDC", "SOL"],
+      "explorer": "https://solscan.io/account/3WqqQAa8LexDXrDFfTRhDtUwVhCgZAcKJuR4jsr81DwR"
+    },
+    "bitcoin": {
+      "address": "bc1q9ez2ukrf06300w2nf4q427huvpufshx7kkfh2t",
+      "network": "Bitcoin (native segwit)",
+      "assets": ["BTC"],
+      "explorer": "https://mempool.space/address/bc1q9ez2ukrf06300w2nf4q427huvpufshx7kkfh2t"
+    }
+  }
+}

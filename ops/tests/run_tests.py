@@ -333,6 +333,20 @@ def t12_agent_scoped_write() -> None:
            detail=res["result"][:200])
 
 
+# ── T13 multi-network receive-only wallet registry ───────────────────
+def t13_wallet_registry() -> None:
+    """Every registered receive-only address must validate on its live chain."""
+    from integrations import wallet  # noqa: E402
+    res = wallet.validate_all()
+    nets = wallet.networks()
+    ok = (len(nets) >= 5 and res
+          and all(v["valid"] for v in res.values()))
+    bad = [k for k, v in res.items() if not v["valid"]]
+    record("T13", "All receive-only wallets validate on their networks", ok,
+           f"networks={nets} valid={len(res) - len(bad)}/{len(res)}",
+           detail=f"invalid={bad}")
+
+
 LIVE_TESTS = {
     "T02": t02_create_agent, "T03": t03_delegation, "T04": t04_sessions,
     "T10": t10_control_plane, "T12": t12_agent_scoped_write,
@@ -340,7 +354,7 @@ LIVE_TESTS = {
 FAST_TESTS = {
     "T01": t01_ceo, "T05": t05_memory, "T06": t06_self_heal,
     "T07": t07_report, "T08": t08_security, "T09": t09_environment,
-    "T11": t11_scoped_access,
+    "T11": t11_scoped_access, "T13": t13_wallet_registry,
 }
 
 

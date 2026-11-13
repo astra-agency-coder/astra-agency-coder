@@ -34,7 +34,8 @@ def status() -> dict:
     out["gmail"] = {"status": "CONNECTED" if gmail.configured() else "NEEDS OWNER ACTION",
                     "configured": gmail.configured()}
     out["wallet"] = {"status": "CONNECTED" if wallet.configured() else "NEEDS OWNER ACTION",
-                     "address_set": bool(wallet.address())}
+                     "networks": wallet.networks(),
+                     "primary": wallet.primary()}
     return out
 
 

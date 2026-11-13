@@ -161,9 +161,7 @@ def needs_owner_action() -> list[str]:
     out = []
     for name, path in [
         ("Gmail account for the company", "integration-gmail"),
-        ("GitHub account/repos access confirmed", "integration-github"),
         ("Telegram bot token + Owner User ID", "integration-telegram"),
-        ("USDT/TRC20 receive-only wallet address", "integration-wallet"),
     ]:
         out.append(f"{name} — see `ops/integrations/README.md#{path}`")
     return out

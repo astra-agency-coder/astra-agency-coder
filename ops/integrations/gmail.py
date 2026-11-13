@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Gmail integration — prepared, awaiting Owner-provisioned credentials.
 
-Reads credentials only from the environment. Never writes them to disk.
+Credentials resolve from the OpenHands secret store (Settings > Secrets) or from
+environment variables. They are read into memory only, never written to disk.
 Supports IMAP/SMTP with an app password, or OAuth2 access tokens.
 """
 from __future__ import annotations
@@ -9,20 +10,25 @@ from __future__ import annotations
 import email
 import imaplib
 import json
-import os
+import sys
 import smtplib
 from email.mime.text import MIMEText
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import secrets as _secrets  # noqa: E402
 
 IMAP_HOST = "imap.gmail.com"
 SMTP_HOST = "smtp.gmail.com"
 
 
 def _addr() -> str | None:
-    return os.environ.get("ASTRA_GMAIL_ADDRESS")
+    return _secrets.resolve("ASTRA_GMAIL_ADDRESS")
 
 
 def _secret() -> str | None:
-    return os.environ.get("ASTRA_GMAIL_APP_PASSWORD") or os.environ.get("ASTRA_GMAIL_OAUTH_TOKEN")
+    return (_secrets.resolve("ASTRA_GMAIL_APP_PASSWORD")
+            or _secrets.resolve("ASTRA_GMAIL_OAUTH_TOKEN"))
 
 
 def configured() -> bool:

@@ -32,3 +32,26 @@ installation; (c) machine-user accounts per manager — rejected: prohibited (no
 identities).
 **Boundary:** No manager holds the company token, wallet keys, or any secret beyond its
 own deploy key. Keys are stored 0600 outside the repo and in the runtime secret store.
+
+## D-0011 — Multi-network receive-only wallet registry
+**Date:** 2026-11-13
+**Decision:** Accept incoming payments on five networks via a public registry at
+`company/finance/wallets.json`: USDT-TRC20 (primary), USDT-BEP20, Ethereum (ERC20),
+Solana, Bitcoin (native segwit). Public addresses are stored in the registry; they are
+not secrets.
+**Rationale:** The Owner supplied the addresses; collecting on more networks removes a
+friction point with clients and lowers fees (TRC20 remains cheapest/primary).
+**Boundaries unchanged:** receive-only. The company never holds private keys or seed
+phrases, never signs, never transfers, never spends. Payment proof is on-chain only —
+`verify_payment(txid, amount, network)` reads the chain; screenshots/links are not proof.
+**Verification:** every address validated live on its chain (test T13).
+
+## D-0012 — Gmail via Google app password in the secret store
+**Date:** 2026-11-13
+**Decision:** Connect the company mailbox `addh22010@gmail.com` through two OpenHands
+secrets: `ASTRA_GMAIL_ADDRESS` and `ASTRA_GMAIL_APP_PASSWORD` (a 16-char Google app
+password). The module resolves them from the secret store or the environment.
+**Rationale:** App password works with IMAP/SMTP without a full OAuth client and keeps
+the real account password out of everything. Only the Owner can create it (needs the
+Google account login + 2FA), which is the one human step.
+**Boundary:** the password is never written to a file, never committed, never printed.
