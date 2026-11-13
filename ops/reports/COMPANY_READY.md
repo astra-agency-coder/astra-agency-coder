@@ -1,6 +1,6 @@
 # AI ASTRA AGENCY — COMPANY READY
 
-_Foundation report generated 2026-11-13T10:47:28Z_
+_Foundation report generated 2026-11-13T10:55:59Z_
 
 ## 1. Foundation summary
 The company is founded and its machinery is built and tested. It has an identity, a CEO with real authority, seven departments with managers, a working agent-creation and delegation system, durable memory, self-healing, reporting, and prepared integrations. It has **not** started any commercial activity — by design, it awaits the Owner's first operational task.
@@ -34,8 +34,7 @@ The company is founded and its machinery is built and tested. It has an identity
 ## 8. Integrations
 | Integration | Status |
 |---|---|
-| GitHub (read) | CONNECTED |
-| GitHub (write) | FAIL — read-only token |
+| GitHub (read + write) | CONNECTED — `astra-agency-coder` |
 | Telegram | NOT CONFIGURED |
 | Gmail | NOT CONFIGURED |
 | Wallet (USDT/TRC20) | NOT CONFIGURED |
@@ -66,11 +65,12 @@ The company is founded and its machinery is built and tested. It has an identity
 - **Reporting** — implemented: ops/report.py; tested: T07; result: owner report + board; projections separated from realised revenue.
 - **Security controls** — implemented: scan-secrets, telegram allowlist, receive-only wallet; tested: T08, T08b, T08c, T08d; result: all security tests pass.
 - **Environment audit** — implemented: /server_info; tested: T09; result: v1.62.0, SDK 1.62.0, 14 capabilities.
+- **Department GitHub repos** — implemented: ops/provision_repos.py; tested: provisioned live; result: seven private department repos created and populated.
+- **GitHub write access** — implemented: ops/secrets.py + GITHUB_TOKEN_WRITE; tested: verified live; result: repo creation + branch push both succeed.
+- **Department→repo mapping** — implemented: company/departments/repos.json; tested: verified live; result: each of the 7 departments maps to its own private repo.
 
 ## 11. FAIL
-- **Department GitHub repos (creation)** — implemented: ops/provision_repos.py ready; tested: attempted live; result: 403 Resource not accessible by integration.
-  - Issue: Runtime GitHub token is read-only (App installation token). Cannot create repositories or push.
-  - Needs Owner: Grant a token with Administration:write + Contents:write (or add the GitHub App installation with repo-create + contents-write).
+- none
 
 ## 12. NOT CONFIGURED
 - **Telegram channel** — implemented: ops/integrations/telegram.py; tested: unit-tested; result: allowlist logic verified; bot not connected.
@@ -83,10 +83,7 @@ The company is founded and its machinery is built and tested. It has an identity
   - Needs Owner: Confirm which automation schedule to enable
 
 ## 13. NEEDS OWNER ACTION
-- **GitHub write access** — implemented: —; tested: probed; result: read works, write denied.
-  - Needs Owner: Write-capable token (see FAIL above)
-- **Agent→department repo mapping** — implemented: company/departments/repos.json; tested: plan written; result: blocked by GitHub write access.
-  - Needs Owner: Unblock GitHub write, then run `python3 ops/provision_repos.py`
+- none
 
 ## 14. What I need from you
 1. **GitHub write access** — a token with `Administration: write` and `Contents: write`, so I can create the seven private department repositories.

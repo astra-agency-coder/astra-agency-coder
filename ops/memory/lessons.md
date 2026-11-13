@@ -35,3 +35,16 @@ read-only permissions, not a classic PAT with `repo` scope. The
 create all seven private department repositories in one command once the token
 gains `Administration: write` + `Contents: write`. Until then, department homes
 are kept locally under `company/departments/`.
+
+### 2026-11-13 (update) — GitHub write access restored via the secret store
+**What happened:** The Owner provided a write-capable fine-grained PAT. It was
+registered in the OpenHands runtime secret store as `GITHUB_TOKEN_WRITE` and resolved
+through `ops/secrets.py`. All seven private department repositories were then created
+and populated, and the foundation was pushed to `ai-astra-agency` on a branch.
+**What we learned:** The runtime read-only `GITHUB_TOKEN` and the Owner's write PAT are
+different credentials; the secret store survives only within the sandbox, so durable
+credential handling must also consider a 0600 file outside the repo (prior attempt used
+`~/.astra/secrets.env`).
+**Mistake to avoid:** A push URL of the form `https://x-access-token:<token>@host`
+writes the token into `.git/config`. Always push via `ops/gitpush.sh`, which passes an
+ephemeral credential helper instead.

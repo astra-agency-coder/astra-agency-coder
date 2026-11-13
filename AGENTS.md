@@ -57,11 +57,22 @@ python3 ops/tests/run_tests.py --live  # readiness tests
 | File-based agents | Working (tested) |
 | Session continuity across follow-ups | Working (tested) |
 | GitHub **read** (identity, list repos) | Working |
-| GitHub **write** (create repo, push) | **Blocked** — token is read-only (403) |
+| GitHub **write** (create repo, push) | Working — via `GITHUB_TOKEN_WRITE` in the secret store |
 | Telegram / Gmail / Wallet | Prepared, awaiting Owner credentials |
 | Durable scheduling | Must run as an OpenHands Cloud automation, not a local process |
 
+## Department repositories (private)
+Each department has its own private GitHub repository under `astra-agency-coder`:
+`dept-engineering`, `dept-marketing`, `dept-business-development`, `dept-product`,
+`dept-operations`, `dept-quality`, `dept-research`. Each holds `README.md`,
+`CHARTER.md`, `knowledge/` (durable department memory) and `work/` (in-flight work).
+Specialists do not get their own repos; they work under `work/<agent>/` inside their
+department repo. Provision or refresh all of them with `python3 ops/provision_repos.py`.
+
 ## Git
-- Remote: `astra-agency-coder/astra-agency-coder` (default branch `main`).
+- Canonical private company repo: `astra-agency-coder/ai-astra-agency` (branch `master`).
+- Public profile repo: `astra-agency-coder/astra-agency-coder` (branch `main`).
+- Push with `bash ops/gitpush.sh <remote> <branch>` — it uses an ephemeral credential
+  helper so the token is never written to `.git/config`.
 - Git identity for agent commits: `AI ASTRA AGENCY <agents@astra-agency.dev>`.
 - Add `Co-authored-by: openhands <openhands@all-hands.dev>` to commits.

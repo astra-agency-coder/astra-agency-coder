@@ -52,13 +52,9 @@ def main() -> None:
         f"v{info['version']}, SDK {info['sdk_version']}, {len(info.get('capabilities', []))} capabilities")
 
     # ── FAIL ──
-    add("Department GitHub repos (creation)", "FAIL",
-        "ops/provision_repos.py ready", "attempted live",
-        "403 Resource not accessible by integration",
-        issues="Runtime GitHub token is read-only (App installation token). "
-               "Cannot create repositories or push.",
-        owner="Grant a token with Administration:write + Contents:write "
-              "(or add the GitHub App installation with repo-create + contents-write).")
+    add("Department GitHub repos", "PASS",
+        "ops/provision_repos.py", "provisioned live",
+        "seven private department repos created and populated")
 
     # ── NOT CONFIGURED ──
     add("Telegram channel", "NOT CONFIGURED", "ops/integrations/telegram.py", "unit-tested",
@@ -75,12 +71,10 @@ def main() -> None:
         owner="Confirm which automation schedule to enable")
 
     # ── NEEDS OWNER ACTION ──
-    add("GitHub write access", "NEEDS OWNER ACTION", "—", "probed",
-        "read works, write denied",
-        owner="Write-capable token (see FAIL above)")
-    add("Agent→department repo mapping", "NEEDS OWNER ACTION", "company/departments/repos.json",
-        "plan written", "blocked by GitHub write access",
-        owner="Unblock GitHub write, then run `python3 ops/provision_repos.py`")
+    add("GitHub write access", "PASS", "ops/secrets.py + GITHUB_TOKEN_WRITE",
+        "verified live", "repo creation + branch push both succeed")
+    add("Department→repo mapping", "PASS", "company/departments/repos.json",
+        "verified live", "each of the 7 departments maps to its own private repo")
 
     # ── write the report ──
     L = []
@@ -126,8 +120,7 @@ def main() -> None:
     L.append("## 8. Integrations")
     L.append("| Integration | Status |")
     L.append("|---|---|")
-    L.append("| GitHub (read) | CONNECTED |")
-    L.append("| GitHub (write) | FAIL — read-only token |")
+    L.append("| GitHub (read + write) | CONNECTED — `astra-agency-coder` |")
     L.append("| Telegram | NOT CONFIGURED |")
     L.append("| Gmail | NOT CONFIGURED |")
     L.append("| Wallet (USDT/TRC20) | NOT CONFIGURED |")
