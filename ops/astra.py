@@ -166,7 +166,8 @@ def hire(name: str, dept: str = "unassigned", reports_to: str = "astra-ceo",
 
     r = load_roster()
     r["agents"][name] = {
-        "name": name, "role": name, "department": dept, "reports_to": reports_to,
+        "name": name, "role": f"{dept} specialist", "department": dept,
+        "reports_to": reports_to,
         "tools": tools, "model": "inherit", "status": "active",
         "created_at": r["agents"].get(name, {}).get("created_at", now()),
         "updated_at": now(),
@@ -174,6 +175,20 @@ def hire(name: str, dept: str = "unassigned", reports_to: str = "astra-ceo",
     }
     save_roster(r)
     return r["agents"][name]
+
+
+def purge(name: str) -> None:
+    """Remove a retired agent from the roster entirely (history stays in git)."""
+    r = load_roster()
+    a = r["agents"].get(name)
+    if not a:
+        raise SystemExit(f"no such agent: {name}")
+    if a.get("status") != "retired":
+        raise SystemExit(f"refusing to purge active agent: {name}")
+    del r["agents"][name]
+    save_roster(r)
+    f = agent_file(name)
+    f.with_suffix(".md.retired").unlink(missing_ok=True)
 
 
 def fire(name: str, reason: str = "retired by CEO") -> None:
@@ -363,6 +378,9 @@ def main() -> None:
     f.add_argument("name")
     f.add_argument("--reason", default="retired by CEO")
 
+    p = sub.add_parser("purge")
+    p.add_argument("name")
+
     s = sub.add_parser("spawn")
     s.add_argument("agent")
     s.add_argument("task")
@@ -393,6 +411,9 @@ def main() -> None:
     elif a.cmd == "fire":
         fire(a.name, a.reason)
         print(f"retired {a.name}")
+    elif a.cmd == "purge":
+        purge(a.name)
+        print(f"purged {a.name} from roster")
     elif a.cmd == "spawn":
         print(json.dumps(spawn(a.agent, a.task, a.max_iterations,
                                timeout_s=a.timeout), indent=2, ensure_ascii=False))

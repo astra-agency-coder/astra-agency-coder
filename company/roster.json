@@ -3,7 +3,7 @@
   "agents": {
     "astra-cbdo": {
       "name": "astra-cbdo",
-      "role": "astra-cbdo",
+      "role": "Chief Business Development Officer",
       "department": "Business Development",
       "reports_to": "astra-ceo",
       "tools": [
@@ -22,7 +22,7 @@
     },
     "astra-ceo": {
       "name": "astra-ceo",
-      "role": "astra-ceo",
+      "role": "Chief Executive Officer",
       "department": "Executive",
       "reports_to": "owner",
       "tools": [
@@ -42,7 +42,7 @@
     },
     "astra-cmo": {
       "name": "astra-cmo",
-      "role": "astra-cmo",
+      "role": "Chief Marketing Officer",
       "department": "Marketing",
       "reports_to": "astra-ceo",
       "tools": [
@@ -61,7 +61,7 @@
     },
     "astra-coo": {
       "name": "astra-coo",
-      "role": "astra-coo",
+      "role": "Chief Operating Officer",
       "department": "Operations",
       "reports_to": "astra-ceo",
       "tools": [
@@ -80,7 +80,7 @@
     },
     "astra-cpo": {
       "name": "astra-cpo",
-      "role": "astra-cpo",
+      "role": "Chief Product Officer",
       "department": "Product",
       "reports_to": "astra-ceo",
       "tools": [
@@ -99,7 +99,7 @@
     },
     "astra-cqo": {
       "name": "astra-cqo",
-      "role": "astra-cqo",
+      "role": "Chief Quality Officer",
       "department": "Quality",
       "reports_to": "astra-ceo",
       "tools": [
@@ -118,7 +118,7 @@
     },
     "astra-cro": {
       "name": "astra-cro",
-      "role": "astra-cro",
+      "role": "Chief Research Officer",
       "department": "Research",
       "reports_to": "astra-ceo",
       "tools": [
@@ -137,7 +137,7 @@
     },
     "astra-cto": {
       "name": "astra-cto",
-      "role": "astra-cto",
+      "role": "Chief Technology Officer",
       "department": "Engineering",
       "reports_to": "astra-ceo",
       "tools": [
@@ -153,36 +153,6 @@
       "created_at": "2026-11-13T10:36:47Z",
       "updated_at": "2026-11-13T10:37:21Z",
       "notes": "definition at .agents/agents/astra-cto.md"
-    },
-    "test-agent-echo": {
-      "name": "test-agent-echo",
-      "role": "test-agent-echo",
-      "department": "Quality",
-      "reports_to": "astra-cqo",
-      "tools": [
-        "terminal"
-      ],
-      "model": "inherit",
-      "status": "retired",
-      "created_at": "2026-11-13T10:39:29Z",
-      "updated_at": "2026-11-13T10:39:29Z",
-      "notes": "test artifact",
-      "retired_at": "2026-11-13T10:44:14Z"
-    },
-    "mgr-test-spec": {
-      "name": "mgr-test-spec",
-      "role": "mgr-test-spec",
-      "department": "Quality",
-      "reports_to": "astra-cqo",
-      "tools": [
-        "terminal"
-      ],
-      "model": "inherit",
-      "status": "retired",
-      "created_at": "2026-11-13T10:40:35Z",
-      "updated_at": "2026-11-13T10:40:35Z",
-      "notes": "test artifact",
-      "retired_at": "2026-11-13T10:44:14Z"
     }
   }
 }

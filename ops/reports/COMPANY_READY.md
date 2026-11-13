@@ -1,6 +1,6 @@
 # AI ASTRA AGENCY — COMPANY READY
 
-_Foundation report generated 2026-11-13T10:46:34Z_
+_Foundation report generated 2026-11-13T10:47:28Z_
 
 ## 1. Foundation summary
 The company is founded and its machinery is built and tested. It has an identity, a CEO with real authority, seven departments with managers, a working agent-creation and delegation system, durable memory, self-healing, reporting, and prepared integrations. It has **not** started any commercial activity — by design, it awaits the Owner's first operational task.
@@ -16,7 +16,7 @@ The company is founded and its machinery is built and tested. It has an identity
 - Holds authority, operating loop, brief format, anti-fabrication rules.
 
 ## 4. Agent creation system
-- 10 agents on the roster; create more with `python3 ops/astra.py hire`.
+- 8 agents on the roster; create more with `python3 ops/astra.py hire`.
 - Managers are instructed and able to create their own specialists (tested).
 
 ## 5. Delegation & sessions
