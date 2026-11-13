@@ -293,3 +293,15 @@ the first produces untradeable calls.
 **What we change:** `build_setup` now prefers the strongest zone *within 3×ATR*
 of price, falling back to the full pool only if none qualifies. Full-series
 replay improved from +0.17R/+0.31R (4h/1d) to +0.40R/+0.43R with win rates 70%/71%.
+
+## L-0009 — Verify generated art from the emitted data, not from the generator's intent (2026-11-13)
+Two brand bugs survived review because nobody measured the *output*:
+- `ingot_a_svg()` drew a layer key (`facet`) that the geometry function never
+  returned (`topface`), so the bright top face silently never rendered.
+- `ingot_a_paths()` reused the name `S` for both the output box size and the
+  diagonal run, clobbering `S` to 424 — the mark was scaled/offset for a 424 box
+  inside a 512 viewBox, which is why it looked off-centre.
+
+Rule: after generating any asset, parse the emitted file and assert the property
+you care about (here: equal margins on both axes, measured from the path data).
+A generator that "looks right" in code can still ship a wrong artefact.
