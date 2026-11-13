@@ -155,3 +155,15 @@ suites, so no figure on the page can drift from the truth.
 **Verified:** 3 locales return 200, audit 9/9 clean, heal reports the site OK,
 public URL serves the new build.
 **Owner:** astra-ceo
+
+## D-0011 — Treat a credential's blind spot as a finding, not a fact (2026-11-13)
+The read-only integration token could not see private repos, so its 403 was
+recorded as "repos do not exist". They existed all along (10 private dept repos
+with content, accepting pushes). Rule: before recording absence, confirm the
+credential can see that class of resource at all.
+
+## D-0012 — Secrets live in the runtime store, never in chat or repo files
+Owner-supplied tokens are written only to the OpenHands runtime secret store
+(`ops/secrets.py`), read into memory, and masked in every report. Files in the
+repo reference secret *names*, never values. Tokens pasted into chat are flagged
+to the Owner for rotation.
