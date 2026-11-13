@@ -75,6 +75,28 @@ def mask(value: str | None) -> str:
     return f"{value[:4]}…{value[-4:]} ({len(value)} chars)"
 
 
+def put(name: str, value: str, description: str = "") -> bool:
+    """Store or update a secret in the runtime secret store. Never returns it."""
+    rt = _runtime()
+    if not rt:
+        return False
+    url, key = rt
+    body = json.dumps({"name": name, "value": value,
+                       "description": description}).encode()
+    req = urllib.request.Request(f"{url}/api/settings/secrets", data=body,
+                                 method="PUT",
+                                 headers={"X-Session-API-Key": key,
+                                          "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            ok = r.status == 200
+    except Exception:
+        ok = False
+    if ok:
+        _CACHE.pop(name, None)
+    return ok
+
+
 def status(names: list[str]) -> dict:
     return {n: mask(resolve(n)) for n in names}
 

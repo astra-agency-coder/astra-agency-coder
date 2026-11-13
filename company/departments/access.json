@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-11-13T11:01:23Z",
+  "model": "one write-enabled deploy key per manager, bound to one repo",
+  "note": "Private keys live in ~/.astra/keys (0600) and the secret store only. They are never committed.",
+  "managers": [
+    {
+      "manager": "astra-cto",
+      "department": "Engineering",
+      "repo": "astra-agency-coder/dept-engineering",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cto_deploy"
+    },
+    {
+      "manager": "astra-cmo",
+      "department": "Marketing",
+      "repo": "astra-agency-coder/dept-marketing",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cmo_deploy"
+    },
+    {
+      "manager": "astra-cbdo",
+      "department": "Business Development",
+      "repo": "astra-agency-coder/dept-business-development",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cbdo_deploy"
+    },
+    {
+      "manager": "astra-cpo",
+      "department": "Product",
+      "repo": "astra-agency-coder/dept-product",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cpo_deploy"
+    },
+    {
+      "manager": "astra-coo",
+      "department": "Operations",
+      "repo": "astra-agency-coder/dept-operations",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-coo_deploy"
+    },
+    {
+      "manager": "astra-cqo",
+      "department": "Quality",
+      "repo": "astra-agency-coder/dept-quality",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cqo_deploy"
+    },
+    {
+      "manager": "astra-cro",
+      "department": "Research",
+      "repo": "astra-agency-coder/dept-research",
+      "access": "write",
+      "scope": "this repository only",
+      "key_ref": "~/.astra/keys/astra-cro_deploy"
+    }
+  ]
+}

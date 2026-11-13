@@ -69,6 +69,19 @@ Each department has its own private GitHub repository under `astra-agency-coder`
 Specialists do not get their own repos; they work under `work/<agent>/` inside their
 department repo. Provision or refresh all of them with `python3 ops/provision_repos.py`.
 
+## Scoped manager access (least privilege)
+Each manager holds its OWN SSH keypair, registered as a **write-enabled deploy key on
+exactly one repository** — its department repo. GitHub binds a deploy key to a single
+repository, so a manager cannot read or push any other repo, and no manager ever holds
+the company-wide token.
+
+- Provision/refresh: `python3 ops/provision_access.py`
+- Prove isolation: `python3 ops/provision_access.py --verify` (own repo reachable,
+  every other repo denied)
+- Managers work through `python3 ops/deptrepo.py {clone,pull,save,ls} <manager>`
+- Private keys live only in `~/.astra/keys/` (0600) and the runtime secret store.
+  They are never committed, never printed, never put in a report.
+
 ## Git
 - Canonical private company repo: `astra-agency-coder/ai-astra-agency` (branch `master`).
 - Public profile repo: `astra-agency-coder/astra-agency-coder` (branch `main`).

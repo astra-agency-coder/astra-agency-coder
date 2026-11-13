@@ -9,8 +9,13 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import urllib.error
 import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import secrets as _secrets  # noqa: E402
 
 TRONGRID = "https://api.trongrid.io"
 USDT_TRC20_CONTRACT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
@@ -18,7 +23,8 @@ REQUIRED_CONFIRMATIONS = 19  # TRON solidity (irreversible) block depth
 
 
 def address() -> str | None:
-    v = os.environ.get("ASTRA_WALLET_USDT_TRC20")
+    v = _secrets.resolve("ASTRA_WALLET_USDT_TRC20") or os.environ.get(
+        "ASTRA_WALLET_USDT_TRC20")
     return v.strip() if v else None
 
 

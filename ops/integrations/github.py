@@ -70,5 +70,20 @@ def list_repos() -> list[dict]:
              "default_branch": r["default_branch"]} for r in d]
 
 
+def list_deploy_keys(owner: str, slug: str) -> list[dict]:
+    code, d = _req(f"/repos/{owner}/{slug}/keys")
+    return d if code == 200 and isinstance(d, list) else []
+
+
+def add_deploy_key(owner: str, slug: str, title: str, key: str,
+                   read_only: bool = False) -> dict:
+    """Register a deploy key on one repo. A deploy key is bound to that repo."""
+    code, d = _req(f"/repos/{owner}/{slug}/keys", "POST", {
+        "title": title, "key": key, "read_only": read_only,
+    })
+    return {"ok": code in (201, 422), "status": code, "id": d.get("id"),
+            "error": d.get("message") if code not in (201, 422) else None}
+
+
 if __name__ == "__main__":
     print(json.dumps({"identity": whoami(), "repos": list_repos()}, indent=2))

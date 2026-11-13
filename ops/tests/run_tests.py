@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -269,6 +270,39 @@ def t10_control_plane() -> None:
            detail=res["result"][:200])
 
 
+# ── T11 scoped manager access ────────────────────────────────────────
+def t11_scoped_access() -> None:
+    """Each manager's deploy key must reach its own repo and NO other repo."""
+    sys.path.insert(0, str(ROOT / "ops"))
+    from provision_access import key_paths, ssh_env  # noqa: E402
+    from provision_repos import DEPARTMENTS  # noqa: E402
+    import github  # noqa: E402
+
+    owner = github.whoami()["login"]
+    checked = 0
+    bad: list[str] = []
+    for _dept, (manager, slug, _p) in DEPARTMENTS.items():
+        priv, _pub = key_paths(manager)
+        if not priv.exists():
+            bad.append(f"{manager}: no key")
+            continue
+        env = {**os.environ, **ssh_env(priv)}
+        own = subprocess.run(["git", "ls-remote",
+                              f"git@github.com:{owner}/{slug}.git", "HEAD"],
+                             capture_output=True, text=True, env=env)
+        other_slug = next(s for _d, (_m, s, _x) in DEPARTMENTS.items() if s != slug)
+        other = subprocess.run(["git", "ls-remote",
+                                f"git@github.com:{owner}/{other_slug}.git", "HEAD"],
+                               capture_output=True, text=True, env=env)
+        if own.returncode != 0 or other.returncode == 0:
+            bad.append(f"{manager}: own={own.returncode} cross={other.returncode}")
+        checked += 1
+    record("T11", "Manager access is scoped to its own repo only",
+           checked == 7 and not bad,
+           f"managers={checked} isolated={checked - len(bad)}",
+           detail="; ".join(bad))
+
+
 LIVE_TESTS = {
     "T02": t02_create_agent, "T03": t03_delegation, "T04": t04_sessions,
     "T10": t10_control_plane,
@@ -276,6 +310,7 @@ LIVE_TESTS = {
 FAST_TESTS = {
     "T01": t01_ceo, "T05": t05_memory, "T06": t06_self_heal,
     "T07": t07_report, "T08": t08_security, "T09": t09_environment,
+    "T11": t11_scoped_access,
 }
 
 

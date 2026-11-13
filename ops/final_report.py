@@ -63,9 +63,8 @@ def main() -> None:
     add("Gmail", "NOT CONFIGURED", "ops/integrations/gmail.py", "code ready",
         "not connected",
         owner="Company Gmail address + app password / OAuth")
-    add("Wallet (USDT/TRC20)", "NOT CONFIGURED", "ops/integrations/wallet.py", "unit-tested",
-        "receive-only verifier ready; no address set",
-        owner="Public receive-only TRON address")
+    add("Wallet (USDT/TRC20)", "PASS", "ops/integrations/wallet.py", "verified live",
+        "receive-only address set and validated on-chain; verifier reads the chain only")
     add("Durable scheduling", "NOT CONFIGURED", "ops/scheduler.py", "duties defined",
         "must run as an OpenHands Cloud automation (runtime is idle-recycled)",
         owner="Confirm which automation schedule to enable")
@@ -75,6 +74,9 @@ def main() -> None:
         "verified live", "repo creation + branch push both succeed")
     add("Department→repo mapping", "PASS", "company/departments/repos.json",
         "verified live", "each of the 7 departments maps to its own private repo")
+    add("Scoped manager access", "PASS", "ops/provision_access.py + ops/deptrepo.py",
+        "verified live",
+        "each manager has a deploy key bound to its own repo; cross-repo access denied")
 
     # ── write the report ──
     L = []
@@ -123,7 +125,7 @@ def main() -> None:
     L.append("| GitHub (read + write) | CONNECTED — `astra-agency-coder` |")
     L.append("| Telegram | NOT CONFIGURED |")
     L.append("| Gmail | NOT CONFIGURED |")
-    L.append("| Wallet (USDT/TRC20) | NOT CONFIGURED |")
+    L.append("| Wallet (USDT/TRC20) | CONNECTED — receive-only |")
     L.append("")
     L.append(f"## 9. Test results — {tests['passed']}/{tests['total']} PASS")
     L.append("| ID | Test | Result |")

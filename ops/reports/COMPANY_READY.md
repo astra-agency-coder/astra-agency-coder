@@ -1,6 +1,6 @@
 # AI ASTRA AGENCY — COMPANY READY
 
-_Foundation report generated 2026-11-13T10:55:59Z_
+_Foundation report generated 2026-11-13T11:03:14Z_
 
 ## 1. Foundation summary
 The company is founded and its machinery is built and tested. It has an identity, a CEO with real authority, seven departments with managers, a working agent-creation and delegation system, durable memory, self-healing, reporting, and prepared integrations. It has **not** started any commercial activity — by design, it awaits the Owner's first operational task.
@@ -37,9 +37,9 @@ The company is founded and its machinery is built and tested. It has an identity
 | GitHub (read + write) | CONNECTED — `astra-agency-coder` |
 | Telegram | NOT CONFIGURED |
 | Gmail | NOT CONFIGURED |
-| Wallet (USDT/TRC20) | NOT CONFIGURED |
+| Wallet (USDT/TRC20) | CONNECTED — receive-only |
 
-## 9. Test results — 10/10 PASS
+## 9. Test results — 11/11 PASS
 | ID | Test | Result |
 |---|---|---|
 | T01 | CEO definition complete | PASS |
@@ -52,6 +52,7 @@ The company is founded and its machinery is built and tested. It has an identity
 | T08c | Wallet module is receive-only (no key/sign/transfer) | PASS |
 | T08d | Control plane holds no hardcoded credentials | PASS |
 | T09 | Environment exposes required capabilities | PASS |
+| T11 | Manager access is scoped to its own repo only | PASS |
 
 ## 10. PASS
 - **Company identity** — implemented: company/IDENTITY.md; tested: reviewed; result: defined with hard constraints.
@@ -66,8 +67,10 @@ The company is founded and its machinery is built and tested. It has an identity
 - **Security controls** — implemented: scan-secrets, telegram allowlist, receive-only wallet; tested: T08, T08b, T08c, T08d; result: all security tests pass.
 - **Environment audit** — implemented: /server_info; tested: T09; result: v1.62.0, SDK 1.62.0, 14 capabilities.
 - **Department GitHub repos** — implemented: ops/provision_repos.py; tested: provisioned live; result: seven private department repos created and populated.
+- **Wallet (USDT/TRC20)** — implemented: ops/integrations/wallet.py; tested: verified live; result: receive-only address set and validated on-chain; verifier reads the chain only.
 - **GitHub write access** — implemented: ops/secrets.py + GITHUB_TOKEN_WRITE; tested: verified live; result: repo creation + branch push both succeed.
 - **Department→repo mapping** — implemented: company/departments/repos.json; tested: verified live; result: each of the 7 departments maps to its own private repo.
+- **Scoped manager access** — implemented: ops/provision_access.py + ops/deptrepo.py; tested: verified live; result: each manager has a deploy key bound to its own repo; cross-repo access denied.
 
 ## 11. FAIL
 - none
@@ -77,8 +80,6 @@ The company is founded and its machinery is built and tested. It has an identity
   - Needs Owner: Bot token + Owner numeric user ID
 - **Gmail** — implemented: ops/integrations/gmail.py; tested: code ready; result: not connected.
   - Needs Owner: Company Gmail address + app password / OAuth
-- **Wallet (USDT/TRC20)** — implemented: ops/integrations/wallet.py; tested: unit-tested; result: receive-only verifier ready; no address set.
-  - Needs Owner: Public receive-only TRON address
 - **Durable scheduling** — implemented: ops/scheduler.py; tested: duties defined; result: must run as an OpenHands Cloud automation (runtime is idle-recycled).
   - Needs Owner: Confirm which automation schedule to enable
 
